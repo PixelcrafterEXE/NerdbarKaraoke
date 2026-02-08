@@ -1,0 +1,22 @@
+services:
+  pikaraoke:
+    build:
+      context: .
+      dockerfile: build_scripts/docker/Dockerfile
+    image: pikaraoke:local
+    container_name: pikaraoke
+    env_file:
+      - .env
+    command: >
+      -u http://${ADDRESS}:5555
+      --admin-password ${ADMIN_PASSWORD}
+      --disable-score
+      --preferred-language de_DE
+      --normalize-audio
+    volumes:
+      - ./songs:/app/pikaraoke-songs      
+      - ./data:/home/pikaraoke/.pikaraoke
+    ports:
+      - "5555:5555"
+    restart: unless-stopped
+    network_mode: bridge
