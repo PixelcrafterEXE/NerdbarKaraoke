@@ -365,7 +365,7 @@ msgstr ""
 msgid ""
 "Do you want to change the name of the person using this device? This will"
 " show up on queued songs. Current: CURRENT_NAME"
-msgstr ""
+msgstr "Möchtest du den Namen der Person ändern, die dieses Gerät benutzt? Dieser Name erscheint bei den Songs in der Warteschlange. Aktuell: CURRENT_NAME"
 
 #. Confirmation prompt to clear entire queue. User must type ok to confirm
 #: templates/base.html:27
@@ -520,10 +520,10 @@ msgstr "Alle Lieder bearbeiten"
 msgid "Nothing is playing right now."
 msgstr "Es wird gerade nichts abgespielt."
 
-#. Title text for the icon marking the next person to sing.
+#. Title text for the icon marking the next wish.
 #: templates/home.html:43
-msgid "Next singer"
-msgstr "Nächster Sänger"
+msgid "Next wish"
+msgstr "Nächster Wunsch"
 
 #. Alternative text for the "Up next" section if no more songs are queued up.
 #: templates/home.html:46
@@ -609,10 +609,10 @@ msgstr ""
 "Bist du sicher, dass du Youtube-DL jetzt aktualisieren möchtest? Aktive "
 "und ausstehende Downloads könnten fehlschlagen."
 
-#. Title of the information page.
+#. Title of the settings page.
 #: templates/info.html:155
-msgid "Information"
-msgstr "Information"
+msgid "Settings"
+msgstr "Einstellungen"
 
 #. Label which appears before a url which links to the current page.
 #: templates/info.html:167
@@ -1306,10 +1306,10 @@ msgstr "Wow, wer hat Freddie Mercury hier reingelassen?"
 msgid "Up next:"
 msgstr "Als Nächstes:"
 
-#. Label for the next singer in the queue.
+#. Label for the next wish in the queue.
 #: templates/splash.html:121
-msgid "Next singer:"
-msgstr "Nächster Sänger:"
+msgid "Next wish:"
+msgstr "Nächster Wunsch:"
 
 #. The title of the score screen, telling the user their singing score
 #: templates/splash.html:143

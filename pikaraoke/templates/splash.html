@@ -72,10 +72,10 @@
 		</span><i class="icon icon-mic-1" title="Current singer"></i>
       <span id="now-playing-singer"></span>
 		<br />
-		<span class="timestamp is-size-6">
+    <span class="timestamp is-size-6">
         <span id="current">00:00</span>
-		  <span id="duration">/00:00</span>
-		</span>
+      <span id="duration"> / 00:00</span>
+    </span>
     </div>
   </div>
 </div>
@@ -120,10 +120,9 @@
     <span id="up-next-song"></span>
     <div class="has-text-success">
       <b class="has-text-white"
-        >{# MSG: Label for the next singer in the queue. #}
-        {% trans %}Next singer:{% endtrans %} </b
-      >&nbsp;<i class="icon icon-mic-1" title="Next singer"></i
-      ><span id="up-next-singer"></span>
+        >{# MSG: Label for the next wish in the queue. #}
+        {% trans %}Next wish:{% endtrans %} </b
+      >&nbsp;<i class="icon icon-mic-1" title="Next wish"></i>&nbsp;<span id="up-next-singer"></span>
     </div>
     {% if motd %}
     <div id="motd-container" class="motd-container">
