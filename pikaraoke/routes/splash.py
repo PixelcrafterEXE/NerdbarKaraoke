@@ -49,6 +49,7 @@ def splash():
         hostap_info=text,
         hide_url=k.hide_url,
         hide_overlay=k.hide_overlay,
+        motd=k.motd,
         screensaver_timeout=k.screensaver_timeout,
         disable_bg_music=k.disable_bg_music,
         disable_bg_video=k.disable_bg_video,

@@ -27,6 +27,7 @@ class PreferenceManager:
         "high_quality": False,
         "splash_delay": 2,
         "volume": 0.85,
+        "motd": "",
         "normalize_audio": False,
         "complete_transcode_before_play": False,
         "buffer_size": 150,

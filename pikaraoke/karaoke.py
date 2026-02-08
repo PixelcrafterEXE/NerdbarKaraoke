@@ -135,6 +135,7 @@ class Karaoke:
         hide_url: bool | None = None,
         high_quality: bool | None = None,
         limit_user_songs_by: int | None = None,
+        motd: str | None = None,
         normalize_audio: bool | None = None,
         screensaver_timeout: int | None = None,
         splash_delay: int | None = None,
@@ -158,6 +159,7 @@ class Karaoke:
             youtubedl_proxy: Proxy URL for yt-dlp.
             logo_path: Custom logo image path.
             hide_overlay: Hide video overlay.
+            motd: Message of the day shown on splash screen.
             screensaver_timeout: Screensaver activation delay in seconds.
             url: Override auto-detected URL.
             prefer_hostname: Use hostname instead of IP in URL.

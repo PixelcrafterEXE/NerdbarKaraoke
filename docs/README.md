@@ -17,7 +17,8 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 ## Roadmap
 - Implement non-Username-based user identification (via cookies)
 - add Up-/Downvote system for songs in queue to allow users to influence order of songs in queue
-- shadow-remove songs from queue (keeps them at the end of the queue)
+- shadow-remove songs from queue (keeps them at the end of the queue, shows up/downvote score one less than the lowsest real score in queue)
+- swap out background video
 
 ## Installation
 

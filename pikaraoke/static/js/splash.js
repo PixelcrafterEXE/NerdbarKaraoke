@@ -270,6 +270,14 @@ const handleNowPlayingUpdate = (np) => {
   } else {
     $("#now-playing").fadeOut();
   }
+  const motdContainer = $("#motd-container");
+  if (motdContainer.length) {
+    if (np.now_playing) {
+      motdContainer.fadeIn();
+    } else {
+      motdContainer.fadeOut();
+    }
+  }
   if (np.up_next) {
     $("#up-next-song").html(np.up_next);
     $("#up-next-singer").html(np.next_user);
@@ -594,6 +602,7 @@ const setupUIScaling = () => {
     { selector: '#top-container', origin: 'top right' },
     { selector: '#ap-container', origin: 'top left' },
     { selector: '#qr-code', origin: 'bottom left' },
+    { selector: '#motd-container', origin: 'bottom center' },
     { selector: '#up-next', origin: 'bottom right' },
     { selector: '#dvd', origin: null },
     { selector: '#your-score-text', origin: null },
@@ -611,6 +620,35 @@ const setupUIScaling = () => {
   });
 }
 
+const setupMotdMarquee = () => {
+  const container = document.getElementById('motd-container');
+  const text = document.getElementById('motd-text');
+  if (!container || !text) return;
+
+  const applyMarquee = () => {
+    text.classList.remove('motd-scroll');
+    text.style.setProperty('--motd-scroll-distance', '0px');
+    text.style.setProperty('--motd-scroll-duration', '12s');
+
+    const containerWidth = container.clientWidth;
+    const textWidth = text.scrollWidth;
+    if (textWidth > containerWidth) {
+      const distance = textWidth - containerWidth;
+      const duration = Math.max(8, Math.min(40, Math.round(distance / 60)));
+      text.style.setProperty('--motd-scroll-distance', `${distance}px`);
+      text.style.setProperty('--motd-scroll-duration', `${duration}s`);
+      text.classList.add('motd-scroll');
+    }
+  };
+
+  applyMarquee();
+  let resizeTimeout = null;
+  window.addEventListener('resize', () => {
+    if (resizeTimeout) clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(applyMarquee, 200);
+  });
+}
+
 // Document ready procedures
 
 $(function () {
@@ -620,6 +658,7 @@ $(function () {
   setupOverlayMenus();
   setupVideoPlayer();
   setupBackgroundMusicPlayer();
+  setupMotdMarquee();
 
   // Handle browser compatibility
   handleUnsupportedBrowser();

@@ -271,6 +271,11 @@
 						</label>
 					</div>
 
+					<div class="user-preference-container">
+						<label class="label" for="pref-motd">{# MSG: Label for the message of the day setting #} {% trans %}Message of the day (MOTD){% endtrans %}</label>
+						<textarea id="pref-motd" class="user-preference-input textarea" rows="2" data-pref="motd" data-start-value="{{ motd }}">{{ motd }}</textarea>
+					</div>
+
 					<div class="user-preference-container is-align-items-center">
 						<input id="pref-volume" class="user-preference-input input" type="number" min="0" max="100" step="5" data-pref="volume" data-start-value="{{ volume }}" value="{{ volume }}" />
 						<label class="label" for="pref-volume">{# MSG: Numberbox label for setting the default video volume#} {% trans %}Default volume of the videos (min 0, max 100){% endtrans %}

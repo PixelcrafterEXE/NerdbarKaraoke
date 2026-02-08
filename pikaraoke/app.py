@@ -169,6 +169,7 @@ def main() -> None:
         high_quality=args.high_quality,
         logo_path=args.logo_path,
         hide_overlay=args.hide_overlay,
+        motd=args.motd,
         screensaver_timeout=args.screensaver_timeout,
         url=args.url,
         prefer_hostname=args.prefer_hostname,

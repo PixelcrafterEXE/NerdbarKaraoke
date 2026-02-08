@@ -7,6 +7,10 @@
   rel="stylesheet"
   href="{{  url_for('static', filename='score.css') }}"
 />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+/>
 <script src="{{ url_for('static', filename='js/subtitles-octopus.js') }}"></script>
 <script>
   // Use this config object to pass data from the jinja2 template to the splash.js code
@@ -104,7 +108,13 @@
     </div>
   </div>
   {% endif %}
+  {% if motd %}
+  <div id="motd-container" class="motd-container">
+    <div id="motd-text" class="motd-text has-text-warning stroke">{{ motd }}</div>
+  </div>
+  {% else %}
   <div></div>
+  {% endif %}
   <div
     id="up-next"
     class="has-text-warning is-size-5 stroke has-text-right"
@@ -271,6 +281,36 @@
   }
   #up-next {
     max-width: 75%;
+  }
+  .motd-container {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    overflow: hidden;
+    padding: 0 10px 4px;
+    min-width: 0;
+    display: none;
+  }
+  .motd-text {
+    font-family: "Press Start 2P", "Courier New", monospace;
+    font-size: 14px;
+    white-space: nowrap;
+    display: inline-block;
+    transform: translateX(0);
+    --motd-scroll-distance: 0px;
+    --motd-scroll-duration: 12s;
+  }
+  .motd-text.motd-scroll {
+    animation: motd-marquee var(--motd-scroll-duration) linear infinite;
+  }
+  @keyframes motd-marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-1 * var(--motd-scroll-distance)));
+    }
   }
   .video-container {
     position: absolute;

@@ -66,6 +66,7 @@ def info():
         hide_notifications=k.hide_notifications,
         hide_url=k.hide_url,
         hide_overlay=k.hide_overlay,
+        motd=k.motd,
         screensaver_timeout=k.screensaver_timeout,
         splash_delay=k.splash_delay,
         normalize_audio=k.normalize_audio,

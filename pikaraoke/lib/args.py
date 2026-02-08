@@ -236,6 +236,13 @@ def parse_pikaraoke_args() -> argparse.Namespace:
         required=False,
     )
     parser.add_argument(
+        "--motd",
+        nargs="+",
+        help=f"Message of the day (MOTD) shown at the bottom of the splash screen. (default: {_DEFAULTS['motd']})",
+        default=None,
+        required=False,
+    )
+    parser.add_argument(
         "--hide-notifications",
         action="store_true",
         help="Hide notifications from the splash screen.",
@@ -338,6 +345,7 @@ def parse_pikaraoke_args() -> argparse.Namespace:
     logo_path = arg_path_parse(args.logo_path)
     bg_music_path = arg_path_parse(args.bg_music_path)
     bg_video_path = arg_path_parse(args.bg_video_path)
+    motd = arg_path_parse(args.motd)
 
     if args.dolphly:
         logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "images", "dolphly.png")
@@ -355,6 +363,7 @@ def parse_pikaraoke_args() -> argparse.Namespace:
     args.logo_path = logo_path
     args.bg_music_path = bg_music_path
     args.bg_video_path = bg_video_path
+    args.motd = motd
     args.download_path = dl_path
 
     return args
