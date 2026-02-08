@@ -118,6 +118,8 @@ class Karaoke:
         streaming_format: str = "hls",
         url: str | None = None,
         youtubedl_proxy: str | None = None,
+        song_add_cooldown_count: int = -1,
+        song_add_cooldown_duration: int = -1,
         # Preference parameters (defaults from PreferenceManager.DEFAULTS)
         avsync: float | None = None,
         bg_music_volume: float | None = None,
@@ -211,6 +213,8 @@ class Karaoke:
         self.socketio = socketio
         self.url_override = url
         self.url = self.get_url()
+        self.song_add_cooldown_count = song_add_cooldown_count
+        self.song_add_cooldown_duration = song_add_cooldown_duration
 
         # Load all preference-driven attributes from config (with CLI overrides as fallback)
         cli_args = {k: v for k, v in locals().items() if k != "self"}
@@ -248,7 +252,10 @@ class Karaoke:
             get_available_songs=lambda: self.available_songs,
             update_now_playing_socket=self.update_now_playing_socket,
             skip=self.skip,
-        )
+            song_add_cooldown_count=self.song_add_cooldown_count,
+            song_add_cooldown_duration=self.song_add_cooldown_duration,
+               is_admin=self._get_is_admin_callback(),
+           )
 
     def _load_preferences(self, **cli_overrides: Any) -> None:
         """Load preference-driven attributes from config file.
@@ -461,6 +468,21 @@ class Karaoke:
         if remove_youtube_id:
             rc = rc.split("---")[0]  # removes youtube id if present
         return rc
+
+    def _get_is_admin_callback(self):
+        """Get a callback function to check if the current request is from an admin.
+
+        Returns a lambda that safely checks admin status from Flask context.
+        Returns a callable that returns False if not in a Flask request context.
+        """
+        def check_is_admin():
+            try:
+                from pikaraoke.lib.current_app import is_admin
+                return is_admin()
+            except (RuntimeError, AttributeError):
+                # Not in Flask app context or function not available
+                return False
+        return check_is_admin
 
     def play_file(self, file_path: str, semitones: int = 0) -> bool | None:
         """Start playback of a media file.

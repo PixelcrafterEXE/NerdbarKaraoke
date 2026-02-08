@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 import random
+import time
 from typing import Any, Callable
 
 from flask_babel import _
@@ -34,6 +35,9 @@ class QueueManager:
         get_available_songs: Callable[[], Any] | None = None,
         update_now_playing_socket: Callable[[], None] | None = None,
         skip: Callable[[bool], bool] | None = None,
+        song_add_cooldown_count: int = -1,
+        song_add_cooldown_duration: int = -1,
+        is_admin: Callable[[], bool] | None = None,
     ) -> None:
         """Initialize the QueueManager.
 
@@ -47,6 +51,9 @@ class QueueManager:
             get_available_songs: Callback to get available songs list.
             update_now_playing_socket: Callback to update now playing state.
             skip: Callback to skip current song.
+            song_add_cooldown_count: Number of songs to trigger cooldown (-1 = disabled).
+            song_add_cooldown_duration: Cooldown duration in minutes (-1 = disabled).
+            is_admin: Callback to check if the current user is an admin.
         """
         self.queue: list[dict[str, Any]] = []
         self.socketio = socketio
@@ -58,6 +65,11 @@ class QueueManager:
         self._get_available_songs = get_available_songs
         self._update_now_playing_socket = update_now_playing_socket
         self._skip = skip
+        self._is_admin = is_admin
+        self.song_add_cooldown_count = song_add_cooldown_count
+        self.song_add_cooldown_duration = song_add_cooldown_duration
+        # Track user song addition timestamps: {user: [timestamp1, timestamp2, ...]}
+        self.user_add_times: dict[str, list[float]] = {}
 
     def is_song_in_queue(self, song_path: str) -> bool:
         """Check if a song is already in the queue.
@@ -91,6 +103,43 @@ class QueueManager:
             1 if now_playing_user == user else 0
         )
         return cont >= int(limit_user_songs_by)
+
+    def is_user_in_add_cooldown(self, user: str) -> bool:
+        """Check if a user is in song addition cooldown.
+
+        A user is in cooldown if they have added song_add_cooldown_count songs
+        within the last song_add_cooldown_duration minutes.
+
+        Args:
+            user: Username to check.
+
+        Returns:
+            True if the user is in cooldown, False otherwise.
+        """
+        # Cooldown disabled if either value is -1
+        if self.song_add_cooldown_count == -1 or self.song_add_cooldown_duration == -1:
+            return False
+
+        # Admin users are never in cooldown
+        if self._is_admin and self._is_admin():
+            return False
+
+        # Special users are never in cooldown
+        if user == "Pikaraoke" or user == "Randomizer":
+            return False
+
+        current_time = time.time()
+        cutoff_time = current_time - (self.song_add_cooldown_duration * 60)
+
+        # Get user's add times, filtering out old entries
+        if user not in self.user_add_times:
+            self.user_add_times[user] = []
+
+        # Remove timestamps older than the cutoff
+        self.user_add_times[user] = [t for t in self.user_add_times[user] if t > cutoff_time]
+
+        # Check if user has added enough songs within the cooldown window
+        return len(self.user_add_times[user]) >= self.song_add_cooldown_count
 
     def _calculate_fair_queue_position(self, user: str) -> int:
         """Calculate insertion position for round-robin fair queuing.
@@ -158,11 +207,22 @@ class QueueManager:
                 False,
                 _("You reached the limit of %s song(s) from an user in queue!") % (str(limit)),
             ]
+        elif self.is_user_in_add_cooldown(user):
+            logging.debug(f"User {user} is in song addition cooldown")
+            return [
+                False,
+                _("You are adding songs too quickly. Please wait before adding another song."),
+            ]
         else:
             if self._filename_from_path:
                 title = self._filename_from_path(song_path, True)
             else:
                 title = song_path
+
+            # Track this song addition timestamp for cooldown purposes
+            if user not in self.user_add_times:
+                self.user_add_times[user] = []
+            self.user_add_times[user].append(time.time())
 
             queue_item = {
                 "user": user,

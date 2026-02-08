@@ -186,6 +186,8 @@ def main() -> None:
         additional_ytdl_args=getattr(args, "ytdl_args", None),
         socketio=socketio,
         preferred_language=args.preferred_language,
+        song_add_cooldown_count=args.song_add_cooldown_count,
+        song_add_cooldown_duration=args.song_add_cooldown_duration,
     )
 
     # expose karaoke object to the flask app

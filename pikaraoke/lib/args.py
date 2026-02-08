@@ -310,6 +310,20 @@ def parse_pikaraoke_args() -> argparse.Namespace:
         help="Enable top-secret DOLPHLY mode.",
         required=False,
     )
+    parser.add_argument(
+        "--song-add-cooldown-count",
+        help="Number of songs a user must add before cooldown is triggered (default: -1 = disabled)",
+        default=-1,
+        type=int,
+        required=False,
+    )
+    parser.add_argument(
+        "--song-add-cooldown-duration",
+        help="Cooldown duration in minutes. A user cannot add any song if they have added --song-add-cooldown-count songs in the last --song-add-cooldown-duration minutes (default: -1 = disabled)",
+        default=-1,
+        type=int,
+        required=False,
+    )
 
     args = parser.parse_args()
 

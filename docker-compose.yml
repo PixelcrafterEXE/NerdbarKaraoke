@@ -1,5 +1,5 @@
 services:
-  pikaraoke:
+  nerdBar-Karaoke:
     build:
       context: .
       dockerfile: build_scripts/docker/Dockerfile
@@ -13,6 +13,8 @@ services:
       --disable-score
       --preferred-language de_DE
       --normalize-audio
+      --song-add-cooldown-count ${SONG_ADD_COOLDOWN_COUNT}
+      --song-add-cooldown-duration ${SONG_ADD_COOLDOWN_DURATION}
     volumes:
       - ./songs:/app/pikaraoke-songs      
       - ./data:/home/pikaraoke/.pikaraoke
