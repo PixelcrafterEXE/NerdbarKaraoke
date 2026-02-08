@@ -16,7 +16,6 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 
 ## Roadmap
 - Implement non-Username-based user identification (via cookies)
-- Add salt to randomly added songs to queue to prevent repetition
 - add Up-/Downvote system for songs in queue to allow users to influence order of songs in queue
 
 ## Installation
