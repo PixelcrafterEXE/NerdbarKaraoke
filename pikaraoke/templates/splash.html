@@ -103,17 +103,10 @@
       style="image-rendering: pixelated"
       alt="qrcode"
     />
-    <div class="is-size-6 stroke">
-      <div>&nbsp;{{ url }}</div>
+    <div class="is-size-10 stroke">
+      <div>&nbsp;{{ url.replace('http://', '') }}</div>
     </div>
   </div>
-  {% endif %}
-  {% if motd %}
-  <div id="motd-container" class="motd-container">
-    <div id="motd-text" class="motd-text has-text-warning stroke">{{ motd }}</div>
-  </div>
-  {% else %}
-  <div></div>
   {% endif %}
   <div
     id="up-next"
@@ -132,6 +125,11 @@
       >&nbsp;<i class="icon icon-mic-1" title="Next singer"></i
       ><span id="up-next-singer"></span>
     </div>
+    {% if motd %}
+    <div id="motd-container" class="motd-container">
+      <div id="motd-text" class="motd-text is-size-5 stroke" style="color: #08a6a6;">{{ motd }}</div>
+    </div>
+    {% endif %}
   </div>
 </div>
 
@@ -254,6 +252,8 @@
     position: absolute;
     z-index: 1;
     padding: 10px 20px;
+    font-family: "Press Start 2P", "Courier New", monospace;
+    font-size: 12px;
   }
   #top-container {
     top: 0px;
@@ -272,35 +272,30 @@
     bottom: 0px;
     left: 0px;
     width: 100%;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
+    justify-content: space-between;
     align-items: flex-end;
-    column-gap: 10px;
   }
   #qr-code {
     width: 35%;
     max-width: 35%;
     min-width: 200px;
-    justify-self: start;
   }
   #up-next {
     max-width: 75%;
-    justify-self: end;
   }
   .motd-container {
-    flex: 1 1 auto;
+    width: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
     overflow: hidden;
-    padding: 0 10px 4px;
+    padding: 6px 0 0;
     min-width: 0;
     display: none;
-    justify-self: center;
   }
   .motd-text {
     font-family: "Press Start 2P", "Courier New", monospace;
-    font-size: 14px;
     white-space: nowrap;
     display: inline-block;
     transform: translateX(0);
@@ -412,6 +407,8 @@
     z-index: 6;
     padding: 5px 10px;
     max-width: 450px;
+    font-family: "Press Start 2P", "Courier New", monospace;
+    font-size: 12px;
   }
 </style>
 
