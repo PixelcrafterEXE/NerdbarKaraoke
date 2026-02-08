@@ -21,6 +21,7 @@ var bgMediaResumeTimeout = null;
 const scoreReviews = PikaraokeConfig.scorePhrases;
 var isMaster = false;
 var uiScale = null;
+var motdResizeListenerAttached = false;
 
 // Browser detection
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -272,6 +273,14 @@ const handleNowPlayingUpdate = (np) => {
   }
   const motdContainer = $("#motd-container");
   if (motdContainer.length) {
+    const motdText = $("#motd-text");
+    if (motdText.length) {
+      const newMotd = np.motd || "";
+      if (motdText.text() !== newMotd) {
+        motdText.text(newMotd);
+        applyMotdMarquee();
+      }
+    }
     if (np.now_playing) {
       motdContainer.fadeIn();
     } else {
@@ -620,32 +629,34 @@ const setupUIScaling = () => {
   });
 }
 
-const setupMotdMarquee = () => {
+const applyMotdMarquee = () => {
   const container = document.getElementById('motd-container');
   const text = document.getElementById('motd-text');
   if (!container || !text) return;
 
-  const applyMarquee = () => {
-    text.classList.remove('motd-scroll');
-    text.style.setProperty('--motd-scroll-distance', '0px');
-    text.style.setProperty('--motd-scroll-duration', '12s');
+  text.classList.remove('motd-scroll');
+  text.style.setProperty('--motd-scroll-distance', '0px');
+  text.style.setProperty('--motd-scroll-duration', '12s');
 
-    const containerWidth = container.clientWidth;
-    const textWidth = text.scrollWidth;
-    if (textWidth > containerWidth) {
-      const distance = textWidth - containerWidth;
-      const duration = Math.max(8, Math.min(40, Math.round(distance / 60)));
-      text.style.setProperty('--motd-scroll-distance', `${distance}px`);
-      text.style.setProperty('--motd-scroll-duration', `${duration}s`);
-      text.classList.add('motd-scroll');
-    }
-  };
+  const containerWidth = container.clientWidth;
+  const textWidth = text.scrollWidth;
+  if (textWidth > containerWidth) {
+    const distance = textWidth - containerWidth;
+    const duration = Math.max(8, Math.min(40, Math.round(distance / 60)));
+    text.style.setProperty('--motd-scroll-distance', `${distance}px`);
+    text.style.setProperty('--motd-scroll-duration', `${duration}s`);
+    text.classList.add('motd-scroll');
+  }
+}
 
-  applyMarquee();
+const setupMotdMarquee = () => {
+  applyMotdMarquee();
+  if (motdResizeListenerAttached) return;
+  motdResizeListenerAttached = true;
   let resizeTimeout = null;
   window.addEventListener('resize', () => {
     if (resizeTimeout) clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(applyMarquee, 200);
+    resizeTimeout = setTimeout(applyMotdMarquee, 200);
   });
 }
 
@@ -663,6 +674,9 @@ $(function () {
   // Handle browser compatibility
   handleUnsupportedBrowser();
   testAutoplayCapability();
+  setInterval(() => {
+    loadNowPlaying().catch(() => {});
+  }, 5000);
 });
 
 

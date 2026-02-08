@@ -684,6 +684,7 @@ class Karaoke:
             "now_playing_url": self.now_playing_url,
             "now_playing_subtitle_url": self.now_playing_subtitle_url,
             "now_playing_position": self.now_playing_position,
+            "motd": self.motd,
             "up_next": next_song["title"] if next_song else None,
             "next_user": next_song["user"] if next_song else None,
             "is_paused": self.is_paused,

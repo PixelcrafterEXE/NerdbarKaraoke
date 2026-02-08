@@ -272,15 +272,20 @@
     bottom: 0px;
     left: 0px;
     width: 100%;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: flex-end;
+    column-gap: 10px;
   }
   #qr-code {
+    width: 35%;
     max-width: 35%;
+    min-width: 200px;
+    justify-self: start;
   }
   #up-next {
     max-width: 75%;
+    justify-self: end;
   }
   .motd-container {
     flex: 1 1 auto;
@@ -291,6 +296,7 @@
     padding: 0 10px 4px;
     min-width: 0;
     display: none;
+    justify-self: center;
   }
   .motd-text {
     font-family: "Press Start 2P", "Courier New", monospace;

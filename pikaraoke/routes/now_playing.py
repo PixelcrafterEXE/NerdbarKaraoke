@@ -49,6 +49,9 @@ def now_playing():
             volume:
               type: number
               description: Current volume (0.0-1.0)
+            motd:
+              type: string
+              description: Message of the day text
     """
     k = get_karaoke_instance()
     try:
