@@ -1,17 +1,4 @@
 LANGUAGES = {
     "en": "English",
     "de_DE": "German",
-    "es_VE": "Spanish (Venezuela)",
-    "fi_FI": "Finnish",
-    "fr_FR": "French",
-    "it_IT": "Italian",
-    "ja_JP": "Japanese",
-    "ko_KR": "Korean",
-    "nl_NL": "Dutch",
-    "no_NO": "Norwegian",
-    "pt_BR": "Brazilian Portuguese",
-    "ru_RU": "Russian",
-    "th_TH": "Thai",
-    "zh_Hans_CN": "Chinese (Simplified)",
-    "zh_Hant_TW": "Chinese (Traditional)",
 }
