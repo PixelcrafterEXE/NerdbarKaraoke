@@ -8,6 +8,10 @@
   // Pass voting enabled status from server to JavaScript
   var votingEnabled = JSON.parse('{{ enable_voting | tojson }}');
 
+    // Labels for shadowban toggle
+    var shadowbanLabel = "{{ _('Shadowban') }}";
+    var unshadowbanLabel = "{{ _('Unshadowban') }}";
+
   // Escape strings for safe use in HTML attributes
   function escape(str) {
     return encodeURIComponent(str);
@@ -312,8 +316,9 @@
     html += '<div class="is-flex is-flex-wrap-wrap is-align-items-baseline">';
     html += '<span class="has-text-success">' + e.user + '</span>';
     html += '<span class="is-hidden-mobile has-text-grey mx-2">&bull;</span>';
-    html += '<span class="has-text-weight-bold is-hidden-mobile">' + e.title + '</span>';
-    html += '<span class="is-size-7 has-text-weight-bold is-hidden-tablet" style="width: 100%;">' + e.title + '</span>';
+    var shadowbanTitleClass = (isAdmin && e.shadowbanned) ? ' has-text-danger' : '';
+    html += '<span class="has-text-weight-bold is-hidden-mobile' + shadowbanTitleClass + '">' + e.title + '</span>';
+    html += '<span class="is-size-7 has-text-weight-bold is-hidden-tablet' + shadowbanTitleClass + '" style="width: 100%;">' + e.title + '</span>';
     html += '</div></td>';
 
     // Add voting buttons only if voting is enabled
@@ -373,7 +378,8 @@
   window.currentSongOptions = {
       index: -1,
       file: '',
-      title: ''
+      title: '',
+      shadowbanned: false
   };
 
   // Track file to highlight after queue refresh
@@ -413,10 +419,21 @@
       window.currentSongOptions = {
           index: index,
           file: file,
-          title: title
+          title: title,
+          shadowbanned: false
       };
 
       $('#modal-song-title').text(title);
+
+      var entry = window.queuePageState.queue[index];
+      var isShadowbanned = entry && entry.shadowbanned;
+      window.currentSongOptions.shadowbanned = !!isShadowbanned;
+      $('#opt-shadowban-label').text(isShadowbanned ? unshadowbanLabel : shadowbanLabel);
+      if (isShadowbanned) {
+          $('#opt-shadowban').addClass('has-text-danger').removeClass('has-text-warning');
+      } else {
+          $('#opt-shadowban').addClass('has-text-warning').removeClass('has-text-danger');
+      }
 
       // Reset all options to visible first
       $('#opt-up, #opt-top, #opt-down, #opt-bottom').show();
@@ -620,6 +637,10 @@
         <a id="opt-bottom" class="panel-block py-3" href="#" onclick="executeQueueAction('bottom'); return false;">
             <span class="icon has-text-info mr-2"><i class="icon-angle-double-down"></i></span>
             {% trans %}Move to Bottom{% endtrans %}
+        </a>
+        <a id="opt-shadowban" class="panel-block py-3" href="#" onclick="executeQueueAction('shadowban'); return false;">
+            <span class="icon mr-2"><i class="icon-cancel"></i></span>
+            <span id="opt-shadowban-label">{% trans %}Shadowban{% endtrans %}</span>
         </a>
         <a id="opt-delete" class="panel-block py-3 has-text-danger" href="#" onclick="executeQueueAction('delete'); return false;">
             <span class="icon mr-2"><i class="icon-trash-empty"></i></span>

@@ -76,9 +76,13 @@ def get_queue():
     user = request.cookies.get("user")
     user = user.strip() if isinstance(user, str) else None
     queue_with_ratings = []
+    shadowban_base = k.queue_manager.get_shadowban_base_rating()
     for item in k.queue_manager.queue:
         entry = dict(item)
-        entry["rating"] = k.queue_manager.get_song_rating(item["file"])
+        entry["rating"] = k.queue_manager.get_display_rating(
+            item["file"], user, shadowban_base
+        )
+        entry["shadowbanned"] = k.queue_manager.is_shadowbanned(item["file"])
         entry["user_vote"] = (
             k.queue_manager.get_user_vote(item["file"], user) if user else 0
         )
@@ -273,6 +277,32 @@ def queue_edit():
                 if not is_ajax:
                     # MSG: Message shown after failing to delete a song from the queue
                     flash(message, "is-danger")
+        elif action == "shadowban":
+          matched_file = None
+          for item in k.queue_manager.queue:
+            if item["file"] == song:
+              matched_file = item["file"]
+              break
+          if matched_file is None:
+            for item in k.queue_manager.queue:
+              if song in item["file"] or item["file"] in song:
+                matched_file = item["file"]
+                break
+
+          if matched_file:
+            now_shadowbanned = k.queue_manager.toggle_shadowban(matched_file)
+            if not k.queue_manager._get_enable_fair_queue():
+              k.queue_manager._reorder_queue_by_votes()
+            message = (
+              _("Shadowbanned") if now_shadowbanned else _("Unshadowbanned")
+            ) + ": " + k.filename_from_path(matched_file)
+            if not is_ajax:
+              flash(message, "is-warning")
+            success = True
+          else:
+            message = _("Song not found in queue") + ": " + k.filename_from_path(song)
+            if not is_ajax:
+              flash(message, "is-danger")
 
     if success:
         broadcast_event("queue_update")

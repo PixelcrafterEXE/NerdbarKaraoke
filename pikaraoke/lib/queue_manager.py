@@ -79,6 +79,9 @@ class QueueManager:
         # Voting data structure: {song_file_path: {user: vote_value}}
         # vote_value: 1 for upvote, -1 for downvote
         self.votes: dict[str, dict[str, int]] = {}
+        # Shadowbanned songs (admin-only) and their temporary user votes
+        self.shadowbanned: set[str] = set()
+        self.shadowban_votes: dict[str, dict[str, int]] = {}
 
     def is_song_in_queue(self, song_path: str) -> bool:
         """Check if a song is already in the queue.
@@ -267,6 +270,7 @@ class QueueManager:
                     self.queue.insert(insert_pos, queue_item)
                 else:
                     self.queue.append(queue_item)
+                    self._reorder_queue_by_votes()
             self.update_queue_socket()
             if self._update_now_playing_socket:
                 self._update_now_playing_socket()
@@ -326,6 +330,8 @@ class QueueManager:
             self._log_and_send(_("Clear queue"), "danger")
         self.queue = []
         self.votes.clear()
+        self.shadowbanned.clear()
+        self.shadowban_votes.clear()
         self.update_queue_socket()
         if self._update_now_playing_socket:
             self._update_now_playing_socket()
@@ -388,6 +394,75 @@ class QueueManager:
         if self.socketio:
             self.socketio.emit("queue_update", namespace="/")
 
+    def is_shadowbanned(self, song_file: str) -> bool:
+        """Check if a song is shadowbanned."""
+        return song_file in self.shadowbanned
+
+    def toggle_shadowban(self, song_file: str) -> bool:
+        """Toggle shadowban status for a song.
+
+        Returns:
+            True if song is now shadowbanned, False otherwise.
+        """
+        if song_file in self.shadowbanned:
+            self.shadowbanned.remove(song_file)
+            if song_file in self.shadowban_votes:
+                del self.shadowban_votes[song_file]
+            return False
+        self.shadowbanned.add(song_file)
+        return True
+
+    def get_shadowban_base_rating(self) -> int:
+        """Get the base rating for shadowbanned songs.
+
+        Uses the worst (lowest) rating among non-shadowbanned songs.
+        Returns 0 if no non-shadowbanned songs exist.
+        """
+        ratings = [
+            self.get_song_rating(item["file"])
+            for item in self.queue
+            if not self.is_shadowbanned(item["file"])
+        ]
+        return min(ratings) if ratings else 0
+
+    def get_shadowban_user_vote(self, song_file: str, user: str) -> int:
+        """Get a user's temporary vote for a shadowbanned song."""
+        if song_file not in self.shadowban_votes:
+            return 0
+        return self.shadowban_votes[song_file].get(user, 0)
+
+    def get_display_rating(
+        self, song_file: str, user: str | None = None, base_rating: int | None = None
+    ) -> int:
+        """Get the rating to display for a song.
+
+        Shadowbanned songs show the worst rating in the queue; the current user's
+        temporary vote is added only for that user.
+        """
+        if not self.is_shadowbanned(song_file):
+            return self.get_song_rating(song_file)
+
+        effective_base = base_rating if base_rating is not None else self.get_shadowban_base_rating()
+        if user:
+            return effective_base + self.get_shadowban_user_vote(song_file, user)
+        return effective_base
+
+    def peek_next_song(self) -> dict[str, Any] | None:
+        """Get the next song to play, skipping shadowbanned entries when possible."""
+        if not self.queue:
+            return None
+        for item in self.queue:
+            if not self.is_shadowbanned(item["file"]):
+                return item
+        return self.queue[0]
+
+    def pop_song_by_file(self, song_file: str) -> dict[str, Any] | None:
+        """Remove and return a song entry by file path."""
+        for idx, item in enumerate(self.queue):
+            if item["file"] == song_file:
+                return self.queue.pop(idx)
+        return None
+
     def vote_song(self, song_file: str, user: str, vote_type: str) -> dict[str, Any]:
         """Record a vote for a song (upvote or downvote).
 
@@ -406,6 +481,30 @@ class QueueManager:
             return {"success": False, "error": "Invalid vote type"}
 
         vote_value = 1 if vote_type == "upvote" else -1
+
+        if self.is_shadowbanned(song_file):
+            if song_file not in self.shadowban_votes:
+                self.shadowban_votes[song_file] = {}
+
+            user_votes = self.shadowban_votes[song_file]
+            previous_vote = user_votes.get(user, 0)
+
+            if previous_vote != 0 and previous_vote == vote_value:
+                del user_votes[user]
+            else:
+                user_votes[user] = vote_value
+
+            net_votes = self.get_display_rating(song_file, user)
+
+            logging.debug(
+                f"Shadowban vote recorded: {user} {vote_type}d {song_file} (net: {net_votes})"
+            )
+
+            return {
+                "success": True,
+                "net_votes": net_votes,
+                "user_vote": user_votes.get(user, 0),
+            }
 
         # Initialize votes dict for this song if needed
         if song_file not in self.votes:
@@ -443,12 +542,15 @@ class QueueManager:
         if not self.queue:
             return
 
-        scored = [
-            (self.get_song_rating(item["file"]), idx, item)
-            for idx, item in enumerate(self.queue)
-        ]
-        scored.sort(key=lambda x: (-x[0], x[1]))
-        self.queue = [item for _, __, item in scored]
+        shadowban_base = self.get_shadowban_base_rating()
+        scored = []
+        for idx, item in enumerate(self.queue):
+            is_shadowbanned = self.is_shadowbanned(item["file"])
+            rating = shadowban_base if is_shadowbanned else self.get_song_rating(item["file"])
+            scored.append((is_shadowbanned, rating, idx, item))
+
+        scored.sort(key=lambda x: (x[0], -x[1], x[2]))
+        self.queue = [item for _, __, ___, item in scored]
         self.update_queue_socket()
         if self._update_now_playing_socket:
             self._update_now_playing_socket()
@@ -478,6 +580,8 @@ class QueueManager:
         Returns:
             1 for upvote, -1 for downvote, 0 for no vote.
         """
+        if self.is_shadowbanned(song_file):
+            return self.get_shadowban_user_vote(song_file, user)
         if song_file not in self.votes:
             return 0
         return self.votes[song_file].get(user, 0)
@@ -490,3 +594,7 @@ class QueueManager:
         """
         if song_file in self.votes:
             del self.votes[song_file]
+        if song_file in self.shadowban_votes:
+            del self.shadowban_votes[song_file]
+        if song_file in self.shadowbanned:
+            self.shadowbanned.remove(song_file)

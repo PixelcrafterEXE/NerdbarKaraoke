@@ -489,7 +489,12 @@ class Karaoke:
                 return False
         return check_is_admin
 
-    def play_file(self, file_path: str, semitones: int = 0) -> bool | None:
+    def play_file(
+        self,
+        file_path: str,
+        semitones: int = 0,
+        queue_entry: dict[str, Any] | None = None,
+    ) -> bool | None:
         """Start playback of a media file.
 
         Delegates to StreamManager for transcoding and stream setup.
@@ -501,7 +506,7 @@ class Karaoke:
         Returns:
             False if file resolution fails, None otherwise.
         """
-        return self.stream_manager.play_file(file_path, semitones)
+        return self.stream_manager.play_file(file_path, semitones, queue_entry)
 
     def kill_ffmpeg(self) -> None:
         """Terminate the running FFmpeg process gracefully."""
@@ -677,8 +682,7 @@ class Karaoke:
         Returns:
             Dictionary with now playing info, queue preview, and volume.
         """
-        queue = self.queue_manager.queue
-        next_song = queue[0] if queue else None
+        next_song = self.queue_manager.peek_next_song()
         return {
             "now_playing": self.now_playing,
             "now_playing_user": self.now_playing_user,
@@ -718,10 +722,13 @@ class Karaoke:
                         while i < (self.splash_delay * 1000):
                             self.handle_run_loop()
                             i += self.loop_interval
-                        self.play_file(
-                            self.queue_manager.queue[0]["file"],
-                            self.queue_manager.queue[0]["semitones"],
-                        )
+                        next_song = self.queue_manager.peek_next_song()
+                        if next_song:
+                            self.play_file(
+                                next_song["file"],
+                                next_song["semitones"],
+                                queue_entry=next_song,
+                            )
                 self.stream_manager.log_ffmpeg_output()
                 self.handle_run_loop()
             except KeyboardInterrupt:

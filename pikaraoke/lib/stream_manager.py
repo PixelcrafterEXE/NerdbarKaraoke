@@ -52,7 +52,12 @@ class StreamManager:
         self.ffmpeg_process = None
         self.ffmpeg_log: Queue | None = None
 
-    def play_file(self, file_path: str, semitones: int = 0) -> bool | None:
+    def play_file(
+        self,
+        file_path: str,
+        semitones: int = 0,
+        queue_entry: dict[str, Any] | None = None,
+    ) -> bool | None:
         """Start playback of a media file.
 
         Handles file resolution, transcoding, and stream setup.
@@ -85,7 +90,11 @@ class StreamManager:
             fr = FileResolver(file_path, k.streaming_format)
         except Exception as e:
             error_message = _("Error resolving file: %s") % str(e)
-            if k.queue_manager.queue:
+            if queue_entry:
+                removed = k.queue_manager.pop_song_by_file(queue_entry["file"])
+                if removed:
+                    k.queue_manager.clear_song_votes(removed["file"])
+            elif k.queue_manager.queue:
                 song_file = k.queue_manager.queue[0]["file"]
                 k.queue_manager.queue.pop(0)
                 k.queue_manager.clear_song_votes(song_file)
@@ -117,7 +126,15 @@ class StreamManager:
 
         # Check if the stream is ready to play
         if is_transcoding_complete or is_buffering_complete:
-            self._setup_now_playing(k, file_path, fr, semitones, stream_url_path, subtitle_url)
+            self._setup_now_playing(
+                k,
+                file_path,
+                fr,
+                semitones,
+                stream_url_path,
+                subtitle_url,
+                queue_entry,
+            )
 
     def _copy_file(self, src_path: str, dest_path: str) -> bool:
         """Copy a file that doesn't need transcoding.
@@ -296,6 +313,7 @@ class StreamManager:
         semitones: int,
         stream_url_path: str,
         subtitle_url: str | None,
+        queue_entry: dict[str, Any] | None = None,
     ) -> None:
         """Set up the now playing state and wait for playback to start.
 
@@ -314,10 +332,17 @@ class StreamManager:
         k.now_playing_duration = fr.duration
         k.now_playing_url = stream_url_path
         k.now_playing_subtitle_url = subtitle_url
-        k.now_playing_user = k.queue_manager.queue[0]["user"]
+        entry = queue_entry
+        if entry is None:
+            if not k.queue_manager.queue:
+                return
+            entry = k.queue_manager.queue[0]
+        k.now_playing_user = entry["user"]
         k.is_paused = False
-        song_file = k.queue_manager.queue[0]["file"]
-        k.queue_manager.queue.pop(0)
+        song_file = entry["file"]
+        removed = k.queue_manager.pop_song_by_file(song_file)
+        if removed is None and k.queue_manager.queue:
+            k.queue_manager.queue.pop(0)
         k.queue_manager.clear_song_votes(song_file)
         k.update_now_playing_socket()
         k.queue_manager.update_queue_socket()

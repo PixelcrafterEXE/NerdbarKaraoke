@@ -13,10 +13,10 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 - User song addition cooldown
 - Volume Normalization
 - Multi-language support (English, German)
+- User voting on songs in the queue (upvote/downvote)
 
 ## Roadmap
 - Implement non-Username-based user identification (via cookies)
-- shadow-remove songs from queue (keeps them at the end of the queue, shows up/downvote score one less than the lowsest real score in queue)
 - swap out background video
 - Ability to close song queue adding
 - Calculate total duration of queue and show it in the UI
