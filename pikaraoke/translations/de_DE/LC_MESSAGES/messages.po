@@ -887,7 +887,7 @@ msgstr "Aktualisierungen"
 #. Label for the Refresh the song list on the updates section
 #: templates/info.html:436
 msgid "Refresh the song list"
-msgstr "Liederliste aktualisieren:"
+msgstr "Liederliste aktualisieren"
 
 #. Help text explaining the Rescan song directory link.
 #: templates/info.html:441
