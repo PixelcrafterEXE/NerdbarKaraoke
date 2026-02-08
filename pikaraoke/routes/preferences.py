@@ -37,6 +37,8 @@ def change_preferences():
     if is_admin():
         preference = request.args["pref"]
         val = request.args["val"]
+        if preference == "queue_closing_time":
+          val = val.strip()
         success, message = k.preferences.set(preference, val)
         return jsonify([success, message])
     else:

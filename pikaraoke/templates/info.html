@@ -24,6 +24,18 @@
 				let startVal = $(this).attr("data-start-value");
 				let $this = $(this);
 
+				if (pref == "queue_closing_time") {
+					const normalized = normalizeQueueClosingTime(val);
+					if (normalized === null) {
+						return;
+					}
+					if (normalized === startVal) {
+						return;
+					}
+					val = normalized;
+					$this.attr("data-start-value", val);
+				}
+
 				if (val == startVal) return;
 
 				let timeoutId = setTimeout(function() {
@@ -31,6 +43,10 @@
 
 					if (pref == "bg_music_volume" || pref == "volume") {
 						val = val / 100;
+					}
+
+					if (pref == "queue_closing_time") {
+						// Already normalized above
 					}
 					changePreferences(pref, val);
 				}, 1000);
@@ -56,6 +72,45 @@
 					if (data[0]) showNotification(data[1], "is-success");
 					else showNotification(data[1], "is-danger")
 				});
+			}
+
+			function normalizeQueueClosingTime(value) {
+				if (!value) return "";
+				const match = value.match(/^(\d{1,2}):(\d{2})$/);
+				if (!match) return null;
+				let hour = parseInt(match[1], 10);
+				let minute = parseInt(match[2], 10);
+				if (hour < 0 || hour > 24 || minute < 0 || minute > 59) return null;
+
+				const now = new Date();
+				let target;
+				if (hour === 24 && minute === 0) {
+					target = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+				} else {
+					target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
+					if (target <= now) {
+						target = new Date(target.getTime() + 24 * 60 * 60 * 1000);
+					}
+				}
+				return Math.floor(target.getTime() / 1000).toString();
+			}
+
+			function formatTimeHHMM(dateObj) {
+				const h = String(dateObj.getHours()).padStart(2, "0");
+				const m = String(dateObj.getMinutes()).padStart(2, "0");
+				return `${h}:${m}`;
+			}
+
+			const rawClosingTime = {{ queue_closing_time | tojson }};
+			if (rawClosingTime) {
+				const ts = typeof rawClosingTime === "string" ? parseInt(rawClosingTime, 10) : rawClosingTime;
+				if (!Number.isNaN(ts)) {
+					const dt = new Date(ts * 1000);
+					const formatted = formatTimeHHMM(dt);
+					const $input = $("#pref-queue-closing-time");
+					$input.val(formatted);
+					$input.attr("data-start-value", ts.toString());
+				}
 			}
 
 			$("#quit-link").click(function (e) {
@@ -414,6 +469,29 @@
 						<input id="pref-song-add-cooldown-duration" class="user-preference-input input" type="number" min="-1" max="1440" data-pref="song_add_cooldown_duration" data-start-value="{{ song_add_cooldown_duration }}" value="{{ song_add_cooldown_duration }}" />
 						<label class="label" for="pref-song-add-cooldown-duration">
 							{# MSG: Numberbox label for cooldown duration #} {% trans %}Song add cooldown duration in minutes (-1 = disabled){% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-queue-add-open" type="checkbox" class="user-preference-checkbox checkbox" data-pref="queue_add_open" {% if queue_add_open == True %}checked{% endif %}>
+						<label class="label" for="pref-queue-add-open">{# MSG: Checkbox label which enables/disables adding songs to the queue #} {% trans %}Allow adding songs to the queue{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container is-align-items-center">
+						<input
+							id="pref-queue-closing-time"
+							class="user-preference-input input"
+							type="text"
+							inputmode="numeric"
+							pattern="^((?:[01]\d|2[0-3]):[0-5]\d|24:00)$"
+							placeholder="HH:MM"
+							data-pref="queue_closing_time"
+							data-start-value=""
+							value=""
+						/>
+						<label class="label" for="pref-queue-closing-time">
+							{# MSG: Time input label for automatic queue closing #} {% trans %}Queue closing time (24-hour HH:MM, leave blank to disable){% endtrans %}
 						</label>
 					</div>
 

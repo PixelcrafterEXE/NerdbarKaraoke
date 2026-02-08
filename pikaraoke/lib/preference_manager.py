@@ -48,6 +48,8 @@ class PreferenceManager:
         "enable_voting": False,
         "song_add_cooldown_count": -1,
         "song_add_cooldown_duration": -1,
+        "queue_add_open": True,
+        "queue_closing_time": "",
     }
 
     def __init__(self, config_file_path: str = "config.ini", target: object | None = None) -> None:

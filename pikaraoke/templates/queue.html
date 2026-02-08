@@ -28,9 +28,87 @@
       queue: [],
       previousQueue: null,
       nowPlaying: null,
-      previousNowPlaying: null
+            previousNowPlaying: null,
+            queueSummary: null
     };
   }
+
+    function formatDuration(seconds) {
+        if (seconds === null || typeof seconds === 'undefined') return "--";
+        var sec = Math.max(0, Math.floor(seconds));
+        var hrs = Math.floor(sec / 3600);
+        var mins = Math.floor((sec % 3600) / 60);
+        var secs = sec % 60;
+
+        if (hrs > 0) {
+            return hrs + "h " + String(mins).padStart(2, '0') + "m";
+        }
+        return mins + "m " + String(secs).padStart(2, '0') + "s";
+    }
+
+    function formatTimeOfDay(dateObj) {
+        if (!dateObj) return "--";
+        return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+
+    function getNowPlayingRemaining(np) {
+        if (!np || !np.now_playing_duration) return null;
+        if (typeof np.now_playing_position === 'number') {
+            return Math.max(0, np.now_playing_duration - np.now_playing_position);
+        }
+        return np.now_playing_duration;
+    }
+
+    function applyQueueTiming(rawQueue, np) {
+        var queue = rawQueue.map(function(item) {
+            return Object.assign({}, item);
+        });
+        var nowRemaining = getNowPlayingRemaining(np) || 0;
+        var splashDelay = np && typeof np.splash_delay === 'number' ? np.splash_delay : 0;
+        var offset = (queue.length > 0 ? splashDelay : 0) + nowRemaining;
+        var totalKnown = 0;
+        var hasUnknown = false;
+
+        queue.forEach(function(item, idx) {
+            var duration = (typeof item.duration === 'number') ? item.duration : null;
+            if (duration === null) {
+                hasUnknown = true;
+            } else {
+                totalKnown += duration;
+            }
+
+            item.duration_display = formatDuration(duration);
+            item.start_time = duration === null ? null : Date.now() + (offset * 1000);
+
+            if (duration !== null) {
+                offset += duration;
+            }
+            if (idx < queue.length - 1) {
+                offset += splashDelay;
+            }
+        });
+
+        return {
+            queue: queue,
+            summary: {
+                totalKnown: totalKnown,
+                hasUnknown: hasUnknown,
+                estimatedEndTime: (hasUnknown || queue.length === 0) ? null : Date.now() + (offset * 1000)
+            }
+        };
+    }
+
+    function updateQueueSummary(summary) {
+        if (!summary) return;
+        var totalText = formatDuration(summary.totalKnown);
+        if (summary.hasUnknown) {
+            totalText = totalText + "+";
+        }
+        $('#queue-total-duration').text(totalText);
+
+        var endTime = summary.estimatedEndTime ? formatTimeOfDay(new Date(summary.estimatedEndTime)) : "--";
+        $('#queue-end-time').text(endTime);
+    }
 
   // Define global queue functions
   window.queuePage_getQueue = function() {
@@ -43,15 +121,17 @@
       $.get('{{ url_for("queue.get_queue") }}'),
       $.get('{{ url_for("now_playing.now_playing") }}')
     ).done(function(queueResp, nowPlayingResp) {
-      var newQueue = JSON.parse(queueResp[0]);
+            var rawQueue = JSON.parse(queueResp[0]);
       var newNowPlaying = nowPlayingResp[0] ? JSON.parse(nowPlayingResp[0]) : null;
 
-      var queueChanged = !isEqual(newQueue, window.queuePageState.previousQueue);
+            var queueChanged = !isEqual(rawQueue, window.queuePageState.previousQueue);
       var npChanged = !isEqual(newNowPlaying, window.queuePageState.previousNowPlaying);
 
       if (queueChanged || npChanged) {
-        window.queuePageState.queue = newQueue;
-        window.queuePageState.nowPlaying = newNowPlaying;
+                var timing = applyQueueTiming(rawQueue, newNowPlaying);
+                window.queuePageState.queue = timing.queue;
+                window.queuePageState.queueSummary = timing.summary;
+                window.queuePageState.nowPlaying = newNowPlaying;
 
         // Destroy existing Sortable before replacing HTML to avoid errors
         var table = document.getElementById('auto-refresh');
@@ -61,8 +141,10 @@
         }
 
         $("#auto-refresh").html(window.queuePage_generateHTML());
-        window.queuePageState.previousQueue = newQueue;
+        window.queuePageState.previousQueue = rawQueue;
         window.queuePageState.previousNowPlaying = newNowPlaying;
+
+        updateQueueSummary(window.queuePageState.queueSummary);
 
                 // Initialize Drag and Drop after HTML is rendered
                 window.initSortable();
@@ -140,6 +222,8 @@
   var COL_WIDTH = {
     number: '35px',
     drag: '44px',
+        duration: '90px',
+        starttime: '110px',
     votes: '80px',
     options: '50px'
   };
@@ -166,6 +250,15 @@
         html += '<span class="has-text-weight-bold has-text-success is-hidden-mobile">' + np.now_playing + '</span>';
         html += '<span class="is-size-7 has-text-weight-bold has-text-success is-hidden-tablet" style="width: 100%;">' + np.now_playing + '</span>';
         html += '</div></td>';
+
+        var nowRemaining = getNowPlayingRemaining(np);
+        html += '<td style="width: ' + COL_WIDTH.duration + '; padding: 8px 6px; text-align: center; vertical-align: middle;">';
+        html += nowRemaining === null ? '--' : formatDuration(nowRemaining);
+        html += '</td>';
+
+        html += '<td style="width: ' + COL_WIDTH.starttime + '; padding: 8px 6px; text-align: center; vertical-align: middle;">';
+        html += '{{ _("Now") }}';
+        html += '</td>';
 
         if (votingEnabled) {
             html += '<td style="width: ' + COL_WIDTH.votes + '; vertical-align: middle; text-align: center; padding: 0 5px;"></td>';
@@ -321,6 +414,18 @@
     html += '<span class="is-size-7 has-text-weight-bold is-hidden-tablet' + shadowbanTitleClass + '" style="width: 100%;">' + e.title + '</span>';
     html += '</div></td>';
 
+        html += '<td style="width: ' + COL_WIDTH.duration + '; padding: 8px 6px; text-align: center; vertical-align: middle;">';
+        html += e.duration_display || '--';
+        html += '</td>';
+
+        html += '<td style="width: ' + COL_WIDTH.starttime + '; padding: 8px 6px; text-align: center; vertical-align: middle;">';
+        if (e.start_time) {
+            html += formatTimeOfDay(new Date(e.start_time));
+        } else {
+            html += '--';
+        }
+        html += '</td>';
+
     // Add voting buttons only if voting is enabled
     if (votingEnabled) {
       html += '<td style="width: ' + COL_WIDTH.votes + '; vertical-align: middle; text-align: center; padding: 0 5px;">';
@@ -347,15 +452,29 @@
     return html;
   }
 
-  window.queuePage_generateHTML = function() {
-    var html = "<tbody>";
+    window.queuePage_generateHTML = function() {
+        var html = "<thead><tr>";
+        html += '<th style="width: ' + COL_WIDTH.number + '; text-align: center;">#</th>';
+        if (isAdmin) {
+            html += '<th style="width: ' + COL_WIDTH.drag + ';"></th>';
+        }
+        html += '<th>{{ _("Song") }}</th>';
+        html += '<th style="width: ' + COL_WIDTH.duration + '; text-align: center;">{{ _("Duration") }}</th>';
+        html += '<th style="width: ' + COL_WIDTH.starttime + '; text-align: center;">{{ _("Starts at") }}</th>';
+        if (votingEnabled) {
+            html += '<th style="width: ' + COL_WIDTH.votes + '; text-align: center;">{{ _("Votes") }}</th>';
+        }
+        if (isAdmin) {
+            html += '<th style="width: ' + COL_WIDTH.options + '; text-align: right;"></th>';
+        }
+        html += "</tr></thead><tbody>";
     var queue = window.queuePageState.queue;
     var np = window.queuePageState.nowPlaying;
-    // Column span: number + drag (if admin) + title + votes (if enabled) + options (if admin)
-    var colSpan = 2;
-    if (isAdmin) colSpan += 1;
-    if (votingEnabled) colSpan += 1;
-    if (isAdmin) colSpan += 1;
+        // Column span: number + title + duration + start time + drag/votes/options (conditional)
+        var colSpan = 4;
+        if (isAdmin) colSpan += 1;
+        if (votingEnabled) colSpan += 1;
+        if (isAdmin) colSpan += 1;
 
     if (np && np.now_playing) {
       html += generateNowPlayingRow(np);
@@ -597,6 +716,15 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="box has-background-dark mb-4" style="padding: 12px 16px;">
+    <div class="level is-mobile" style="margin-bottom: 0;">
+        <div class="level-left">
+            <span class="mr-4">{{ _("Queue duration") }}: <strong id="queue-total-duration">--</strong></span>
+            <span>{{ _("Estimated end time") }}: <strong id="queue-end-time">--</strong></span>
+        </div>
+    </div>
+</div>
 
 <table class="table is-striped" id="auto-refresh" style="margin-bottom: 30px">
 </table>

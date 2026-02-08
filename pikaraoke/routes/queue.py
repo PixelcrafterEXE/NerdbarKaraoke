@@ -86,6 +86,7 @@ def get_queue():
         entry["user_vote"] = (
             k.queue_manager.get_user_vote(item["file"], user) if user else 0
         )
+        entry["duration"] = k.queue_manager.get_song_duration(item["file"])
         queue_with_ratings.append(entry)
     return json.dumps(queue_with_ratings)
 
@@ -364,7 +365,18 @@ def enqueue():
     rc = k.queue_manager.enqueue(song, user)
     broadcast_event("queue_update")
     song_title = k.filename_from_path(song)
-    return json.dumps({"song": song_title, "success": rc})
+
+    if isinstance(rc, list):
+        success = bool(rc[0])
+        message = rc[1]
+    elif rc is False:
+        success = False
+        message = _("Song is already in the queue: %s") % song_title
+    else:
+        success = True
+        message = _("Song added to the queue: %s") % song_title
+
+    return json.dumps({"song": song_title, "success": success, "message": message})
 
 
 @queue_bp.route("/queue/downloads")

@@ -13,6 +13,9 @@ from typing import Any, Callable
 
 from flask_babel import _
 
+from pikaraoke.lib.ffmpeg import get_media_duration
+from pikaraoke.lib.file_resolver import FileResolver
+
 
 class QueueManager:
     """Manages the song queue and queue operations.
@@ -37,8 +40,15 @@ class QueueManager:
         skip: Callable[[bool], bool] | None = None,
         get_song_add_cooldown_count: Callable[[], int] | None = None,
         get_song_add_cooldown_duration: Callable[[], int] | None = None,
+        get_queue_add_open: Callable[[], bool] | None = None,
+        get_queue_closing_time: Callable[[], str | int | None] | None = None,
+        get_now_playing_duration: Callable[[], int | None] | None = None,
+        get_now_playing_position: Callable[[], float | None] | None = None,
+        get_splash_delay: Callable[[], int] | None = None,
         song_add_cooldown_count: int = -1,
         song_add_cooldown_duration: int = -1,
+        queue_add_open: bool = True,
+        queue_closing_time: str | int | None = None,
         is_admin: Callable[[], bool] | None = None,
     ) -> None:
         """Initialize the QueueManager.
@@ -55,8 +65,15 @@ class QueueManager:
             skip: Callback to skip current song.
             get_song_add_cooldown_count: Callback to get cooldown song count.
             get_song_add_cooldown_duration: Callback to get cooldown duration in minutes.
+            get_queue_add_open: Callback to check if queue is open for additions.
+            get_queue_closing_time: Callback to get queue closing time (unix timestamp).
+            get_now_playing_duration: Callback to get current song duration in seconds.
+            get_now_playing_position: Callback to get current playback position in seconds.
+            get_splash_delay: Callback to get splash delay between songs in seconds.
             song_add_cooldown_count: Number of songs to trigger cooldown (-1 = disabled).
             song_add_cooldown_duration: Cooldown duration in minutes (-1 = disabled).
+            queue_add_open: Whether the queue is open for adding songs.
+            queue_closing_time: Unix timestamp (seconds) for queue closing time.
             is_admin: Callback to check if the current user is an admin.
         """
         self.queue: list[dict[str, Any]] = []
@@ -71,9 +88,16 @@ class QueueManager:
         self._skip = skip
         self._get_song_add_cooldown_count = get_song_add_cooldown_count
         self._get_song_add_cooldown_duration = get_song_add_cooldown_duration
+        self._get_queue_add_open = get_queue_add_open
+        self._get_queue_closing_time = get_queue_closing_time
+        self._get_now_playing_duration = get_now_playing_duration
+        self._get_now_playing_position = get_now_playing_position
+        self._get_splash_delay = get_splash_delay
         self._is_admin = is_admin
         self.song_add_cooldown_count = song_add_cooldown_count
         self.song_add_cooldown_duration = song_add_cooldown_duration
+        self.queue_add_open = queue_add_open
+        self.queue_closing_time = queue_closing_time
         # Track user song addition timestamps: {user: [timestamp1, timestamp2, ...]}
         self.user_add_times: dict[str, list[float]] = {}
         # Voting data structure: {song_file_path: {user: vote_value}}
@@ -82,6 +106,7 @@ class QueueManager:
         # Shadowbanned songs (admin-only) and their temporary user votes
         self.shadowbanned: set[str] = set()
         self.shadowban_votes: dict[str, dict[str, int]] = {}
+        self.song_durations: dict[str, int | None] = {}
 
     def is_song_in_queue(self, song_path: str) -> bool:
         """Check if a song is already in the queue.
@@ -163,6 +188,183 @@ class QueueManager:
         # Check if user has added enough songs within the cooldown window
         return len(self.user_add_times[user]) >= cooldown_count
 
+    def _get_queue_add_open_value(self) -> bool:
+        if self._get_queue_add_open is not None:
+            return bool(self._get_queue_add_open())
+        return bool(self.queue_add_open)
+
+    def _get_queue_closing_time_value(self) -> str | int | None:
+        if self._get_queue_closing_time is not None:
+            return self._get_queue_closing_time()
+        return self.queue_closing_time
+
+    def _get_closing_timestamp(self) -> int | None:
+        closing_time = self._get_queue_closing_time_value()
+        if closing_time is None or closing_time == "":
+            return None
+        if isinstance(closing_time, int):
+            return closing_time
+        if isinstance(closing_time, float):
+            return int(closing_time)
+        if isinstance(closing_time, str) and closing_time.isdigit():
+            return int(closing_time)
+        return None
+
+    def _format_closing_time_display(self, closing_ts: int | None) -> str | None:
+        if not closing_ts:
+            return None
+        return time.strftime("%H:%M", time.localtime(closing_ts))
+
+    def _get_now_playing_remaining(self) -> int:
+        if self._get_now_playing_duration is None:
+            return 0
+        duration = self._get_now_playing_duration()
+        if duration is None:
+            return 0
+        position = self._get_now_playing_position() if self._get_now_playing_position else None
+        if position is None:
+            return max(0, duration)
+        return max(0, duration - int(position))
+
+    def _get_splash_delay_value(self) -> int:
+        if self._get_splash_delay is not None:
+            return int(self._get_splash_delay() or 0)
+        return 0
+
+    def get_queue_add_status(self) -> dict[str, Any]:
+        if self._is_admin and self._is_admin():
+            return {
+                "is_open": True,
+                "reason": None,
+                "closing_time": self._format_closing_time_display(
+                    self._get_closing_timestamp()
+                ),
+            }
+
+        if not self._get_queue_add_open_value():
+            return {
+                "is_open": False,
+                "reason": "manual",
+                "closing_time": self._format_closing_time_display(
+                    self._get_closing_timestamp()
+                ),
+            }
+
+        now_ts = time.time()
+        closing_ts = self._get_closing_timestamp()
+        if closing_ts:
+            current_end_offset = self._estimate_queue_end_offset_seconds(extra_song_path=None)
+            if current_end_offset is not None:
+                current_end_ts = now_ts + current_end_offset
+                if current_end_ts > closing_ts:
+                    return {
+                        "is_open": False,
+                        "reason": "time",
+                        "closing_time": self._format_closing_time_display(closing_ts),
+                    }
+
+        return {
+            "is_open": True,
+            "reason": None,
+            "closing_time": self._format_closing_time_display(closing_ts),
+        }
+
+    def get_queue_add_block_message(self) -> str:
+        status = self.get_queue_add_status()
+        if status["is_open"]:
+            return ""
+
+        if status["reason"] == "time" and status.get("closing_time"):
+            return (
+                _("Queue is closed. No more songs can be added after %s.")
+                % status["closing_time"]
+            )
+
+        return _("Queue is closed. No more songs can be added right now.")
+
+    def _estimate_queue_end_offset_seconds(self, extra_song_path: str | None = None) -> int | None:
+        splash_delay = self._get_splash_delay_value()
+        remaining = self._get_now_playing_remaining()
+        offset = remaining
+
+        total_queue_len = len(self.queue) + (1 if extra_song_path else 0)
+        if total_queue_len > 0:
+            offset += splash_delay
+
+        for idx, item in enumerate(self.queue):
+            duration = self.get_song_duration(item["file"])
+            if duration is None:
+                return None
+            offset += duration
+
+            has_more = idx < (len(self.queue) - 1) or extra_song_path is not None
+            if has_more:
+                offset += splash_delay
+
+        if extra_song_path:
+            extra_duration = self.get_song_duration(extra_song_path)
+            if extra_duration is None:
+                return None
+            offset += extra_duration
+
+        return offset
+
+    def can_add_song_before_closing(self, song_path: str) -> tuple[bool, str | None]:
+        if self._is_admin and self._is_admin():
+            return (True, None)
+
+        closing_ts = self._get_closing_timestamp()
+        if not closing_ts:
+            return (True, None)
+
+        now_ts = time.time()
+        current_end_offset = self._estimate_queue_end_offset_seconds(extra_song_path=None)
+        if current_end_offset is None:
+            return (
+                False,
+                _("Cannot add songs because queue timing cannot be estimated."),
+            )
+
+        new_end_offset = self._estimate_queue_end_offset_seconds(extra_song_path=song_path)
+        if new_end_offset is None:
+            return (
+                False,
+                _("Cannot add this song because its duration is unknown."),
+            )
+
+        current_end_ts = now_ts + current_end_offset
+        if current_end_ts > closing_ts:
+            return (
+                False,
+                _("Queue is closed. The queue already ends after %s.")
+                % self._format_closing_time_display(closing_ts),
+            )
+
+        new_end_ts = now_ts + new_end_offset
+        if new_end_ts > closing_ts:
+            return (
+                False,
+                _("Queue is closed. This song would end after %s.")
+                % self._format_closing_time_display(closing_ts),
+            )
+
+        return (True, None)
+
+    def get_song_duration(self, song_path: str) -> int | None:
+        if song_path in self.song_durations:
+            return self.song_durations[song_path]
+
+        duration = get_media_duration(song_path)
+        if duration is None:
+            try:
+                resolver = FileResolver(song_path)
+                duration = resolver.duration
+            except Exception:
+                duration = None
+
+        self.song_durations[song_path] = duration
+        return duration
+
     def _calculate_fair_queue_position(self, user: str) -> int:
         """Calculate insertion position for round-robin fair queuing.
 
@@ -219,6 +421,13 @@ class QueueManager:
         Returns:
             False if song already in queue, or list of [success, message].
         """
+        if not (self._is_admin and self._is_admin()):
+            if not self._get_queue_add_open_value():
+                return [False, self.get_queue_add_block_message()]
+            can_add, reason = self.can_add_song_before_closing(song_path)
+            if not can_add:
+                return [False, reason or self.get_queue_add_block_message()]
+
         if self.is_song_in_queue(song_path):
             logging.warning("Song is already in queue, will not add: " + song_path)
             return False

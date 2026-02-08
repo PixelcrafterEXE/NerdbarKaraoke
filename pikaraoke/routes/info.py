@@ -37,8 +37,9 @@ def info():
     is_linux = get_platform() == "linux"
 
     preferred_language = k.preferences.get("preferred_language", "en")
-    # youtube-dl
     youtubedl_version = k.youtubedl_version
+
+    raw_queue_closing_time = k.queue_closing_time
 
     return render_template(
         "info.html",
@@ -79,6 +80,8 @@ def info():
         enable_voting=k.enable_voting,
         song_add_cooldown_count=k.song_add_cooldown_count,
         song_add_cooldown_duration=k.song_add_cooldown_duration,
+        queue_add_open=k.queue_add_open,
+        queue_closing_time=raw_queue_closing_time,
         buffer_size=k.buffer_size,
         languages=LANGUAGES,
         preferred_language=preferred_language,

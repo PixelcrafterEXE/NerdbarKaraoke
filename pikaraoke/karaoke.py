@@ -257,8 +257,15 @@ class Karaoke:
             skip=self.skip,
             get_song_add_cooldown_count=lambda: self.song_add_cooldown_count,
             get_song_add_cooldown_duration=lambda: self.song_add_cooldown_duration,
+            get_queue_add_open=lambda: self.queue_add_open,
+            get_queue_closing_time=lambda: self.queue_closing_time,
+            get_now_playing_duration=lambda: self.now_playing_duration,
+            get_now_playing_position=lambda: self.now_playing_position,
+            get_splash_delay=lambda: self.splash_delay,
             song_add_cooldown_count=self.song_add_cooldown_count,
             song_add_cooldown_duration=self.song_add_cooldown_duration,
+            queue_add_open=self.queue_add_open,
+            queue_closing_time=self.queue_closing_time,
             is_admin=self._get_is_admin_callback(),
         )
 
@@ -696,6 +703,7 @@ class Karaoke:
             "next_user": next_song["user"] if next_song else None,
             "is_paused": self.is_paused,
             "volume": self.volume,
+            "splash_delay": self.splash_delay,
         }
 
     def update_now_playing_socket(self) -> None:
