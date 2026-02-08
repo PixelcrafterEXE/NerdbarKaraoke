@@ -7,6 +7,8 @@ services:
     container_name: nerdBarKaraoke
     env_file:
       - .env
+    environment:
+      TZ: Europe/Berlin
     command: >
       -u http://${ADDRESS}:5555
       --admin-password ${ADMIN_PASSWORD}
