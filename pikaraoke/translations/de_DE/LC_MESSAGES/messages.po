@@ -160,7 +160,7 @@ msgstr "Keine Berechtigung, das Dateisystem zu ändern"
 #. Message shown after quitting pikaraoke.
 #: routes/admin.py:108
 msgid "Exiting pikaraoke now!"
-msgstr "Pikaraoke wird jetzt beendet!"
+msgstr "nerdBar-Karaoke wird jetzt beendet!"
 
 #. Message shown after trying to quit pikaraoke without admin permissions.
 #: routes/admin.py:115
@@ -659,7 +659,7 @@ msgstr "FFmpeg-Version:"
 #. The version of Pikaraoke running right now.
 #: templates/info.html:201
 msgid "Pikaraoke version:"
-msgstr "Pikaraoke-Version:"
+msgstr "nerdBar-Karaoke-Version:"
 
 #. Header of the information section about the System stats.
 #: templates/info.html:207
@@ -896,7 +896,7 @@ msgid ""
 "download directory while pikaraoke was running."
 msgstr ""
 "Nur nötig, wenn manuell Dateien in das Liederverzeichnis kopiert wurden, "
-"während Pikaraoke aktiv ist."
+"während nerdBar-Karaoke aktiv ist."
 
 #. Text on the link which forces Pikaraoke to rescan and pick up any new songs.
 #: templates/info.html:446
@@ -918,9 +918,10 @@ msgid ""
 "\t\t\t\t\t\tThe current installed version is: \"%(youtubedl_version)s\".\n"
 "\t\t\t\t\t"
 msgstr ""
+"\n"
 "Wenn das Herunterladen oder die Suche nicht funktionieren, wird eine "
-"Aktualisierung von Youtube-DL das Problem wahrscheinlich beheben. Die "
-"aktuell installierte Version ist: \"%(youtubedl_version)s\\"
+"Aktualisierung von Youtube-DL das Problem wahrscheinlich beheben. "
+"Die aktuell installierte Version ist: \"%(youtubedl_version)s\"."
 
 #. Text for the link which will try and update youtube-dl on the machine
 #. running Pikaraoke.
@@ -958,7 +959,7 @@ msgstr ""
 #. house.
 #: templates/info.html:496
 msgid "Quit Pikaraoke"
-msgstr "Pikaraoke beenden"
+msgstr "nerdBar-Karaoke beenden"
 
 #. Text for button which reboots the machine running Pikaraoke.
 #: templates/info.html:499
@@ -1325,7 +1326,7 @@ msgid ""
 "      <a onClick=\"handleConfirmation()\">confirm</a>."
 msgstr ""
 "Aufgrund eingeschränkter Browserberechtigungen musst du mit der Seite "
-"interagieren, damit Autoplay für Videos aktiviert werden kann. Pikaraoke "
+"interagieren, damit Autoplay für Videos aktiviert werden kann. nerdBar-Karaoke "
 "kann ansonsten keine Videos abspielen. Klicke hierzu auf den Button <a "
 "onClick=\"handleConfirmation()\">Bestätigen</a>."
 
@@ -1343,14 +1344,6 @@ msgstr "Bestätigen"
 #~ " 50px\" /> random songs"
 #~ msgstr ""
 
-#~ msgid "Sort by Date"
-#~ msgstr "Nach Datum sortieren"
-
-#~ msgid "Disable background music"
-#~ msgstr "Hintergrundmusik deaktivieren"
-
-#~ msgid "Disable admin mode: <a href=\"%(logout_url)s\">Log out</a>"
-#~ msgstr "Admin-Modus deaktivieren: <a href=\"%(logout_url)s\">Abmelden</a>"
 
 #~ msgid ""
 #~ "\n"
@@ -1369,8 +1362,6 @@ msgstr "Bestätigen"
 #~ "              once downloaded"
 #~ msgstr "Nach dem Herunterladen zur Warteschlange hinzufügen"
 
-#~ msgid "Accept suggested name"
-#~ msgstr ""
 
 #~ msgid "Download started: %s. This may take a couple of minutes to complete."
 #~ msgstr "Herunterladen gestartet: %s. Dies kann einige Minuten dauern."
