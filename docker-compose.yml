@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: build_scripts/docker/Dockerfile
     image: pikaraoke:local
-    container_name: pikaraoke
+    container_name: nerdBarKaraoke
     env_file:
       - .env
     command: >
