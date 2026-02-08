@@ -255,10 +255,12 @@ class Karaoke:
             get_available_songs=lambda: self.available_songs,
             update_now_playing_socket=self.update_now_playing_socket,
             skip=self.skip,
+            get_song_add_cooldown_count=lambda: self.song_add_cooldown_count,
+            get_song_add_cooldown_duration=lambda: self.song_add_cooldown_duration,
             song_add_cooldown_count=self.song_add_cooldown_count,
             song_add_cooldown_duration=self.song_add_cooldown_duration,
-               is_admin=self._get_is_admin_callback(),
-           )
+            is_admin=self._get_is_admin_callback(),
+        )
 
     def _load_preferences(self, **cli_overrides: Any) -> None:
         """Load preference-driven attributes from config file.

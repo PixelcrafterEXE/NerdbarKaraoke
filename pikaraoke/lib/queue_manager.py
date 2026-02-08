@@ -35,6 +35,8 @@ class QueueManager:
         get_available_songs: Callable[[], Any] | None = None,
         update_now_playing_socket: Callable[[], None] | None = None,
         skip: Callable[[bool], bool] | None = None,
+        get_song_add_cooldown_count: Callable[[], int] | None = None,
+        get_song_add_cooldown_duration: Callable[[], int] | None = None,
         song_add_cooldown_count: int = -1,
         song_add_cooldown_duration: int = -1,
         is_admin: Callable[[], bool] | None = None,
@@ -51,6 +53,8 @@ class QueueManager:
             get_available_songs: Callback to get available songs list.
             update_now_playing_socket: Callback to update now playing state.
             skip: Callback to skip current song.
+            get_song_add_cooldown_count: Callback to get cooldown song count.
+            get_song_add_cooldown_duration: Callback to get cooldown duration in minutes.
             song_add_cooldown_count: Number of songs to trigger cooldown (-1 = disabled).
             song_add_cooldown_duration: Cooldown duration in minutes (-1 = disabled).
             is_admin: Callback to check if the current user is an admin.
@@ -65,6 +69,8 @@ class QueueManager:
         self._get_available_songs = get_available_songs
         self._update_now_playing_socket = update_now_playing_socket
         self._skip = skip
+        self._get_song_add_cooldown_count = get_song_add_cooldown_count
+        self._get_song_add_cooldown_duration = get_song_add_cooldown_duration
         self._is_admin = is_admin
         self.song_add_cooldown_count = song_add_cooldown_count
         self.song_add_cooldown_duration = song_add_cooldown_duration
@@ -119,8 +125,18 @@ class QueueManager:
         Returns:
             True if the user is in cooldown, False otherwise.
         """
+        cooldown_count = (
+            self._get_song_add_cooldown_count()
+            if self._get_song_add_cooldown_count
+            else self.song_add_cooldown_count
+        )
+        cooldown_duration = (
+            self._get_song_add_cooldown_duration()
+            if self._get_song_add_cooldown_duration
+            else self.song_add_cooldown_duration
+        )
         # Cooldown disabled if either value is -1
-        if self.song_add_cooldown_count == -1 or self.song_add_cooldown_duration == -1:
+        if cooldown_count == -1 or cooldown_duration == -1:
             return False
 
         # Admin users are never in cooldown
@@ -132,7 +148,7 @@ class QueueManager:
             return False
 
         current_time = time.time()
-        cutoff_time = current_time - (self.song_add_cooldown_duration * 60)
+        cutoff_time = current_time - (cooldown_duration * 60)
 
         # Get user's add times, filtering out old entries
         if user not in self.user_add_times:
@@ -142,7 +158,7 @@ class QueueManager:
         self.user_add_times[user] = [t for t in self.user_add_times[user] if t > cutoff_time]
 
         # Check if user has added enough songs within the cooldown window
-        return len(self.user_add_times[user]) >= self.song_add_cooldown_count
+        return len(self.user_add_times[user]) >= cooldown_count
 
     def _calculate_fair_queue_position(self, user: str) -> int:
         """Calculate insertion position for round-robin fair queuing.

@@ -46,6 +46,8 @@ class PreferenceManager:
         "mid_score_phrases": "",
         "high_score_phrases": "",
         "enable_voting": False,
+        "song_add_cooldown_count": -1,
+        "song_add_cooldown_duration": -1,
     }
 
     def __init__(self, config_file_path: str = "config.ini", target: object | None = None) -> None:
@@ -167,10 +169,11 @@ class PreferenceManager:
     def apply_all(self, **cli_overrides: Any) -> None:
         """Hydrate target object with all preferences from config/defaults.
 
-        Priority: CLI argument (if provided) > config file > DEFAULTS
+        Priority: config file (if set) > CLI argument (if provided) > DEFAULTS
 
-        CLI arguments that are explicitly provided are persisted to config
-        so the Web UI reflects the startup flags.
+        CLI arguments are only applied when a preference is not already set
+        in the config file. When applied, they are persisted so the Web UI
+        reflects the startup flags.
 
         Args:
             **cli_overrides: CLI arguments that should override config values
@@ -178,8 +181,15 @@ class PreferenceManager:
         if self._target is None:
             return
 
+        missing = object()
+
         for pref, default in self.DEFAULTS.items():
             cli_value = cli_overrides.get(pref)
+            config_value = self.get(pref, missing)
+
+            if config_value is not missing:
+                setattr(self._target, pref, config_value)
+                continue
 
             # CLI is "provided" if: boolean flag is True, or non-boolean has a value
             # (Boolean flags use store_true, so False means "not passed")
@@ -189,7 +199,7 @@ class PreferenceManager:
                 setattr(self._target, pref, cli_value)
                 self.set(pref, cli_value)  # Persist CLI arg to config
             else:
-                setattr(self._target, pref, self.get(pref, default))
+                setattr(self._target, pref, default)
 
     def reset_all(self) -> tuple[bool, str]:
         """Clear config file and reset target to defaults.

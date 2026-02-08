@@ -77,6 +77,8 @@ def info():
         limit_user_songs_by=k.limit_user_songs_by,
         enable_fair_queue=k.enable_fair_queue,
         enable_voting=k.enable_voting,
+        song_add_cooldown_count=k.song_add_cooldown_count,
+        song_add_cooldown_duration=k.song_add_cooldown_duration,
         buffer_size=k.buffer_size,
         languages=LANGUAGES,
         preferred_language=preferred_language,

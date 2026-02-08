@@ -403,6 +403,20 @@
 					</label>
 					</div>
 
+					<div class="user-preference-container is-align-items-center">
+						<input id="pref-song-add-cooldown-count" class="user-preference-input input" type="number" min="-1" max="99" data-pref="song_add_cooldown_count" data-start-value="{{ song_add_cooldown_count }}" value="{{ song_add_cooldown_count }}" />
+						<label class="label" for="pref-song-add-cooldown-count">
+							{# MSG: Numberbox label for cooldown song count #} {% trans %}Song add cooldown count (number of songs to trigger cooldown, -1 = disabled){% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container is-align-items-center">
+						<input id="pref-song-add-cooldown-duration" class="user-preference-input input" type="number" min="-1" max="1440" data-pref="song_add_cooldown_duration" data-start-value="{{ song_add_cooldown_duration }}" value="{{ song_add_cooldown_duration }}" />
+						<label class="label" for="pref-song-add-cooldown-duration">
+							{# MSG: Numberbox label for cooldown duration #} {% trans %}Song add cooldown duration in minutes (-1 = disabled){% endtrans %}
+						</label>
+					</div>
+
 					<div class="user-preference-container">
 					<input id="pref-fair-queue" type="checkbox" class="user-preference-checkbox checkbox" data-pref="enable_fair_queue" {% if enable_fair_queue == True %}checked{% endif %}>
 					<label class="label" for="pref-fair-queue">{# MSG: Checkbox label which enable/disables fair queue (round-robin) mode #} {% trans %}Enable fair queue (round-robin mode ensures users take turns){% endtrans %}
