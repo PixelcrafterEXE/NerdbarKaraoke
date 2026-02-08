@@ -22,6 +22,10 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 - Implement non-Username-based user identification (via cookies)
 - encrypt admin password
 - swap out background video, find better suiting background music
+- Give pitch control to users when adding song
+- implement tempo/display control
+- fix mobile queue display
+
 
 ## Installation
 

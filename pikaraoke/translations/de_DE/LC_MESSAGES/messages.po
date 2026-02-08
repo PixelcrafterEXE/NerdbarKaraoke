@@ -852,7 +852,7 @@ msgstr ""
 msgid ""
 "Fix the audio and video synchronization in seconds (negative = advances "
 "audio | positive = delays audio)"
-msgstr ""
+msgstr "Audio- und Videosynchronisation in Sekunden korrigieren (negativ = Audio voraus | positiv = Audio verzögert)"
 
 #. Numberbox label for limitting the number of songs for each player
 #: templates/info.html:397
@@ -860,6 +860,16 @@ msgid "Limit of songs an individual user can add to the queue (0 = unlimited)"
 msgstr ""
 "Limit an Liedern, die ein Benutzer zur Warteschlange hinzufügen kann (0 ="
 " unbegrenzt)"
+
+#. Checkbox label which enables/disables adding songs to the queue
+#: templates/info.html:478
+msgid "Allow adding songs to the queue"
+msgstr "Hinzufügen von Songs zur Warteschlange erlauben"
+
+#. Time input label for automatic queue closing
+#: templates/info.html:495
+msgid "Queue closing time (24-hour HH:MM, leave blank to disable)"
+msgstr "Schließzeit der Warteschlange (24-Stunden HH:MM, leer lassen zum Deaktivieren)"
 
 #. Numberbox label for cooldown song count
 #: templates/info.html:409
@@ -890,6 +900,11 @@ msgid ""
 msgstr ""
 "Puffergröße in Kilobytes. Transkodiert diesen Teil des Videos, bevor es "
 "abgespielt wird."
+
+#. Numberbox label for browse page results per page
+#: templates/info.html:522
+msgid "Browse page results per page (10-1000, default 500)"
+msgstr "Ergebnisse pro Seite auf der Durchsuchen-Seite (10-1000, Standard 500)"
 
 #. Text for the link where the user can clear all user preferences
 #: templates/info.html:423

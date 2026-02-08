@@ -831,6 +831,16 @@ msgstr ""
 msgid "Limit of songs an individual user can add to the queue (0 = unlimited)"
 msgstr ""
 
+#. Checkbox label which enables/disables adding songs to the queue
+#: templates/info.html:478
+msgid "Allow adding songs to the queue"
+msgstr ""
+
+#. Time input label for automatic queue closing
+#: templates/info.html:495
+msgid "Queue closing time (24-hour HH:MM, leave blank to disable)"
+msgstr ""
+
 #. Checkbox label which enable/disables fair queue (round-robin) mode
 #: templates/info.html:403
 msgid "Enable fair queue (round-robin mode ensures users take turns)"
@@ -841,6 +851,11 @@ msgstr ""
 msgid ""
 "Buffer size in kilobytes. Transcode this amount of the video before "
 "sending it to the splash screen. "
+msgstr ""
+
+#. Numberbox label for browse page results per page
+#: templates/info.html:522
+msgid "Browse page results per page (10-1000, default 500)"
 msgstr ""
 
 #. Text for the link where the user can clear all user preferences
