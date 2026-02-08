@@ -713,9 +713,8 @@ msgstr "Hintergrundvideo deaktivieren"
 
 #. Checkbox label which enable/disables background music on the Splash Screen
 #: templates/info.html:246
-#, fuzzy
 msgid "Disable background music"
-msgstr "Hintergrundvideo deaktivieren"
+msgstr "Hintergrundmusik deaktivieren"
 
 #. Checkbox label which enable/disables the Score Screen
 #: templates/info.html:252
@@ -845,6 +844,8 @@ msgid ""
 "Enable CDG pixel scaling (crisper visuals for CDG files, may increase CPU"
 " usage)"
 msgstr ""
+"CDG-Pixel-Skalierung aktivieren (schärfere Darstellung für CDG-Dateien, "
+"kann die CPU-Auslastung erhöhen)"
 
 #. Numberbox label for audio video synchronization
 #: templates/info.html:390
@@ -860,10 +861,26 @@ msgstr ""
 "Limit an Liedern, die ein Benutzer zur Warteschlange hinzufügen kann (0 ="
 " unbegrenzt)"
 
+#. Numberbox label for cooldown song count
+#: templates/info.html:409
+msgid "Song add cooldown count (number of songs to trigger cooldown, -1 = disabled)"
+msgstr ""
+"Cooldown-Anzahl beim Hinzufügen von Songs (Anzahl der Songs bis zum Cooldown, -1 = deaktiviert)"
+
+#. Numberbox label for cooldown duration
+#: templates/info.html:416
+msgid "Song add cooldown duration in minutes (-1 = disabled)"
+msgstr "Cooldown-Dauer für Song-Hinzufügen in Minuten (-1 = deaktiviert)"
+
 #. Checkbox label which enable/disables fair queue (round-robin) mode
 #: templates/info.html:403
 msgid "Enable fair queue (round-robin mode ensures users take turns)"
-msgstr ""
+msgstr "Faires Queue-System aktivieren (Round-Robin-Modus sorgt dafür, dass Nutzer abwechseln)"
+
+#. Checkbox label which enable/disables the voting system for queue songs
+#: templates/info.html:428
+msgid "Enable voting system (users can upvote/downvote songs to influence queue order)"
+msgstr "Abstimmungssystem aktivieren (Nutzer können Songs hoch-/runtervoten, um die Reihenfolge zu beeinflussen)"
 
 #. Numberbox label for setting the buffer size in kilobytes
 #: templates/info.html:410
@@ -1010,7 +1027,7 @@ msgstr ""
 #. Message for the log out user from admin mode button.
 #: templates/info.html:552
 msgid "Click here to logout from admin mode."
-msgstr ""
+msgstr "Hier klicken, um den Admin-Modus zu verlassen."
 
 #. Link which will log out the user from admin mode.
 #: templates/info.html:554
