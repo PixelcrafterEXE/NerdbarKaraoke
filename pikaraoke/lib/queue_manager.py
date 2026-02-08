@@ -287,6 +287,8 @@ class QueueManager:
 
         # Sample up to 'amount' songs (or all eligible if fewer available)
         sample_size = min(amount, len(eligible_songs))
+        # Explicitly seed with current time to ensure true randomness across restarts
+        random.seed()
         selected = random.sample(eligible_songs, sample_size)
 
         for song in selected:
