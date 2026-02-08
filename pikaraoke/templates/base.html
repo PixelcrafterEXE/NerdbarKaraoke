@@ -90,9 +90,12 @@
           Cookies.set("user", name, { expires: 3650, path: '/' });
         }
         else {
-          Cookies.set("user", `Anon-${generateRandomString(4)}`, { expires: 3650 });
+          Cookies.set("user", `Anon-${generateRandomString(4)}`, { expires: 3650, path: '/' });
         }
         reload && location.reload();
+      } else {
+        // Normalize cookie path so it is available across routes
+        Cookies.set("user", user, { expires: 3650, path: '/' });
       }
     }
 

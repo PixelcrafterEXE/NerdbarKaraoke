@@ -409,6 +409,12 @@
 					</label>
 					</div>
 
+					<div class="user-preference-container">
+					<input id="pref-voting" type="checkbox" class="user-preference-checkbox checkbox" data-pref="enable_voting" {% if enable_voting == True %}checked{% endif %}>
+					<label class="label" for="pref-voting">{# MSG: Checkbox label which enable/disables the voting system for queue songs #} {% trans %}Enable voting system (users can upvote/downvote songs to influence queue order){% endtrans %}
+					</label>
+					</div>
+
 					<div class="user-preference-container is-align-items-center">
 					<input id="pref-buffer-size" class="user-preference-input input" type="number" min="0" max="9999" data-pref="buffer_size" data-start-value="{{ buffer_size }}" value="{{ buffer_size }}" />
 					<label class="label" for="pref-buffer-size">

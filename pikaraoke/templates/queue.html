@@ -4,6 +4,9 @@
 <script>
   // Pass admin status from server to JavaScript
   var isAdmin = JSON.parse('{{ admin | tojson }}');
+  
+  // Pass voting enabled status from server to JavaScript
+  var votingEnabled = JSON.parse('{{ enable_voting | tojson }}');
 
   // Escape strings for safe use in HTML attributes
   function escape(str) {
@@ -57,8 +60,8 @@
         window.queuePageState.previousQueue = newQueue;
         window.queuePageState.previousNowPlaying = newNowPlaying;
 
-        // Initialize Drag and Drop after HTML is rendered
-        window.initSortable();
+                // Initialize Drag and Drop after HTML is rendered
+                window.initSortable();
 
         // Highlight moved row if tracked
         if (window.highlightAfterRefresh) {
@@ -133,6 +136,7 @@
   var COL_WIDTH = {
     number: '35px',
     drag: '44px',
+    votes: '80px',
     options: '50px'
   };
 
@@ -147,24 +151,28 @@
     html += '<img src="' + iconSrc + '" alt="Now Playing" style="width: 35px; height: auto;">';
     html += '</td>';
 
-    if (isAdmin) {
-      html += '<td style="width: ' + COL_WIDTH.drag + '; padding: 5px 0px; vertical-align: middle;"></td>';
-    }
+        if (isAdmin) {
+            html += '<td style="width: ' + COL_WIDTH.drag + '; padding: 5px 0px; vertical-align: middle;"></td>';
+        }
 
-    html += '<td style="padding: 8px 10px; vertical-align: middle;">';
-    html += '<div class="is-flex is-flex-wrap-wrap is-align-items-baseline">';
-    html += '<span class="has-text-success">' + np.now_playing_user + '</span>';
-    html += '<span class="is-hidden-mobile has-text-grey mx-2">&bull;</span>';
-    html += '<span class="has-text-weight-bold has-text-success is-hidden-mobile">' + np.now_playing + '</span>';
-    html += '<span class="is-size-7 has-text-weight-bold has-text-success is-hidden-tablet" style="width: 100%;">' + np.now_playing + '</span>';
-    html += '</div></td>';
+        html += '<td style="padding: 8px 10px; vertical-align: middle;">';
+        html += '<div class="is-flex is-flex-wrap-wrap is-align-items-baseline">';
+        html += '<span class="has-text-success">' + np.now_playing_user + '</span>';
+        html += '<span class="is-hidden-mobile has-text-grey mx-2">&bull;</span>';
+        html += '<span class="has-text-weight-bold has-text-success is-hidden-mobile">' + np.now_playing + '</span>';
+        html += '<span class="is-size-7 has-text-weight-bold has-text-success is-hidden-tablet" style="width: 100%;">' + np.now_playing + '</span>';
+        html += '</div></td>';
 
-    if (isAdmin) {
-      html += '<td style="width: ' + COL_WIDTH.options + '; vertical-align: middle; text-align: right;">';
-      html += '<a class="has-text-grey-light is-small is-text now-playing-options-btn" title="{{ _("Options") }}">';
-      html += '<i class="icon-cog is-size-5"></i></a>';
-      html += '</td>';
-    }
+        if (votingEnabled) {
+            html += '<td style="width: ' + COL_WIDTH.votes + '; vertical-align: middle; text-align: center; padding: 0 5px;"></td>';
+        }
+
+        if (isAdmin) {
+            html += '<td style="width: ' + COL_WIDTH.options + '; vertical-align: middle; text-align: right;">';
+            html += '<a class="has-text-grey-light is-small is-text now-playing-options-btn" title="{{ _("Options") }}">';
+            html += '<i class="icon-cog is-size-5"></i></a>';
+            html += '</td>';
+        }
     html += '</tr>';
     return html;
   }
@@ -291,7 +299,7 @@
 
   // Generate queue row HTML
   function generateQueueRow(e, index) {
-    var html = '<tr data-index="' + index + '">';
+    var html = '<tr data-index="' + index + '" data-file="' + escape(e.file) + '">';
     html += '<td style="width: ' + COL_WIDTH.number + '; padding: 8px 8px; vertical-align: middle; text-align: center;">' + (index + 1) + '</td>';
 
     if (isAdmin) {
@@ -308,6 +316,21 @@
     html += '<span class="is-size-7 has-text-weight-bold is-hidden-tablet" style="width: 100%;">' + e.title + '</span>';
     html += '</div></td>';
 
+    // Add voting buttons only if voting is enabled
+    if (votingEnabled) {
+      html += '<td style="width: ' + COL_WIDTH.votes + '; vertical-align: middle; text-align: center; padding: 0 5px;">';
+      html += '<div class="vote-buttons" data-file="' + escape(e.file) + '" style="display: flex; gap: 4px; justify-content: center;">';
+            var upVoteClass = (e.user_vote > 0) ? ' has-text-success' : '';
+            var downVoteClass = (e.user_vote < 0) ? ' has-text-danger' : '';
+            html += '<button class="vote-btn upvote-btn button is-small is-text' + upVoteClass + '" data-file="' + escape(e.file) + '" data-index="' + index + '" title="{{ _("Upvote") }}">';
+            html += '<i class="icon-up-circled"></i></button>';
+            var voteCount = (typeof e.rating !== 'undefined' && e.rating !== null) ? e.rating : 0;
+            html += '<span class="vote-count has-text-weight-bold" data-file="' + escape(e.file) + '">' + voteCount + '</span>';
+            html += '<button class="vote-btn downvote-btn button is-small is-text' + downVoteClass + '" data-file="' + escape(e.file) + '" data-index="' + index + '" title="{{ _("Downvote") }}">';
+            html += '<i class="icon-down-circled"></i></button>';
+      html += '</div></td>';
+    }
+
     if (isAdmin) {
       html += '<td style="width: ' + COL_WIDTH.options + '; vertical-align: middle; text-align: right; padding-right: 10px;">';
       html += '<a class="has-text-grey-light is-small is-text queue-song-options-btn" data-index="' + index + '" data-file="' + escape(e.file) + '" data-title="' + escape(e.title) + '" title="{{ _("Options") }}">';
@@ -323,7 +346,11 @@
     var html = "<tbody>";
     var queue = window.queuePageState.queue;
     var np = window.queuePageState.nowPlaying;
-    var colSpan = isAdmin ? 4 : 2;
+    // Column span: number + drag (if admin) + title + votes (if enabled) + options (if admin)
+    var colSpan = 2;
+    if (isAdmin) colSpan += 1;
+    if (votingEnabled) colSpan += 1;
+    if (isAdmin) colSpan += 1;
 
     if (np && np.now_playing) {
       html += generateNowPlayingRow(np);
@@ -480,6 +507,66 @@
           var action = $(this).data('action');
           $.get('/' + action);
       });
+
+      // Voting buttons handler
+      $(document).on('click', '.vote-btn', function(e) {
+          e.preventDefault();
+          var $btn = $(this);
+          var songFile = decodeURIComponent($btn.data('file'));
+          var voteType = $btn.hasClass('upvote-btn') ? 'upvote' : 'downvote';
+          
+          // Ensure user cookie is set (same as enqueuing)
+          setUserCookie();
+          var userName = getUserCookie();
+
+          if (!userName || userName.trim() === "") {
+              userName = prompt("{{ _('Enter your name for voting') }}", "");
+              if (userName === null || userName.trim() === "") {
+                  return; // User cancelled
+              }
+              // Save the name to cookie for future votes
+              Cookies.set("user", userName.trim(), { expires: 3650, path: '/' });
+          }
+
+          $.ajax({
+              url: '{{ url_for("queue.vote_on_song") }}',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                  song: songFile,
+                  vote_type: voteType,
+                  user: userName.trim()
+              }),
+              success: function(response) {
+                  var result = JSON.parse(response);
+                  if (result.success) {
+                      // Update the vote count display
+                      var $voteCount = $('span.vote-count[data-file="' + escape(songFile) + '"]');
+                      $voteCount.text(result.net_votes);
+                      
+                      // Highlight the button if user voted
+                      var $row = $('tr[data-file="' + escape(songFile) + '"]');
+                      if (result.user_vote !== 0) {
+                          if (result.user_vote > 0) {
+                              $row.find('.upvote-btn').addClass('has-text-success is-success');
+                              $row.find('.downvote-btn').removeClass('has-text-danger is-danger');
+                          } else {
+                              $row.find('.downvote-btn').addClass('has-text-danger is-danger');
+                              $row.find('.upvote-btn').removeClass('has-text-success is-success');
+                          }
+                      } else {
+                          $row.find('.upvote-btn').removeClass('has-text-success is-success');
+                          $row.find('.downvote-btn').removeClass('has-text-danger is-danger');
+                      }
+                  }
+              },
+              error: function() {
+                  alert("{{ _('Error recording vote') }}");
+              }
+          });
+      });
+
+      // Vote state is rendered from queue payload (user_vote), no extra fetch needed
   });
 
   // Visibility handler (same as before)

@@ -45,6 +45,7 @@ class PreferenceManager:
         "low_score_phrases": "",
         "mid_score_phrases": "",
         "high_score_phrases": "",
+        "enable_voting": False,
     }
 
     def __init__(self, config_file_path: str = "config.ini", target: object | None = None) -> None:

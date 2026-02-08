@@ -76,6 +76,7 @@ def info():
         avsync=k.avsync,
         limit_user_songs_by=k.limit_user_songs_by,
         enable_fair_queue=k.enable_fair_queue,
+        enable_voting=k.enable_voting,
         buffer_size=k.buffer_size,
         languages=LANGUAGES,
         preferred_language=preferred_language,

@@ -1,6 +1,7 @@
 """Song queue management routes."""
 
 import json
+import logging
 
 import flask_babel
 from flask import Blueprint, flash, redirect, render_template, request, url_for
@@ -40,6 +41,7 @@ def queue():
         site_title=site_name,
         title="Queue",
         admin=is_admin(),
+        enable_voting=k.enable_voting,
     )
 
 
@@ -71,7 +73,17 @@ def get_queue():
                 description: Transpose value in semitones
     """
     k = get_karaoke_instance()
-    return json.dumps(k.queue_manager.queue)
+    user = request.cookies.get("user")
+    user = user.strip() if isinstance(user, str) else None
+    queue_with_ratings = []
+    for item in k.queue_manager.queue:
+        entry = dict(item)
+        entry["rating"] = k.queue_manager.get_song_rating(item["file"])
+        entry["user_vote"] = (
+            k.queue_manager.get_user_vote(item["file"], user) if user else 0
+        )
+        queue_with_ratings.append(entry)
+    return json.dumps(queue_with_ratings)
 
 
 @queue_bp.route("/queue/addrandom", methods=["GET"])
@@ -378,3 +390,101 @@ def delete_download_error(error_id):
         return json.dumps({"success": True})
     else:
         return json.dumps({"success": False, "error": "Error not found"}), 404
+
+
+@queue_bp.route("/queue/vote", methods=["POST"])
+def vote_on_song():
+    """Vote on a song in the queue (upvote or downvote).
+    ---
+    tags:
+      - Queue
+    consumes:
+      - application/json
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            song:
+              type: string
+              description: Path to the song file
+            vote_type:
+              type: string
+              enum: [upvote, downvote]
+              description: Type of vote
+            user:
+              type: string
+              description: Username casting the vote
+    responses:
+      200:
+        description: Vote recorded successfully
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+            net_votes:
+              type: integer
+              description: Total upvotes minus downvotes
+            user_vote:
+              type: integer
+              description: 1, -1, or 0 for the current user's vote
+      400:
+        description: Missing required parameters or voting disabled
+    """
+    k = get_karaoke_instance()
+
+    # Check if voting is enabled
+    if not k.enable_voting:
+        return (
+            json.dumps({"success": False, "error": "Voting is disabled"}),
+            400,
+        )
+
+    try:
+        data = request.get_json()
+        song = data.get("song")
+        vote_type = data.get("vote_type")
+        user = data.get("user", "Anonymous")
+        if isinstance(user, str):
+          user = user.strip()
+        # Fallback to cookie if user missing/anonymous
+        if not user or user == "Anonymous":
+          cookie_user = request.cookies.get("user")
+          if cookie_user:
+            user = cookie_user.strip()
+
+        if not song or not vote_type:
+            return (
+                json.dumps({"success": False, "error": "Missing song or vote_type"}),
+                400,
+            )
+
+        # Normalize song path to match queue items if possible
+        matched_song = None
+        for item in k.queue_manager.queue:
+          if item["file"] == song:
+            matched_song = item["file"]
+            break
+        if matched_song is None:
+          for item in k.queue_manager.queue:
+            if song in item["file"] or item["file"] in song:
+              matched_song = item["file"]
+              break
+        if matched_song:
+          song = matched_song
+
+        result = k.queue_manager.vote_song(song, user, vote_type)
+        broadcast_event("queue_update")
+        return json.dumps(result)
+
+    except Exception as e:
+        logging.error(f"Error processing vote: {e}")
+        return (
+            json.dumps({"success": False, "error": str(e)}),
+            500,
+        )
+
+

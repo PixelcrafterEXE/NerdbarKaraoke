@@ -85,7 +85,10 @@ class StreamManager:
             fr = FileResolver(file_path, k.streaming_format)
         except Exception as e:
             error_message = _("Error resolving file: %s") % str(e)
-            k.queue_manager.queue.pop(0)
+            if k.queue_manager.queue:
+                song_file = k.queue_manager.queue[0]["file"]
+                k.queue_manager.queue.pop(0)
+                k.queue_manager.clear_song_votes(song_file)
             k.end_song(reason=error_message)
             k.log_and_send(error_message, "danger")
             return False
@@ -313,7 +316,9 @@ class StreamManager:
         k.now_playing_subtitle_url = subtitle_url
         k.now_playing_user = k.queue_manager.queue[0]["user"]
         k.is_paused = False
+        song_file = k.queue_manager.queue[0]["file"]
         k.queue_manager.queue.pop(0)
+        k.queue_manager.clear_song_votes(song_file)
         k.update_now_playing_socket()
         k.queue_manager.update_queue_socket()
 

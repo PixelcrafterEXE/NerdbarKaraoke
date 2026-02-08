@@ -70,6 +70,9 @@ class QueueManager:
         self.song_add_cooldown_duration = song_add_cooldown_duration
         # Track user song addition timestamps: {user: [timestamp1, timestamp2, ...]}
         self.user_add_times: dict[str, list[float]] = {}
+        # Voting data structure: {song_file_path: {user: vote_value}}
+        # vote_value: 1 for upvote, -1 for downvote
+        self.votes: dict[str, dict[str, int]] = {}
 
     def is_song_in_queue(self, song_path: str) -> bool:
         """Check if a song is already in the queue.
@@ -306,6 +309,7 @@ class QueueManager:
             # MSG: Message shown after the queue is cleared
             self._log_and_send(_("Clear queue"), "danger")
         self.queue = []
+        self.votes.clear()
         self.update_queue_socket()
         if self._update_now_playing_socket:
             self._update_now_playing_socket()
@@ -352,6 +356,7 @@ class QueueManager:
                 rc = True
         elif action == "delete":
             logging.info("Deleting song from queue: " + song["file"])
+            self.clear_song_votes(song["file"])
             del self.queue[index]
             rc = True
         else:
@@ -366,3 +371,106 @@ class QueueManager:
         """Emit queue_update state change via SocketIO."""
         if self.socketio:
             self.socketio.emit("queue_update", namespace="/")
+
+    def vote_song(self, song_file: str, user: str, vote_type: str) -> dict[str, Any]:
+        """Record a vote for a song (upvote or downvote).
+
+        Each user can only vote once per song. Voting again removes the previous vote and applies
+        the new one.
+
+        Args:
+            song_file: Path to the song file.
+            user: Username casting the vote.
+            vote_type: Either "upvote" or "downvote".
+
+        Returns:
+            Dictionary with success status and net vote count.
+        """
+        if vote_type not in ("upvote", "downvote"):
+            return {"success": False, "error": "Invalid vote type"}
+
+        vote_value = 1 if vote_type == "upvote" else -1
+
+        # Initialize votes dict for this song if needed
+        if song_file not in self.votes:
+            self.votes[song_file] = {}
+
+        # Check if user already voted on this song
+        user_votes = self.votes[song_file]
+        previous_vote = user_votes.get(user, 0)
+
+        # If user is changing from one vote type to another or removing their vote
+        if previous_vote != 0 and previous_vote == vote_value:
+            # User is clicking the same button - remove their vote
+            del user_votes[user]
+        else:
+            # Record the new vote (replaces any previous vote)
+            user_votes[user] = vote_value
+
+        # Calculate net vote count
+        net_votes = self.get_song_rating(song_file)
+
+        logging.debug(f"Vote recorded: {user} {vote_type}d {song_file} (net: {net_votes})")
+
+        # Reorder queue based on votes if fair queue is disabled
+        if not self._get_enable_fair_queue():
+            self._reorder_queue_by_votes()
+
+        return {
+            "success": True,
+            "net_votes": net_votes,
+            "user_vote": user_votes.get(user, 0),
+        }
+
+    def _reorder_queue_by_votes(self) -> None:
+        """Reorder queue by vote score (descending), stable for equal scores."""
+        if not self.queue:
+            return
+
+        scored = [
+            (self.get_song_rating(item["file"]), idx, item)
+            for idx, item in enumerate(self.queue)
+        ]
+        scored.sort(key=lambda x: (-x[0], x[1]))
+        self.queue = [item for _, __, item in scored]
+        self.update_queue_socket()
+        if self._update_now_playing_socket:
+            self._update_now_playing_socket()
+
+    def get_song_rating(self, song_file: str) -> int:
+        """Get the net rating (upvotes - downvotes) for a song.
+
+        Args:
+            song_file: Path to the song file.
+
+        Returns:
+            Net vote count (can be positive, negative, or zero).
+        """
+        if song_file not in self.votes:
+            return 0
+
+        votes = self.votes[song_file]
+        return sum(votes.values())
+
+    def get_user_vote(self, song_file: str, user: str) -> int:
+        """Get the current vote for a user on a specific song.
+
+        Args:
+            song_file: Path to the song file.
+            user: Username to check.
+
+        Returns:
+            1 for upvote, -1 for downvote, 0 for no vote.
+        """
+        if song_file not in self.votes:
+            return 0
+        return self.votes[song_file].get(user, 0)
+
+    def clear_song_votes(self, song_file: str) -> None:
+        """Clear all votes for a song (e.g., when it's removed from queue).
+
+        Args:
+            song_file: Path to the song file.
+        """
+        if song_file in self.votes:
+            del self.votes[song_file]

@@ -179,6 +179,7 @@ def main() -> None:
         disable_bg_video=args.disable_bg_video,
         bg_video_path=args.bg_video_path,
         disable_score=args.disable_score,
+        enable_voting=args.enable_voting,
         limit_user_songs_by=args.limit_user_songs_by,
         avsync=float(args.avsync) if args.avsync is not None else None,
         config_file_path=args.config_file_path,
