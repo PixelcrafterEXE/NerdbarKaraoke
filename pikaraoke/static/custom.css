@@ -81,6 +81,37 @@ body.hide-cursor * {
   cursor: none !important;
 }
 
+:root {
+  --menu-accent: #2aafaf;
+  --menu-accent-text: #0b1f1f;
+}
+
+.navbar,
+.navbar-menu {
+  background-color: var(--menu-accent) !important;
+}
+
+.navbar-item,
+.navbar-link {
+  color: var(--menu-accent-text) !important;
+}
+
+.navbar-item:hover,
+.navbar-item.is-active,
+.navbar-link:hover {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  color: var(--menu-accent-text) !important;
+}
+
+.navbar-burger span {
+  background-color: var(--menu-accent-text) !important;
+}
+
+.navbar .icon,
+.navbar .user-avatar-icon {
+  color: var(--menu-accent-text) !important;
+}
+
 /* Drag and drop highlight */
 .drag-chosen {
   background-color: #3273dc !important;

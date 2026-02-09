@@ -688,13 +688,23 @@ msgstr ""
 
 #. Title of the user preferences section.
 #: templates/info.html:224
-msgid "User Preferences"
-msgstr "Benutzereinstellungen"
+msgid "System Settings"
+msgstr "Systemeinstellungen"
 
-#. Title text for the splash screen settings section of preferences
+#. Title text for the queue settings section of preferences
 #: templates/info.html:230
-msgid "Splash screen settings"
-msgstr "Einstellungen für den Begrüßungsbildschirm"
+msgid "Queue settings"
+msgstr "Warteschlangen-Einstellungen"
+
+#. Title text for the interface settings section of preferences
+#: templates/info.html:264
+msgid "Interface settings"
+msgstr "Interface-Einstellungen"
+
+#. Title text for the sound/video settings section of preferences
+#: templates/info.html:379
+msgid "Sound/Video settings"
+msgstr "Ton-/Video-Einstellungen"
 
 #. Help text explaining the the need to restart after changing splash screen
 #. preferences
@@ -804,20 +814,10 @@ msgstr ""
 msgid "Wonderfull..."
 msgstr ""
 
-#. Title text for the language settings section of preferences
-#: templates/info.html:336
-msgid "Language settings"
-msgstr "Spracheinstellungen"
-
 #. Label for language selection dropdown
 #: templates/info.html:349
 msgid "Preferred language (requires restart)"
 msgstr ""
-
-#. Title text for the server settings section of preferences
-#: templates/info.html:358
-msgid "Server settings"
-msgstr "Servereinstellungen"
 
 #. Checkbox label which enable/disables audio volume normalization
 #: templates/info.html:365

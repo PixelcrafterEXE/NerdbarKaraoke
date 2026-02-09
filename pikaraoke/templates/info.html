@@ -233,229 +233,21 @@
 
 	{% if admin %}
 
-		{# MSG: Title of the system data section. #}
-		<h1>{% trans %}System Data{% endtrans %}</h1>
-
-		<div class="card">
-			<header class="card-header py-3 px-5">
-					{# MSG: Header of the information section about the computer running Pikaraoke. #}
-					<h3 class="m-0">{% trans %}System Info{% endtrans %}</h3>
-			</header>
-			<div class="card-content">
-				<div class="content">
-					<ul>
-					{# MSG: The hardware platform  #}
-					<li><u>{% trans %}Platform:{% endtrans %}</u> {{ platform }}</li>
-					{# MSG: The os version  #}
-					<li><u>{% trans %}OS Version:{% endtrans %}</u> {{ os_version }}</li>
-					{# MSG: The version of the program "Youtube-dl". #}
-					<li><u>{% trans %}Youtube-dl (yt-dlp) version:{% endtrans %}</u> {{ youtubedl_version }}</li>
-					{# MSG: The version of the program "ffmpeg". #}
-					<li><u>{% trans %}FFmpeg version:{% endtrans %}</u> {{ ffmpeg_version }} {% if not is_transpose_enabled %} (missing lib-rubberband, pitch shift is not supported) {% endif %}</li>
-					{# MSG: The version of nerdBar-Karaoke running right now. #}
-					<li><u>{% trans %}nerdBar-Karaoke version:{% endtrans %}</u> {{ pikaraoke_version }}</li>
-					</ul>
-				</div>
-			</div>
-			<header class="card-header py-3 px-5">
-					{# MSG: Header of the information section about the System stats. #}
-					<h3 class="m-0">{% trans %}System stats{% endtrans %}</h3>
-			</header>
-			<div class="card-content">
-				<div class="content">
-					<ul>
-					{# MSG: The CPU usage of the computer running Pikaraoke. #}
-					<li>{% trans %}CPU:{% endtrans %} <span id="system-cpu">{% trans %}Loading...{% endtrans %}</span></li>
-					{# MSG: The disk usage of the computer running Pikaraoke. Used by downloaded songs. #}
-					<li>{% trans %}Disk Usage:{% endtrans %} <span id="system-disk">{% trans %}Loading...{% endtrans %}</span></li>
-					{# MSG: The memory (RAM) usage of the computer running Pikaraoke. #}
-					<li>{% trans %}Memory:{% endtrans %} <span id="system-memory">{% trans %}Loading...{% endtrans %}</span></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-
 		{# MSG: Title of the user preferences section. #}
-		<h1>{% trans %}User Preferences{% endtrans %}</h1>
+		<h1>{% trans %}System Settings{% endtrans %}</h1>
 
 		<div class="card">
 			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
-				<div class="media-content">
-					{# MSG: Title text for the splash screen settings section of preferences #}
-					<h3 class="title mb-0">{% trans %}Splash screen settings{% endtrans %}</h3>
-
-				</div>
-			</header>
-			<div class="card-content collapsible-content">
-				<div class="content">
-					{# MSG: Help text explaining the the need to restart after changing splash screen preferences #}
-					<p class="subtitle has-text-warning mt-1 is-size-6">{% trans %}*You may need to refresh the splash screen for these changes to take effect.{% endtrans %}</p>
-					<div class="user-preference-container">
-						<input id="pref-bg-video" class="user-preference-checkbox checkbox" type="checkbox" data-pref="disable_bg_video" {% if disable_bg_video == True %}checked{% endif %} />
-						<label class="label" for="pref-bg-video">{# MSG: Checkbox label which enable/disables background video on the Splash Screen #} {% trans %}Disable background video{% endtrans %}
-						</label>
-					</div>
-
-					<div class="user-preference-container">
-						<input id="pref-bg-music" class="user-preference-checkbox checkbox" type="checkbox" data-pref="disable_bg_music" {% if disable_bg_music == True %}checked{% endif %} />
-						<label class="label" for="pref-bg-music">{# MSG: Checkbox label which enable/disables background music on the Splash Screen #} {% trans %}Disable background music{% endtrans %}
-						</label>
-					</div>
-
-					<div class="user-preference-container">
-						<input id="pref-score" type="checkbox" class="user-preference-checkbox checkbox" data-pref="disable_score" {% if disable_score == True %}checked{% endif %}>
-						<label class="label" for="pref-score">{# MSG: Checkbox label which enable/disables the Score Screen #} {% trans %}Disable the score screen after each song{% endtrans %}
-						</label>
-					</div>
-
-					<div class="user-preference-container">
-						<input id="pref-notifications" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_notifications" {% if hide_notifications == True %}checked{% endif %}>
-						<label class="label" for="pref-notifications">{# MSG: Checkbox label which enable/disables notifications on the splash screen #} {% trans %}Hide notifications{% endtrans %}
-						</label>
-					</div>
-
-					<div class="user-preference-container">
-						<input id="pref-qr-code" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_url" {% if hide_url == True %}checked{% endif %}>
-						<label class="label" for="pref-qr-code">{# MSG: Checkbox label which enable/disables the URL display #} {% trans %}Hide the URL and QR code{% endtrans %}
-						</label>
-					</div>
-
-					<div class="user-preference-container">
-						<input id="pref-overlay" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_overlay" {% if hide_overlay == True %}checked{% endif %}>
-						<label class="label" for="pref-overlay">{# MSG: Checkbox label which enable/disables showing overlay data on the splash screen #} {% trans %}Hide all overlays, including now playing, up next, and QR code{% endtrans %}
-						</label>
-					</div>
-
-					<div class="user-preference-container">
-						<label class="label" for="pref-motd">{# MSG: Label for the message of the day setting #} {% trans %}Message of the day (MOTD){% endtrans %}</label>
-						<textarea id="pref-motd" class="user-preference-input textarea" rows="2" data-pref="motd" data-start-value="{{ motd }}">{{ motd }}</textarea>
-					</div>
-
-					<div class="user-preference-container is-align-items-center">
-						<input id="pref-volume" class="user-preference-input input" type="number" min="0" max="100" step="5" data-pref="volume" data-start-value="{{ volume }}" value="{{ volume }}" />
-						<label class="label" for="pref-volume">{# MSG: Numberbox label for setting the default video volume#} {% trans %}Default volume of the videos (min 0, max 100){% endtrans %}
-						</label>
-					</div>
-
-					<div class="user-preference-container is-align-items-center">
-						<input id="bg-music-volume" class="user-preference-input input" type="number" min="0" max="100" step="5" data-pref="bg_music_volume" data-start-value="{{ bg_music_volume }}" value="{{ bg_music_volume }}" />
-						<label class="label" for="bg-music-volume">{# MSG: Numberbox label for setting the background music volume#} {% trans %}Volume of the background music (min 0, max 100){% endtrans %}
-						</label>
-					</div>
-
-					<div class="user-preference-container is-align-items-center">
-						<input id="pref-screensaver-timeout" class="user-preference-input input" type="number" min="0" max="999" data-pref="screensaver_timeout" data-start-value="{{ screensaver_timeout }}" value="{{ screensaver_timeout }}" />
-						<label class="label" for="pref-screensaver-timeout">
-							{# MSG: Numberbox label for setting the inactive delay before showing the screensaver  #} {% trans %}The amount of idle time in seconds before the screen saver activates. Set to 0 to disable it.{% endtrans %}
-						</label>
-					</div>
-
-					<div class="user-preference-container is-align-items-center">
-						<input id="pref-splash-delay" class="user-preference-input input" type="number" min="0" max="99" data-pref="splash_delay" data-start-value="{{ splash_delay }}" value="{{ splash_delay }}" />
-						<label class="label" for="pref-splash-delay">
-							{# MSG: Numberbox label for setting the delay before playing the next song #} {% trans %}The delay in seconds before starting the next song{% endtrans %}
-						</label>
-					</div>
-				</div>
-			</div>
-
-			<hr class="my-0">
-
-			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
-				<div class="media-content">
-				{# MSG: Title text for the Score Phrases section of preferences #}
-				<h3 class="title m-0">{% trans %}Score phrases{% endtrans %}</h3>
-
-			</div>
-		</header>
-		<div class="card-content collapsible-content">
-			<div class="content">
-					{# MSG: Help text explaining how to add phrases #}
-					<p class="subtitle has-text-warning mt-1 is-size-6">{% trans %}Add one phrase per line in each box and hit save.{% endtrans %}</p>
-					{# MSG: Title for LOW Score Phrases #}
-					<h5>{% trans %}LOW Score Phrases (score < 30){% endtrans %}</h5>
-					{# MSG: Placeholder for the low score phrases textarea #}
-					<textarea id="low-score-phrases" class="textarea" placeholder="{% trans %}Could be better...{% endtrans %}">{{ score_phrases.low }}</textarea>
-					<hr>
-					{# MSG: Title for MID Score Phrases #}
-					<h5>{% trans %}MID Score Phrases (30 > score < 60){% endtrans %}</h5>
-					{# MSG: Placeholder for the MID score phrases textarea #}
-					<textarea id="mid-score-phrases" class="textarea" placeholder="{% trans %}That was ok...{% endtrans %}">{{ score_phrases.mid }}</textarea>
-					<hr>
-					{# MSG: Title for HIGH Score Phrases #}
-					<h5>{% trans %}HIGH Score Phrases (60 < score){% endtrans %}</h5>
-					{# MSG: Placeholder for the HIGH score phrases textarea #}
-					<textarea id="high-score-phrases" class="textarea" placeholder="{% trans %}Wonderfull...{% endtrans %}">{{ score_phrases.high }}</textarea>
-					<a id="save-phrases" class="button is-fullwidth is-primary mt-5">Save phrases</a>
-				</div>
-			</div>
-
-			<hr class="my-0">
-
-			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
-				<h3 class="m-0">{# MSG: Title text for the language settings section of preferences #}{% trans %}Language settings{% endtrans %}</h3>
+				<h3 class="m-0">{# MSG: Title text for the queue settings section of preferences #}{% trans %}Queue settings{% endtrans %}</h3>
 			</header>
 			<div class="card-content collapsible-content">
 				<div class="content">
 
 					<div class="user-preference-container is-align-items-center">
-						<div class="select">
-							<select id="pref-language" class="user-preference-input" data-pref="preferred_language" data-start-value="{{ preferred_language }}">
-								{% for lang_code, lang_name in languages.items() %}
-								<option value="{{ lang_code }}" {% if preferred_language == lang_code %}selected{% endif %}>{{ lang_name }}</option>
-								{% endfor %}
-							</select>
-						</div>
-						<label class="label" for="pref-language">{# MSG: Label for language selection dropdown #} {% trans %}Preferred language (requires restart){% endtrans %}
-						</label>
-					</div>
-				</div>
-			</div>
-
-			<hr class="my-0">
-
-			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
-				<h3 class="m-0">{# MSG: Title text for the server settings section of preferences #}{% trans %}Server settings{% endtrans %}</h3>
-			</header>
-			<div class="card-content collapsible-content">
-				<div class="content">
-
-					<div class="user-preference-container">
-						<input id="pref-normalize" type="checkbox" class="user-preference-checkbox checkbox" data-pref="normalize_audio" {% if normalize_audio == True %}checked{% endif %}>
-						<label class="label" for="pref-normalize">{# MSG: Checkbox label which enable/disables audio volume normalization #} {% trans %}Normalize audio volume{% endtrans %}
-						</label>
-					</div>
-
-					<div class="user-preference-container">
-					<input id="pref-high-quality" type="checkbox" class="user-preference-checkbox checkbox" data-pref="high_quality" {% if high_quality == True  %}checked{% endif %}>
-					<label class="label" for="pref-high-quality">{# MSG: Checkbox label which enable/disables high quality video downloads #} {% trans %}Download high quality videos{% endtrans %}
-					</label>
-					</div>
-
-					<div class="user-preference-container">
-					<input id="pref-complete_transcode_before_play" type="checkbox" class="user-preference-checkbox checkbox" data-pref="complete_transcode_before_play" {% if complete_transcode_before_play == True %}checked{% endif %}>
-					<label class="label" for="pref-complete_transcode_before_play">{# MSG: Checkbox label which enable/disables full transcode before playback #} {% trans %}Transcode video completely before playing (better browser compatibility, slower starts). Buffer size will be ignored.*{% endtrans %}
-					</label>
-					</div>
-
-					<div class="user-preference-container">
-					<input id="pref-cdg-scaling" type="checkbox" class="user-preference-checkbox checkbox" data-pref="cdg_pixel_scaling" {% if cdg_pixel_scaling == True %}checked{% endif %}>
-					<label class="label" for="pref-cdg-scaling">{# MSG: Checkbox label which enable/disables CDG pixel scaling #} {% trans %}Enable CDG pixel scaling (crisper visuals for CDG files, may increase CPU usage){% endtrans %}
-					</label>
-					</div>
-
-					<div class="user-preference-container is-align-items-center">
-					<input id="pref-avsync" class="user-preference-input input" type="number" step="0.1" min="-10" max="10" data-pref="avsync" data-start-value="{{ avsync }}" value="{{ avsync }}" />
-					<label class="label" for="pref-avsync">
-							{# MSG: Numberbox label for audio video synchronization #} {% trans %}Fix the audio and video synchronization in seconds (negative = advances audio | positive = delays audio){% endtrans %}
-					</label>
-					</div>
-
-					<div class="user-preference-container is-align-items-center">
-					<input id="pref-limit-user-songs-by" class="user-preference-input input" type="number" min="0" max="99" data-pref="limit_user_songs_by" data-start-value="{{ limit_user_songs_by }}" value="{{ limit_user_songs_by }}" />
-					<label class="label" for="pref-limit-user-songs-by">
+						<input id="pref-limit-user-songs-by" class="user-preference-input input" type="number" min="0" max="99" data-pref="limit_user_songs_by" data-start-value="{{ limit_user_songs_by }}" value="{{ limit_user_songs_by }}" />
+						<label class="label" for="pref-limit-user-songs-by">
 							{# MSG: Numberbox label for limitting the number of songs for each player #} {% trans %}Limit of songs an individual user can add to the queue (0 = unlimited){% endtrans %}
-					</label>
+						</label>
 					</div>
 
 					<div class="user-preference-container is-align-items-center">
@@ -496,28 +288,185 @@
 					</div>
 
 					<div class="user-preference-container">
-					<input id="pref-fair-queue" type="checkbox" class="user-preference-checkbox checkbox" data-pref="enable_fair_queue" {% if enable_fair_queue == True %}checked{% endif %}>
-					<label class="label" for="pref-fair-queue">{# MSG: Checkbox label which enable/disables fair queue (round-robin) mode #} {% trans %}Enable fair queue (round-robin mode ensures users take turns){% endtrans %}
-					</label>
+						<input id="pref-fair-queue" type="checkbox" class="user-preference-checkbox checkbox" data-pref="enable_fair_queue" {% if enable_fair_queue == True %}checked{% endif %}>
+						<label class="label" for="pref-fair-queue">{# MSG: Checkbox label which enable/disables fair queue (round-robin) mode #} {% trans %}Enable fair queue (round-robin mode ensures users take turns){% endtrans %}
+						</label>
 					</div>
 
 					<div class="user-preference-container">
-					<input id="pref-voting" type="checkbox" class="user-preference-checkbox checkbox" data-pref="enable_voting" {% if enable_voting == True %}checked{% endif %}>
-					<label class="label" for="pref-voting">{# MSG: Checkbox label which enable/disables the voting system for queue songs #} {% trans %}Enable voting system (users can upvote/downvote songs to influence queue order){% endtrans %}
-					</label>
+						<input id="pref-voting" type="checkbox" class="user-preference-checkbox checkbox" data-pref="enable_voting" {% if enable_voting == True %}checked{% endif %}>
+						<label class="label" for="pref-voting">{# MSG: Checkbox label which enable/disables the voting system for queue songs #} {% trans %}Enable voting system (users can upvote/downvote songs to influence queue order){% endtrans %}
+						</label>
+					</div>
+
+				</div>
+			</div>
+
+			<hr class="my-0">
+
+			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
+				<h3 class="m-0">{# MSG: Title text for the interface settings section of preferences #}{% trans %}Interface settings{% endtrans %}</h3>
+			</header>
+			<div class="card-content collapsible-content">
+				<div class="content">
+					{# MSG: Help text explaining the the need to restart after changing splash screen preferences #}
+					<p class="subtitle has-text-warning mt-1 is-size-6">{% trans %}*You may need to refresh the splash screen for these changes to take effect.{% endtrans %}</p>
+
+					<div class="user-preference-container">
+						<label class="label" for="pref-motd">{# MSG: Label for the message of the day setting #} {% trans %}Message of the day (MOTD){% endtrans %}</label>
+						<textarea id="pref-motd" class="user-preference-input textarea" rows="2" data-pref="motd" data-start-value="{{ motd }}">{{ motd }}</textarea>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-notifications" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_notifications" {% if hide_notifications == True %}checked{% endif %}>
+						<label class="label" for="pref-notifications">{# MSG: Checkbox label which enable/disables notifications on the splash screen #} {% trans %}Hide notifications{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-qr-code" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_url" {% if hide_url == True %}checked{% endif %}>
+						<label class="label" for="pref-qr-code">{# MSG: Checkbox label which enable/disables the URL display #} {% trans %}Hide the URL and QR code{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-overlay" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_overlay" {% if hide_overlay == True %}checked{% endif %}>
+						<label class="label" for="pref-overlay">{# MSG: Checkbox label which enable/disables showing overlay data on the splash screen #} {% trans %}Hide all overlays, including now playing, up next, and QR code{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-score" type="checkbox" class="user-preference-checkbox checkbox" data-pref="disable_score" {% if disable_score == True %}checked{% endif %}>
+						<label class="label" for="pref-score">{# MSG: Checkbox label which enable/disables the Score Screen #} {% trans %}Disable the score screen after each song{% endtrans %}
+						</label>
 					</div>
 
 					<div class="user-preference-container is-align-items-center">
-					<input id="pref-buffer-size" class="user-preference-input input" type="number" min="0" max="9999" data-pref="buffer_size" data-start-value="{{ buffer_size }}" value="{{ buffer_size }}" />
-					<label class="label" for="pref-buffer-size">
-							{# MSG: Numberbox label for setting the buffer size in kilobytes  #} {% trans %}Buffer size in kilobytes. Transcode this amount of the video before sending it to the splash screen. {% endtrans %}
-					</label>
+						<input id="pref-screensaver-timeout" class="user-preference-input input" type="number" min="0" max="999" data-pref="screensaver_timeout" data-start-value="{{ screensaver_timeout }}" value="{{ screensaver_timeout }}" />
+						<label class="label" for="pref-screensaver-timeout">
+							{# MSG: Numberbox label for setting the inactive delay before showing the screensaver  #} {% trans %}The amount of idle time in seconds before the screen saver activates. Set to 0 to disable it.{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container is-align-items-center">
+						<input id="pref-splash-delay" class="user-preference-input input" type="number" min="0" max="99" data-pref="splash_delay" data-start-value="{{ splash_delay }}" value="{{ splash_delay }}" />
+						<label class="label" for="pref-splash-delay">
+							{# MSG: Numberbox label for setting the delay before playing the next song #} {% trans %}The delay in seconds before starting the next song{% endtrans %}
+						</label>
+					</div>
+
+					<hr>
+
+					{# MSG: Title text for the Score Phrases section of preferences #}
+					<h4 class="title is-5">{% trans %}Score phrases{% endtrans %}</h4>
+					{# MSG: Help text explaining how to add phrases #}
+					<p class="subtitle has-text-warning mt-1 is-size-6">{% trans %}Add one phrase per line in each box and hit save.{% endtrans %}</p>
+					{# MSG: Title for LOW Score Phrases #}
+					<h5>{% trans %}LOW Score Phrases (score < 30){% endtrans %}</h5>
+					{# MSG: Placeholder for the low score phrases textarea #}
+					<textarea id="low-score-phrases" class="textarea" placeholder="{% trans %}Could be better...{% endtrans %}">{{ score_phrases.low }}</textarea>
+					<hr>
+					{# MSG: Title for MID Score Phrases #}
+					<h5>{% trans %}MID Score Phrases (30 > score < 60){% endtrans %}</h5>
+					{# MSG: Placeholder for the MID score phrases textarea #}
+					<textarea id="mid-score-phrases" class="textarea" placeholder="{% trans %}That was ok...{% endtrans %}">{{ score_phrases.mid }}</textarea>
+					<hr>
+					{# MSG: Title for HIGH Score Phrases #}
+					<h5>{% trans %}HIGH Score Phrases (60 < score){% endtrans %}</h5>
+					{# MSG: Placeholder for the HIGH score phrases textarea #}
+					<textarea id="high-score-phrases" class="textarea" placeholder="{% trans %}Wonderfull...{% endtrans %}">{{ score_phrases.high }}</textarea>
+					<a id="save-phrases" class="button is-fullwidth is-primary mt-5">Save phrases</a>
+
+					<hr>
+
+					<div class="user-preference-container is-align-items-center">
+						<div class="select">
+							<select id="pref-language" class="user-preference-input" data-pref="preferred_language" data-start-value="{{ preferred_language }}">
+								{% for lang_code, lang_name in languages.items() %}
+								<option value="{{ lang_code }}" {% if preferred_language == lang_code %}selected{% endif %}>{{ lang_name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<label class="label" for="pref-language">{# MSG: Label for language selection dropdown #} {% trans %}Preferred language (requires restart){% endtrans %}
+						</label>
 					</div>
 
 					<div class="user-preference-container is-align-items-center">
 						<input id="pref-browse-per-page" class="user-preference-input input" type="number" min="10" max="1000" step="10" data-pref="browse_results_per_page" data-start-value="{{ browse_results_per_page }}" value="{{ browse_results_per_page }}" />
 						<label class="label" for="pref-browse-per-page">
 							{# MSG: Numberbox label for browse page results per page #} {% trans %}Browse page results per page (10-1000, default 500){% endtrans %}
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<hr class="my-0">
+
+			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
+				<h3 class="m-0">{# MSG: Title text for the sound/video settings section of preferences #}{% trans %}Sound/Video settings{% endtrans %}</h3>
+			</header>
+			<div class="card-content collapsible-content">
+				<div class="content">
+
+					<div class="user-preference-container">
+						<input id="pref-bg-video" class="user-preference-checkbox checkbox" type="checkbox" data-pref="disable_bg_video" {% if disable_bg_video == True %}checked{% endif %} />
+						<label class="label" for="pref-bg-video">{# MSG: Checkbox label which enable/disables background video on the Splash Screen #} {% trans %}Disable background video{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-bg-music" class="user-preference-checkbox checkbox" type="checkbox" data-pref="disable_bg_music" {% if disable_bg_music == True %}checked{% endif %} />
+						<label class="label" for="pref-bg-music">{# MSG: Checkbox label which enable/disables background music on the Splash Screen #} {% trans %}Disable background music{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container is-align-items-center">
+						<input id="pref-volume" class="user-preference-input input" type="number" min="0" max="100" step="5" data-pref="volume" data-start-value="{{ volume }}" value="{{ volume }}" />
+						<label class="label" for="pref-volume">{# MSG: Numberbox label for setting the default video volume#} {% trans %}Default volume of the videos (min 0, max 100){% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container is-align-items-center">
+						<input id="bg-music-volume" class="user-preference-input input" type="number" min="0" max="100" step="5" data-pref="bg_music_volume" data-start-value="{{ bg_music_volume }}" value="{{ bg_music_volume }}" />
+						<label class="label" for="bg-music-volume">{# MSG: Numberbox label for setting the background music volume#} {% trans %}Volume of the background music (min 0, max 100){% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-normalize" type="checkbox" class="user-preference-checkbox checkbox" data-pref="normalize_audio" {% if normalize_audio == True %}checked{% endif %}>
+						<label class="label" for="pref-normalize">{# MSG: Checkbox label which enable/disables audio volume normalization #} {% trans %}Normalize audio volume{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-high-quality" type="checkbox" class="user-preference-checkbox checkbox" data-pref="high_quality" {% if high_quality == True  %}checked{% endif %}>
+						<label class="label" for="pref-high-quality">{# MSG: Checkbox label which enable/disables high quality video downloads #} {% trans %}Download high quality videos{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-complete_transcode_before_play" type="checkbox" class="user-preference-checkbox checkbox" data-pref="complete_transcode_before_play" {% if complete_transcode_before_play == True %}checked{% endif %}>
+						<label class="label" for="pref-complete_transcode_before_play">{# MSG: Checkbox label which enable/disables full transcode before playback #} {% trans %}Transcode video completely before playing (better browser compatibility, slower starts). Buffer size will be ignored.*{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-cdg-scaling" type="checkbox" class="user-preference-checkbox checkbox" data-pref="cdg_pixel_scaling" {% if cdg_pixel_scaling == True %}checked{% endif %}>
+						<label class="label" for="pref-cdg-scaling">{# MSG: Checkbox label which enable/disables CDG pixel scaling #} {% trans %}Enable CDG pixel scaling (crisper visuals for CDG files, may increase CPU usage){% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container is-align-items-center">
+						<input id="pref-avsync" class="user-preference-input input" type="number" step="0.1" min="-10" max="10" data-pref="avsync" data-start-value="{{ avsync }}" value="{{ avsync }}" />
+						<label class="label" for="pref-avsync">
+							{# MSG: Numberbox label for audio video synchronization #} {% trans %}Fix the audio and video synchronization in seconds (negative = advances audio | positive = delays audio){% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container is-align-items-center">
+						<input id="pref-buffer-size" class="user-preference-input input" type="number" min="0" max="9999" data-pref="buffer_size" data-start-value="{{ buffer_size }}" value="{{ buffer_size }}" />
+						<label class="label" for="pref-buffer-size">
+							{# MSG: Numberbox label for setting the buffer size in kilobytes  #} {% trans %}Buffer size in kilobytes. Transcode this amount of the video before sending it to the splash screen. {% endtrans %}
 						</label>
 					</div>
 
@@ -661,6 +610,48 @@
 
 
 		{% endif %}
+
+		{# MSG: Title of the system data section. #}
+		<h1>{% trans %}System Data{% endtrans %}</h1>
+
+		<div class="card">
+			<header class="card-header py-3 px-5">
+					{# MSG: Header of the information section about the computer running Pikaraoke. #}
+					<h3 class="m-0">{% trans %}System Info{% endtrans %}</h3>
+			</header>
+			<div class="card-content">
+				<div class="content">
+					<ul>
+					{# MSG: The hardware platform  #}
+					<li><u>{% trans %}Platform:{% endtrans %}</u> {{ platform }}</li>
+					{# MSG: The os version  #}
+					<li><u>{% trans %}OS Version:{% endtrans %}</u> {{ os_version }}</li>
+					{# MSG: The version of the program "Youtube-dl". #}
+					<li><u>{% trans %}Youtube-dl (yt-dlp) version:{% endtrans %}</u> {{ youtubedl_version }}</li>
+					{# MSG: The version of the program "ffmpeg". #}
+					<li><u>{% trans %}FFmpeg version:{% endtrans %}</u> {{ ffmpeg_version }} {% if not is_transpose_enabled %} (missing lib-rubberband, pitch shift is not supported) {% endif %}</li>
+					{# MSG: The version of nerdBar-Karaoke running right now. #}
+					<li><u>{% trans %}nerdBar-Karaoke version:{% endtrans %}</u> {{ pikaraoke_version }}</li>
+					</ul>
+				</div>
+			</div>
+			<header class="card-header py-3 px-5">
+					{# MSG: Header of the information section about the System stats. #}
+					<h3 class="m-0">{% trans %}System stats{% endtrans %}</h3>
+			</header>
+			<div class="card-content">
+				<div class="content">
+					<ul>
+					{# MSG: The CPU usage of the computer running Pikaraoke. #}
+					<li>{% trans %}CPU:{% endtrans %} <span id="system-cpu">{% trans %}Loading...{% endtrans %}</span></li>
+					{# MSG: The disk usage of the computer running Pikaraoke. Used by downloaded songs. #}
+					<li>{% trans %}Disk Usage:{% endtrans %} <span id="system-disk">{% trans %}Loading...{% endtrans %}</span></li>
+					{# MSG: The memory (RAM) usage of the computer running Pikaraoke. #}
+					<li>{% trans %}Memory:{% endtrans %} <span id="system-memory">{% trans %}Loading...{% endtrans %}</span></li>
+					</ul>
+				</div>
+			</div>
+		</div>
 
 	{% else %} {# from if admin #}
 		{# MSG: Title of the admin section. #}

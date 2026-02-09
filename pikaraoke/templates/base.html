@@ -226,7 +226,9 @@
       <div class="navbar-menu" id="menu">
         <div class="navbar-end">
           <a id="current-user" class="navbar-item is-hidden" href="#">
-            <i class="icon  icon-mic-1" title="Current user"></i>
+            <svg class="user-avatar-icon" viewBox="0 0 24 24" aria-hidden="true" style="width: 1em; height: 1em; margin-right: .2em; margin-left: .2em; vertical-align: -0.125em;">
+              <path fill="currentColor" d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v3h16v-3c0-2.761-3.582-5-8-5z" />
+            </svg>
             <span></span>
           </a>
           <a id="info" class="navbar-item" href="{{ url_for('info.info') }}">
