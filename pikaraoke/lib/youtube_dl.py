@@ -3,6 +3,7 @@ import logging
 import shlex
 import subprocess
 import sys
+from urllib.parse import parse_qs, urlparse
 
 from pikaraoke.lib.get_platform import get_installed_js_runtime
 
@@ -31,7 +32,7 @@ def get_youtubedl_version() -> str:
 def get_youtube_id_from_url(url: str) -> str | None:
     """Extract the YouTube video ID from a URL.
 
-    Supports youtube.com/watch?v=, m.youtube.com/?v=, and youtu.be/ formats.
+    Supports youtube.com/watch?v=, m.youtube.com/?v=, youtu.be/, shorts, and embed formats.
 
     Args:
         url: YouTube video URL.
@@ -39,17 +40,43 @@ def get_youtube_id_from_url(url: str) -> str | None:
     Returns:
         The video ID string, or None if parsing failed.
     """
-    if "v=" in url:  # accommodates youtube.com/watch?v= and m.youtube.com/?v=
-        s = url.split("watch?v=")
-    else:  # accommodates youtu.be/
-        s = url.split("u.be/")
-    if len(s) == 2:
-        if "?" in s[1]:  # Strip unneeded YouTube params
-            s[1] = s[1][0 : s[1].index("?")]
-        return s[1]
-    else:
-        logging.error("Error parsing youtube id from url: " + url)
+    try:
+        parsed = urlparse(url)
+    except Exception as e:
+        logging.error(f"Error parsing youtube url: {url} ({e})")
         return None
+
+    host = (parsed.netloc or "").lower()
+    path = parsed.path or ""
+    query = parse_qs(parsed.query)
+
+    # Standard watch URLs: https://www.youtube.com/watch?v=ID
+    if "v" in query and query["v"]:
+        return query["v"][0]
+
+    # Short links: https://youtu.be/ID
+    if "youtu.be" in host:
+        path_id = path.strip("/").split("/")[0]
+        if path_id:
+            return path_id
+
+    # Shorts / embed / legacy formats
+    for prefix in ("/shorts/", "/embed/", "/v/"):
+        if path.startswith(prefix):
+            path_id = path[len(prefix) :].split("/")[0]
+            if path_id:
+                return path_id
+
+    # Fallback: handle watch?v= with extra params (e.g., &pp=, &list=)
+    if "watch?v=" in url:
+        id_part = url.split("watch?v=", 1)[1]
+        id_part = id_part.split("&", 1)[0]
+        id_part = id_part.split("?", 1)[0]
+        if id_part:
+            return id_part
+
+    logging.error("Error parsing youtube id from url: " + url)
+    return None
 
 
 def upgrade_youtubedl() -> str:
