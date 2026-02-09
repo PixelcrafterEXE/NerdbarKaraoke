@@ -1285,3 +1285,64 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
+#: templates/home.html:248
+msgid "Microphone Status"
+msgstr ""
+
+#: templates/home.html:263
+msgid "Hand Back Microphone"
+msgstr ""
+
+#: templates/microphone_assign.html:8
+msgid "Assign Microphone"
+msgstr ""
+
+#: templates/microphone_assign.html:9
+msgid "Please enter your name to assign the"
+msgstr ""
+
+#: templates/microphone_assign.html:9
+msgid "microphone to yourself."
+msgstr ""
+
+#: templates/microphone_assign.html:16
+msgid "Your Name"
+msgstr ""
+
+#: templates/info.html:308
+msgid "Microphone Tracking"
+msgstr ""
+
+#: templates/info.html:316
+msgid "Show microphone status on home page (non-admins)"
+msgstr ""
+
+#: templates/info.html:323
+msgid "Reset microphone assignments after each song"
+msgstr ""
+
+#: templates/info.html:330
+msgid "Wait for singer to get a microphone before playing their song"
+msgstr ""
+
+#: templates/info.html:337
+msgid "Microphone wait timeout in seconds"
+msgstr ""
+
+#: templates/info.html:343
+msgid "Action when microphone wait timeout expires:"
+msgstr ""
+
+#: templates/info.html:347
+msgid "Play song anyway"
+msgstr ""
+
+#: templates/info.html:348
+msgid "Skip song"
+msgstr ""
+
+#: karaoke.py:818
+#, python-format
+msgid "Song skipped: %s didn't get a microphone"
+msgstr ""
+

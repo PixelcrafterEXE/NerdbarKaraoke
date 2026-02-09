@@ -1109,13 +1109,6 @@ msgstr "Die Warteschlange ist leer"
 msgid "Play"
 msgstr ""
 
-#: templates/queue.html:505
-msgid ""
-"Add <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" "
-"pattern=\"\\d*\" maxlength=\"2\" value=\"3\" min=\"1\" max=\"99\" "
-"style=\"width: 42px\" /> random songs"
-msgstr ""
-
 #: templates/queue.html:509
 msgid "Clear all"
 msgstr "Alles löschen"
@@ -1469,4 +1462,65 @@ msgstr "Füge <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" pattern=\
 
 #~ msgid "Memory: %(memory)s"
 #~ msgstr "Speicher: %(memory)s"
+
+#: templates/home.html:248
+msgid "Microphone Status"
+msgstr "Mikrofonstatus"
+
+#: templates/home.html:263
+msgid "Hand Back Microphone"
+msgstr "Mikrofon zurückgeben"
+
+#: templates/microphone_assign.html:8
+msgid "Assign Microphone"
+msgstr "Mikrofon zuweisen"
+
+#: templates/microphone_assign.html:9
+msgid "Please enter your name to assign the"
+msgstr "Bitte geben Sie Ihren Namen ein, um das"
+
+#: templates/microphone_assign.html:9
+msgid "microphone to yourself."
+msgstr "Mikrofon sich selbst zuzuweisen."
+
+#: templates/microphone_assign.html:16
+msgid "Your Name"
+msgstr "Ihr Name"
+
+#: templates/info.html:308
+msgid "Microphone Tracking"
+msgstr "Mikrofon-Tracking"
+
+#: templates/info.html:316
+msgid "Show microphone status on home page (non-admins)"
+msgstr "Mikrofonstatus auf der Startseite anzeigen (Nicht-Admins)"
+
+#: templates/info.html:323
+msgid "Reset microphone assignments after each song"
+msgstr "Mikrofonzuweisungen nach jedem Lied zurücksetzen"
+
+#: templates/info.html:330
+msgid "Wait for singer to get a microphone before playing their song"
+msgstr "Warten bis der Sänger ein Mikrofon hat, bevor sein Lied gespielt wird"
+
+#: templates/info.html:337
+msgid "Microphone wait timeout in seconds"
+msgstr "Mikrofon-Wartezeit in Sekunden"
+
+#: templates/info.html:343
+msgid "Action when microphone wait timeout expires:"
+msgstr "Aktion wenn Mikrofon-Wartezeit abläuft:"
+
+#: templates/info.html:347
+msgid "Play song anyway"
+msgstr "Lied trotzdem abspielen"
+
+#: templates/info.html:348
+msgid "Skip song"
+msgstr "Lied überspringen"
+
+#: karaoke.py:818
+#, python-format
+msgid "Song skipped: %s didn't get a microphone"
+msgstr "Lied übersprungen: %s hat kein Mikrofon bekommen"
 
