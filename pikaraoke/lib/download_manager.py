@@ -10,6 +10,7 @@ from queue import Queue
 from threading import Thread
 from typing import TYPE_CHECKING
 
+from pikaraoke.lib.ffmpeg import trim_silence_in_place
 from pikaraoke.lib.youtube_dl import (
     build_ytdl_download_command,
     get_youtube_id_from_url,
@@ -298,6 +299,12 @@ class DownloadManager:
 
             song_is_valid = False
             if song_path:
+                if k.trim_silence:
+                    trim_silence_in_place(
+                        song_path,
+                        threshold_db=k.trim_silence_threshold_db,
+                        min_silence_duration=k.trim_silence_min_duration,
+                    )
                 song_is_valid = k.available_songs.add_if_valid(song_path)
             else:
                 logging.warning(

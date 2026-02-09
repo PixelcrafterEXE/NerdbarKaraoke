@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import contextlib
 import logging
+import os
 import platform
+import re
 import subprocess
 from typing import TYPE_CHECKING, Any
 
@@ -259,4 +262,125 @@ def is_ffmpeg_installed() -> bool:
         subprocess.run(["ffmpeg", "-version"], capture_output=True)
     except FileNotFoundError:
         return False
+    return True
+
+
+def _detect_silence_intervals(
+    file_path: str,
+    threshold_db: float = -50,
+    min_silence_duration: float = 0.5,
+) -> list[tuple[float, float | None]]:
+    """Detect silence intervals using ffmpeg silencedetect.
+
+    Returns a list of (start, end) pairs. End is None if silence continues to EOF.
+    """
+    cmd = [
+        "ffmpeg",
+        "-i",
+        file_path,
+        "-af",
+        f"silencedetect=n={threshold_db}dB:d={min_silence_duration}",
+        "-f",
+        "null",
+        "-",
+    ]
+
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    output = result.stderr or ""
+
+    silence_start_re = re.compile(r"silence_start:\s*(?P<start>\d+(?:\.\d+)?)")
+    silence_end_re = re.compile(r"silence_end:\s*(?P<end>\d+(?:\.\d+)?)(?:\s*\|\s*silence_duration:\s*(?P<duration>\d+(?:\.\d+)?))?")
+
+    intervals: list[tuple[float, float | None]] = []
+    for line in output.splitlines():
+        start_match = silence_start_re.search(line)
+        if start_match:
+            start = float(start_match.group("start"))
+            intervals.append((start, None))
+            continue
+
+        end_match = silence_end_re.search(line)
+        if end_match and intervals:
+            end = float(end_match.group("end"))
+            last_start, _ = intervals[-1]
+            intervals[-1] = (last_start, end)
+
+    return intervals
+
+
+def trim_silence_in_place(
+    file_path: str,
+    threshold_db: float = -50,
+    min_silence_duration: float = 0.5,
+    edge_tolerance: float = 0.1,
+) -> bool:
+    """Trim leading/trailing silence from a media file in-place.
+
+    Uses ffmpeg silencedetect to find leading/trailing silence, then trims
+    with stream copy. Returns True if trimming was applied.
+    """
+    duration = get_media_duration(file_path)
+    if duration is None:
+        logging.warning(f"Could not determine media duration for trimming: {file_path}")
+        return False
+
+    intervals = _detect_silence_intervals(
+        file_path,
+        threshold_db=threshold_db,
+        min_silence_duration=min_silence_duration,
+    )
+
+    if not intervals:
+        return False
+
+    start_trim = 0.0
+    end_trim = None
+
+    first_start, first_end = intervals[0]
+    if first_start <= edge_tolerance and first_end is not None:
+        start_trim = first_end
+
+    last_start, last_end = intervals[-1]
+    if last_end is None:
+        end_trim = last_start
+    elif duration - last_end <= edge_tolerance:
+        end_trim = last_start
+
+    if end_trim is None and start_trim <= edge_tolerance:
+        return False
+
+    if end_trim is None:
+        end_trim = float(duration)
+
+    trim_duration = end_trim - start_trim
+    if trim_duration <= 0 or trim_duration >= duration:
+        return False
+
+    base, ext = os.path.splitext(file_path)
+    temp_path = f"{base}.trimmed{ext}"
+
+    cmd = ["ffmpeg", "-y", "-i", file_path]
+    if start_trim > edge_tolerance:
+        cmd += ["-ss", f"{start_trim}"]
+    cmd += ["-t", f"{trim_duration}", "-c", "copy", "-map", "0", "-avoid_negative_ts", "make_zero", temp_path]
+
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if result.returncode != 0:
+        logging.warning(
+            "Silence trimming failed for %s: %s",
+            file_path,
+            (result.stderr or result.stdout).strip(),
+        )
+        if os.path.exists(temp_path):
+            with contextlib.suppress(OSError):
+                os.remove(temp_path)
+        return False
+
+    os.replace(temp_path, file_path)
+    logging.info(
+        "Trimmed silence for %s (start=%.2fs, end=%.2fs)",
+        file_path,
+        start_trim,
+        end_trim,
+    )
     return True

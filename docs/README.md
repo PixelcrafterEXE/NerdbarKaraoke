@@ -29,8 +29,7 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 - [ ] Genre-Mode: Only songs of a certain genre are shown and can be added
 - [ ] Push-Notification to requester when their song is up next / playing
 - [ ] display on bar to display queue in LUK
-- [ ] Autoskip silence at beginning and end of tracks
-- [x] Delete button for songs file in Browse 
+- [ ] Anonymus queue mode (only admins see names)
 - (?) Song rating system (star rating or similar) to reflect quality of caraoke track; Maybe difficulty rating?
 - (?) NFC Tag on Microphones to add Singer Nameplates to Overlay
 - (?) UI Themes

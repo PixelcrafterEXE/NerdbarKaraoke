@@ -50,6 +50,9 @@ class PreferenceManager:
         "song_add_cooldown_duration": -1,
         "queue_add_open": True,
         "queue_closing_time": "",
+        "trim_silence": False,
+        "trim_silence_threshold_db": -50,
+        "trim_silence_min_duration": 0.5,
     }
 
     def __init__(self, config_file_path: str = "config.ini", target: object | None = None) -> None:

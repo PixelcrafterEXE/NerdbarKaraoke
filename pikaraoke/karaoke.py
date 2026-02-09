@@ -138,6 +138,9 @@ class Karaoke:
         limit_user_songs_by: int | None = None,
         motd: str | None = None,
         normalize_audio: bool | None = None,
+        trim_silence: bool | None = None,
+        trim_silence_threshold_db: float | None = None,
+        trim_silence_min_duration: float | None = None,
         screensaver_timeout: int | None = None,
         splash_delay: int | None = None,
         volume: float | None = None,
@@ -179,6 +182,9 @@ class Karaoke:
             additional_ytdl_args: Additional yt-dlp command arguments.
             socketio: SocketIO instance for real-time event emission.
             preferred_language: Language code for UI (e.g., 'en', 'de_DE').
+            trim_silence: Trim leading/trailing silence in downloads.
+            trim_silence_threshold_db: dB threshold for silence detection.
+            trim_silence_min_duration: Minimum silence duration in seconds.
         """
         logging.basicConfig(
             format="[%(asctime)s] %(levelname)s: %(message)s",
