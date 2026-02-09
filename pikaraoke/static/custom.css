@@ -72,6 +72,47 @@ table {
   width: 100%;
 }
 
+.queue-table-wrapper {
+  width: 100%;
+  overflow-x: visible;
+}
+
+@media (max-width: 768px) {
+  .queue-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .queue-table-wrapper table {
+    min-width: 640px;
+  }
+}
+
+@media (min-width: 769px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .queue-table-wrapper {
+    overflow-x: hidden;
+  }
+
+  .queue-table-wrapper table {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #auto-refresh {
+    table-layout: auto;
+  }
+
+  #auto-refresh td,
+  #auto-refresh th {
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
 .break-word {
   overflow-wrap: break-word; /* Renamed property in CSS3 draft spec */
   width: 100%;
@@ -84,6 +125,8 @@ body.hide-cursor * {
 :root {
   --menu-accent: #2aafaf;
   --menu-accent-text: #0b1f1f;
+  --warning-accent: #2aafaf;
+  --warning-accent-contrast: #0b1f1f;
 }
 
 .navbar,
@@ -110,6 +153,37 @@ body.hide-cursor * {
 .navbar .icon,
 .navbar .user-avatar-icon {
   color: var(--menu-accent-text) !important;
+}
+
+/* Replace orange warning accents with teal */
+.has-text-warning,
+.help.is-warning,
+.input.is-warning,
+.textarea.is-warning,
+.select.is-warning select {
+  color: var(--warning-accent) !important;
+  border-color: var(--warning-accent) !important;
+}
+
+.notification.is-warning,
+.message.is-warning .message-header,
+.message.is-warning .message-body,
+.tag.is-warning,
+.button.is-warning,
+.progress.is-warning {
+  background-color: var(--warning-accent) !important;
+  color: var(--warning-accent-contrast) !important;
+}
+
+.button.is-warning.is-outlined,
+.tag.is-warning.is-outlined {
+  background-color: transparent !important;
+  border-color: var(--warning-accent) !important;
+  color: var(--warning-accent) !important;
+}
+
+.message.is-warning {
+  border-color: var(--warning-accent) !important;
 }
 
 /* Drag and drop highlight */
