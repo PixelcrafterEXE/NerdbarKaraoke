@@ -1335,13 +1335,8 @@ msgstr "Wow, wer hat Freddie Mercury hier reingelassen?"
 
 #. Label for the next song to be played in the queue.
 #: templates/splash.html:114
-msgid "Up next:"
+msgid "Next up:"
 msgstr "Als Nächstes:"
-
-#. Label for the next wish in the queue.
-#: templates/splash.html:121
-msgid "Next wish:"
-msgstr "Nächster Wunsch:"
 
 #. The title of the score screen, telling the user their singing score
 #: templates/splash.html:143

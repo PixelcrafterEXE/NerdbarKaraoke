@@ -120,15 +120,10 @@
   >
     <b class="has-text-white"
       >{# MSG: Label for the next song to be played in the queue. #} {% trans
-      %}Up next:{% endtrans %}
+      %}Next up:{% endtrans %}
     </b>
-    <span id="up-next-song"></span>
-    <div class="has-text-success">
-      <b class="has-text-white"
-        >{# MSG: Label for the next wish in the queue. #}
-        {% trans %}Next wish:{% endtrans %} </b
-      >&nbsp;<i class="icon icon-mic-1" title="Next wish"></i>&nbsp;<span id="up-next-singer"></span>
-    </div>
+    <span class="has-text-success">(</span><span id="up-next-singer" class="has-text-success"></span><span class="has-text-success">)</span>
+    <span id="up-next-song" class="has-text-info"></span>
     {% if motd %}
     <div id="motd-container" class="motd-container">
       <div id="motd-text" class="motd-text is-size-5 stroke" style="color: #08a6a6;">{{ motd }}</div>

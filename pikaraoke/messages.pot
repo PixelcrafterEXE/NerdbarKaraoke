@@ -1262,12 +1262,7 @@ msgstr ""
 
 #. Label for the next song to be played in the queue.
 #: templates/splash.html:114
-msgid "Up next:"
-msgstr ""
-
-#. Label for the next singer in the queue.
-#: templates/splash.html:121
-msgid "Next singer:"
+msgid "Next up:"
 msgstr ""
 
 #. The title of the score screen, telling the user their singing score
