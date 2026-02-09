@@ -53,6 +53,11 @@ class PreferenceManager:
         "trim_silence": False,
         "trim_silence_threshold_db": -50,
         "trim_silence_min_duration": 0.5,
+        "show_microphone_status": True,
+        "reset_microphones_after_song": False,
+        "wait_for_microphone": True,
+        "microphone_wait_timeout": 30,
+        "microphone_timeout_action": "play",  # "play" or "skip"
     }
 
     def __init__(self, config_file_path: str = "config.ini", target: object | None = None) -> None:

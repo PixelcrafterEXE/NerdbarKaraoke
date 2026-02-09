@@ -305,6 +305,57 @@
 			<hr class="my-0">
 
 			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
+				<h3 class="m-0">{% trans %}Microphone Tracking{% endtrans %}</h3>
+			</header>
+			<div class="card-content collapsible-content">
+				<div class="content">
+
+					<div class="user-preference-container">
+						<input id="pref-show-microphone-status" type="checkbox" class="user-preference-checkbox checkbox" data-pref="show_microphone_status" {% if show_microphone_status == True %}checked{% endif %}>
+						<label class="label" for="pref-show-microphone-status">
+							{% trans %}Show microphone status on home page (non-admins){% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-reset-microphones-after-song" type="checkbox" class="user-preference-checkbox checkbox" data-pref="reset_microphones_after_song" {% if reset_microphones_after_song == True %}checked{% endif %}>
+						<label class="label" for="pref-reset-microphones-after-song">
+							{% trans %}Reset microphone assignments after each song{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-wait-for-microphone" type="checkbox" class="user-preference-checkbox checkbox" data-pref="wait_for_microphone" {% if wait_for_microphone == True %}checked{% endif %}>
+						<label class="label" for="pref-wait-for-microphone">
+							{% trans %}Wait for singer to get a microphone before playing their song{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container is-align-items-center">
+						<input id="pref-microphone-wait-timeout" class="user-preference-input input" type="number" min="5" max="300" data-pref="microphone_wait_timeout" data-start-value="{{ microphone_wait_timeout }}" value="{{ microphone_wait_timeout }}" />
+						<label class="label" for="pref-microphone-wait-timeout">
+							{% trans %}Microphone wait timeout in seconds{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<label class="label" for="pref-microphone-timeout-action">
+							{% trans %}Action when microphone wait timeout expires:{% endtrans %}
+						</label>
+						<div class="select">
+							<select id="pref-microphone-timeout-action" class="user-preference-input" data-pref="microphone_timeout_action" data-start-value="{{ microphone_timeout_action }}">
+								<option value="play" {% if microphone_timeout_action == "play" %}selected{% endif %}>{% trans %}Play song anyway{% endtrans %}</option>
+								<option value="skip" {% if microphone_timeout_action == "skip" %}selected{% endif %}>{% trans %}Skip song{% endtrans %}</option>
+							</select>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<hr class="my-0">
+
+			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
 				<h3 class="m-0">{# MSG: Title text for the interface settings section of preferences #}{% trans %}Interface settings{% endtrans %}</h3>
 			</header>
 			<div class="card-content collapsible-content">

@@ -258,15 +258,55 @@ const setupScreensaver = () => {
 
 const handleNowPlayingUpdate = (np) => {
   nowPlaying = np;
+  
+  // Handle waiting for microphone
+  if (np.waiting_for_microphone) {
+    const waitInfo = np.waiting_for_microphone;
+    const waitingHtml = `
+      <div class="has-text-warning is-size-4">
+        <i class="icon icon-mic-1"></i> Waiting for ${waitInfo.waiting_for_user} to get a microphone...
+      </div>
+      <div class="has-text-info is-size-5" style="margin-top: 10px;">
+        Song: ${waitInfo.waiting_for_song}
+      </div>
+      <div class="has-text-grey is-size-6" style="margin-top: 5px;">
+        Time remaining: ${waitInfo.time_remaining}s
+      </div>
+    `;
+    $("#waiting-for-microphone").html(waitingHtml).fadeIn();
+  } else {
+    $("#waiting-for-microphone").fadeOut();
+  }
+  
   if (np.now_playing) {
 
-    // Handle updating now playing HTML
-    let nowPlayingHtml = `<span>${np.now_playing}</span> `;
+    // Handle updating now playing HTML with requester in brackets
+    let nowPlayingHtml = `<span class="has-text-grey-light" style="font-size: 0.8em;">(${np.now_playing_user})</span> <span>${np.now_playing}</span> `;
     if (np.now_playing_transpose !== 0) {
       nowPlayingHtml += `<span class='is-size-6 has-text-success'><b>Key</b>: ${getSemitonesLabel(np.now_playing_transpose)} </span>`;
     }
     $("#now-playing-song").html(nowPlayingHtml);
-    $("#now-playing-singer").html(np.now_playing_user);
+    
+    // Update microphone holders display with dark saturated colors
+    if (np.microphone_assignments && PikaraokeConfig.showMicrophoneStatus) {
+      const colorMap = {
+        'Red': '#cc0000',
+        'Blue': '#0047ab',
+        'Green': '#009900',
+        'Yellow': '#b8860b'
+      };
+      let micHtml = '';
+      const colors = ['Red', 'Blue', 'Green', 'Yellow'];
+      for (const color of colors) {
+        const user = np.microphone_assignments[color];
+        if (user) {
+          const colorHex = colorMap[color];
+          micHtml += `<i class="icon icon-mic-1" style="color: ${colorHex}; font-size: 1.2em; margin-right: 5px;" title="${user}"></i><span style="color: ${colorHex}; margin-right: 10px;">${user}</span> `;
+        }
+      }
+      $("#microphone-holders").html(micHtml);
+    }
+    
     $("#now-playing").fadeIn();
   } else {
     $("#now-playing").fadeOut();

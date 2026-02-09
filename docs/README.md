@@ -17,10 +17,10 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 - User voting on songs in the queue (upvote/downvote)
 - Message of the day (MOTD) 
 - Queue open/close system with optional closing time
+- NFC-based Microphone tracking (song will wait for you, show singers on display)
 
 ## Roadmap
 - [ ] Implement non-Username-based user identification (via individualized access link; Autorefreshed QR code).
-- [ ] swap out background video
 - [ ] Give pitch control to users when adding song
 - [ ] change pitch without song restart
 - [ ] implement tempo display/control
@@ -31,7 +31,6 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 - [ ] display on bar to display queue in LUK
 - [ ] Anonymus queue mode (only admins see names)
 - (?) Song rating system (star rating or similar) to reflect quality of caraoke track; Maybe difficulty rating?
-- (?) NFC Tag on Microphones to add Singer Nameplates to Overlay
 - (?) UI Themes
 - (?) User Metrics (most requested songs, most active users, etc.)
 - (?) Button to open original song on spotify; Option to export queue as spotify playlist

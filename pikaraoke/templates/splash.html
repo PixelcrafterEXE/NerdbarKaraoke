@@ -22,6 +22,7 @@
     disableBgVideo: "{{ disable_bg_video }}" == 'True',
     screensaverTimeout: parseInt('{{ screensaver_timeout }}') || 0,
     hideOverlay: "{{ hide_overlay }}" == 'True',
+    showMicrophoneStatus: "{{ show_microphone_status }}" == 'True',
     translations: {
       socketConnectionLost: "{{ _('Connection lost. Is the server still running?') }}",
       unsupportedBrowser: "{{ _('This browser is not fully supported. You may experience streaming issues. Please use Chrome/Safari/Firefox/Edge for best results.') }}",
@@ -57,7 +58,6 @@
 <script src="{{ url_for('static', filename='js/splash.js') }}"></script>
 {% endblock %} {% block body %}
 <div id="top-container" class="overlay">
-<i class="icon icon-mic-1 is-invisible" style="position: absolute" title="Current singer"></i>
   <div
     id="now-playing"
     class="has-text-warning stroke is-size-4 has-text-right"
@@ -68,14 +68,13 @@
       class="has-text-white"
       style="margin-bottom: 5px"
     ></p>
-    <div class="has-text-success">
-		</span><i class="icon icon-mic-1" title="Current singer"></i>
-      <span id="now-playing-singer"></span>
-		<br />
-    <span class="timestamp is-size-6">
+    <div>
+      <div id="microphone-holders" style="margin-bottom: 5px;">
+      </div>
+      <span class="timestamp is-size-6">
         <span id="current">00:00</span>
-      <span id="duration"> / 00:00</span>
-    </span>
+        <span id="duration"> / 00:00</span>
+      </span>
     </div>
   </div>
 </div>
@@ -83,6 +82,8 @@
 <div id="logo-container">
   <div class="logo-stack">
     <img class="logo" src="{{ url_for('images.logo') }}" width="500px" alt="logo" />
+    <div id="waiting-for-microphone" class="has-text-centered" style="display: none; margin-top: 20px; padding: 20px; background-color: rgba(0,0,0,0.7); border-radius: 10px;">
+    </div>
     {% if motd %}
     <div id="motd-under-logo" class="motd-container motd-under-logo">
       <div id="motd-text-under-logo" class="motd-text is-size-5 stroke" style="color: #08a6a6;">{{ motd }}</div>

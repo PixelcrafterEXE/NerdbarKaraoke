@@ -29,6 +29,7 @@ from pikaraoke.lib.get_platform import (
     get_platform,
     is_raspberry_pi,
 )
+from pikaraoke.lib.microphone_manager import MicrophoneManager
 from pikaraoke.lib.network import get_ip
 from pikaraoke.lib.preference_manager import PreferenceManager
 from pikaraoke.lib.queue_manager import QueueManager
@@ -249,6 +250,9 @@ class Karaoke:
 
         # Initialize stream manager for transcoding and playback
         self.stream_manager = StreamManager(self)
+
+        # Initialize microphone manager
+        self.microphone_manager = MicrophoneManager(socketio=socketio)
 
         # Initialize queue manager
         self.queue_manager = QueueManager(
@@ -674,8 +678,40 @@ class Karaoke:
         """Clear the current notification."""
         self.now_playing_notification = None
 
+    def should_wait_for_microphone(self, queue_entry: dict[str, Any]) -> bool:
+        """Check if we should wait for a microphone before playing a song.
+
+        Args:
+            queue_entry: The queue entry to check.
+
+        Returns:
+            True if waiting is enabled and the user doesn't have a microphone.
+        """
+        if not self.wait_for_microphone:
+            return False
+
+        user = queue_entry.get("user")
+        if not user:
+            return False
+        
+        # Don't wait for 'randomizer' user
+        if user.lower() == "randomizer":
+            return False
+
+        # Check if the user has a microphone assigned
+        return not self.microphone_manager.has_microphone(user)
+
+    def reset_microphones_if_needed(self) -> None:
+        """Reset microphones after a song if the setting is enabled."""
+        if self.reset_microphones_after_song:
+            logging.info("Resetting all microphones after song completion")
+            self.microphone_manager.reset_all_microphones()
+
     def reset_now_playing(self) -> None:
         """Reset all now playing state to defaults."""
+        # Reset microphones if needed (before clearing now_playing_user)
+        self.reset_microphones_if_needed()
+        
         self.now_playing = None
         self.now_playing_filename = None
         self.now_playing_user = None
@@ -696,6 +732,18 @@ class Karaoke:
             Dictionary with now playing info, queue preview, and volume.
         """
         next_song = self.queue_manager.peek_next_song()
+        
+        # Calculate waiting info
+        waiting_info = None
+        if hasattr(self, 'waiting_for_microphone') and self.waiting_for_microphone and next_song:
+            elapsed = time.time() - self.microphone_wait_start_time
+            remaining = max(0, self.microphone_wait_timeout - elapsed)
+            waiting_info = {
+                "waiting_for_user": next_song["user"],
+                "waiting_for_song": next_song["title"],
+                "time_remaining": int(remaining),
+            }
+        
         return {
             "now_playing": self.now_playing,
             "now_playing_user": self.now_playing_user,
@@ -710,6 +758,8 @@ class Karaoke:
             "is_paused": self.is_paused,
             "volume": self.volume,
             "splash_delay": self.splash_delay,
+            "waiting_for_microphone": waiting_info,
+            "microphone_assignments": self.microphone_manager.get_all_assignments(),
         }
 
     def update_now_playing_socket(self) -> None:
@@ -725,6 +775,9 @@ class Karaoke:
         logging.debug("Starting PiKaraoke run loop")
         logging.info(f"Connect the player host to: {self.url}/splash")
         self.running = True
+        self.waiting_for_microphone = False
+        self.microphone_wait_start_time = None
+        
         while self.running:
             try:
                 if not self.is_file_playing() and self.now_playing != None:
@@ -732,17 +785,60 @@ class Karaoke:
                 if len(self.queue_manager.queue) > 0:
                     if not self.is_file_playing():
                         self.reset_now_playing()
+                        
+                        # Splash delay
                         i = 0
                         while i < (self.splash_delay * 1000):
                             self.handle_run_loop()
                             i += self.loop_interval
+                        
                         next_song = self.queue_manager.peek_next_song()
                         if next_song:
-                            self.play_file(
-                                next_song["file"],
-                                next_song["semitones"],
-                                queue_entry=next_song,
-                            )
+                            # Check if we should wait for microphone
+                            if self.should_wait_for_microphone(next_song):
+                                if not self.waiting_for_microphone:
+                                    # Start waiting
+                                    self.waiting_for_microphone = True
+                                    self.microphone_wait_start_time = time.time()
+                                    logging.info(f"Waiting for {next_song['user']} to get a microphone...")
+                                    self.update_now_playing_socket()
+                                
+                                # Check timeout
+                                elapsed = time.time() - self.microphone_wait_start_time
+                                if elapsed >= self.microphone_wait_timeout:
+                                    # Timeout reached
+                                    self.waiting_for_microphone = False
+                                    logging.info(f"Microphone wait timeout for {next_song['user']}")
+                                    
+                                    if self.microphone_timeout_action == "skip":
+                                        # Skip the song
+                                        logging.info(f"Skipping song: {next_song['title']}")
+                                        self.queue_manager.queue_edit(next_song["file"], "delete")
+                                        self.send_notification(
+                                            _("Song skipped: %s didn't get a microphone") % next_song['user'],
+                                            "warning"
+                                        )
+                                    else:
+                                        # Play anyway
+                                        logging.info(f"Playing song anyway: {next_song['title']}")
+                                        self.play_file(
+                                            next_song["file"],
+                                            next_song["semitones"],
+                                            queue_entry=next_song,
+                                        )
+                                    self.update_now_playing_socket()
+                                # else: keep waiting
+                            else:
+                                # No need to wait or user has microphone now
+                                if self.waiting_for_microphone:
+                                    logging.info(f"{next_song['user']} got a microphone!")
+                                self.waiting_for_microphone = False
+                                self.play_file(
+                                    next_song["file"],
+                                    next_song["semitones"],
+                                    queue_entry=next_song,
+                                )
+                
                 self.stream_manager.log_ffmpeg_output()
                 self.handle_run_loop()
             except KeyboardInterrupt:

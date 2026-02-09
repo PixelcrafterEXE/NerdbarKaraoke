@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin-top: 50px;">
+    <div class="box">
+        <h1 class="title has-text-centered">{{ title }}</h1>
+        
+        <p class="has-text-centered mb-5">
+            Please enter your name to assign the <strong class="has-text-{{ microphone_color|lower }}">{{ microphone_color }}</strong> microphone to yourself.
+        </p>
+        
+        <form method="POST" action="{{ url_for('microphone.assign_microphone') }}">
+            <input type="hidden" name="color" value="{{ microphone_color }}">
+            
+            <div class="field">
+                <label class="label">Your Name</label>
+                <div class="control">
+                    <input 
+                        class="input is-large" 
+                        type="text" 
+                        name="username" 
+                        placeholder="Enter your name" 
+                        required 
+                        autofocus
+                    >
+                </div>
+            </div>
+            
+            <div class="field">
+                <div class="control">
+                    <button class="button is-primary is-fullwidth is-large" type="submit">
+                        Assign Microphone
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

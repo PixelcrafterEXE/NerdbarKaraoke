@@ -94,6 +94,11 @@ def info():
             "mid": k.mid_score_phrases,
             "high": k.high_score_phrases,
         },
+        show_microphone_status=k.show_microphone_status,
+        reset_microphones_after_song=k.reset_microphones_after_song,
+        wait_for_microphone=k.wait_for_microphone,
+        microphone_wait_timeout=k.microphone_wait_timeout,
+        microphone_timeout_action=k.microphone_timeout_action,
     )
 
 

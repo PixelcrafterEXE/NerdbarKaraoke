@@ -161,20 +161,72 @@
 		//for pushed updates to now playing state
 		window.socket.on("now_playing", (np) => handleNowPlaying(np));
 
+		// Handle microphone updates
+		window.socket.on("microphone_update", (microphones) => {
+			console.log("Microphone update received:", microphones);
+			loadMicrophoneStatus();
+		});
+
 		document.addEventListener("visibilitychange", function () {
 			console.log("on visibility change");
 
 			if (document.visibilityState === "visible") {
 				loadNowPlaying();
+				loadMicrophoneStatus();
 				console.log(window.socket);
 				if (!window.socket.connected) {
 					console.log("Reconnecting socket...");
 					window.socket = io();
 					window.socket.on("now_playing", (np) => handleNowPlaying(np));
+					window.socket.on("microphone_update", (microphones) => loadMicrophoneStatus());
 				}
 			}
 		});
 	});
+
+	function loadMicrophoneStatus() {
+		$.get('{{ url_for("microphone.microphone_status") }}', function (data) {
+			updateMicrophoneDisplay(data.microphones);
+		});
+	}
+
+	function updateMicrophoneDisplay(microphones) {
+		const container = $("#microphone-status");
+		if (!container.length) return;
+		
+		const colorMap = {
+			'red': '#cc0000',
+			'blue': '#0047ab',
+			'green': '#009900',
+			'yellow': '#b8860b'
+		};
+		
+		let html = "";
+		for (const [color, user] of Object.entries(microphones)) {
+			const colorLower = color.toLowerCase();
+			const colorHex = colorMap[colorLower] || colorLower;
+			const statusText = user || "Available";
+			const textColor = user ? colorHex : '#999';
+			html += `<div class="microphone-item" style="text-align: center;">
+				<i class="icon icon-mic-1" style="font-size: 2em; color: ${colorHex};"></i>
+				<div style="font-size: 0.9em; margin-top: 5px; color: ${textColor};">${statusText}</div>
+			</div>`;
+		}
+		container.html(html);
+	}
+
+	function handBackMicrophone() {
+		if (confirm("Are you sure you want to hand back your microphone?")) {
+			$.post('{{ url_for("microphone.release_microphone") }}', function (data) {
+				if (data.success) {
+					showNotification(data.message, "is-success");
+					location.reload();
+				} else {
+					showNotification(data.message, "is-danger");
+				}
+			});
+		}
+	}
 </script>
 {% endblock %} {% block header %}
 <h1>
@@ -187,6 +239,34 @@
 	/>{% endblock %}
 </h1>
 {% endblock %} {% block content %}
+
+{% if show_microphone_status %}
+<div class="box has-background-black-bis" style="margin: 0 auto 20px auto;">
+	<h4 style="text-align: center;">{% trans %}Microphone Status{% endtrans %}</h4>
+	<div id="microphone-status" style="display: flex; justify-content: center; gap: 25px; margin-top: 10px; flex-wrap: wrap;">
+		{% for color, user in microphone_assignments.items() %}
+		<div class="microphone-item" style="text-align: center;">
+			<i class="icon icon-mic-1" style="font-size: 2em; {% if color == 'Red' %}color: #cc0000;{% elif color == 'Blue' %}color: #0047ab;{% elif color == 'Green' %}color: #009900;{% elif color == 'Yellow' %}color: #b8860b;{% endif %}"></i>
+			<div style="font-size: 0.9em; margin-top: 5px; {% if user %}{% if color == 'Red' %}color: #cc0000;{% elif color == 'Blue' %}color: #0047ab;{% elif color == 'Green' %}color: #009900;{% elif color == 'Yellow' %}color: #b8860b;{% endif %}{% else %}color: #999;{% endif %}">
+				{{ user if user else "Available" }}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+	
+	{% if user_microphone %}
+	<hr>
+	<div style="text-align: center;">
+		<p class="has-text-info mb-3">
+			<i class="icon icon-mic-1"></i> You have the <strong>{{ user_microphone }}</strong> microphone
+		</p>
+		<button class="button is-warning" onclick="handBackMicrophone()">
+			<i class="icon icon-logout"></i> Hand Back Microphone
+		</button>
+	</div>
+	{% endif %}
+</div>
+{% endif %}
 
 <p class="is-size-4 has-text-warning" id="now-playing">&nbsp;</p>
 
