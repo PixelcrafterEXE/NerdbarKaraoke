@@ -20,7 +20,7 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 
 ## Roadmap
 - Implement non-Username-based user identification (via individualized access link; Autorefreshed QR code).
-- swap out background video, find better suiting background music
+- swap out background video
 - Give pitch control to users when adding song
 - implement tempo display/control
 - fix mobile queue display
