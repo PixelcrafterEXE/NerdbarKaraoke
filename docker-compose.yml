@@ -10,7 +10,7 @@ services:
     environment:
       TZ: Europe/Berlin
     command: >
-      -u http://${ADDRESS}:5555
+      -u https://${ADDRESS}
       --admin-password ${ADMIN_PASSWORD}
       --disable-score
       --preferred-language de_DE
