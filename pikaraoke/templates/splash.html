@@ -81,8 +81,13 @@
 </div>
 
 <div id="logo-container">
-  <div>
+  <div class="logo-stack">
     <img class="logo" src="{{ url_for('images.logo') }}" width="500px" alt="logo" />
+    {% if motd %}
+    <div id="motd-under-logo" class="motd-container motd-under-logo">
+      <div id="motd-text-under-logo" class="motd-text is-size-5 stroke" style="color: #08a6a6;">{{ motd }}</div>
+    </div>
+    {% endif %}
   </div>
 </div>
 
@@ -356,6 +361,18 @@
     height: 100vh;
     align-items: center;
     justify-content: center;
+  }
+  .logo-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .motd-under-logo {
+    max-width: 80vw;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 8px 14px;
   }
   #menu-background {
     bottom: 0;

@@ -271,9 +271,10 @@ const handleNowPlayingUpdate = (np) => {
   } else {
     $("#now-playing").fadeOut();
   }
-  const motdContainer = $("#motd-container");
-  if (motdContainer.length) {
-    const motdText = $("#motd-text");
+  const updateMotdContainer = (containerSelector, textSelector, shouldShow) => {
+    const motdContainer = $(containerSelector);
+    if (!motdContainer.length) return;
+    const motdText = $(textSelector);
     if (motdText.length) {
       const newMotd = np.motd || "";
       if (motdText.text() !== newMotd) {
@@ -281,12 +282,14 @@ const handleNowPlayingUpdate = (np) => {
         applyMotdMarquee();
       }
     }
-    if (np.now_playing) {
+    if (shouldShow) {
       motdContainer.fadeIn();
     } else {
       motdContainer.fadeOut();
     }
-  }
+  };
+  updateMotdContainer("#motd-container", "#motd-text", !!np.now_playing);
+  updateMotdContainer("#motd-under-logo", "#motd-text-under-logo", !np.now_playing);
   if (np.up_next) {
     $("#up-next-song").html(np.up_next);
     $("#up-next-singer").html(np.next_user);
@@ -612,6 +615,7 @@ const setupUIScaling = () => {
     { selector: '#ap-container', origin: 'top left' },
     { selector: '#qr-code', origin: 'bottom left' },
     { selector: '#motd-container', origin: 'bottom center' },
+    { selector: '#motd-under-logo', origin: 'center' },
     { selector: '#up-next', origin: 'bottom right' },
     { selector: '#dvd', origin: null },
     { selector: '#your-score-text', origin: null },
@@ -629,9 +633,7 @@ const setupUIScaling = () => {
   });
 }
 
-const applyMotdMarquee = () => {
-  const container = document.getElementById('motd-container');
-  const text = document.getElementById('motd-text');
+const applyMotdMarqueeFor = (container, text) => {
   if (!container || !text) return;
 
   text.classList.remove('motd-scroll');
@@ -647,6 +649,17 @@ const applyMotdMarquee = () => {
     text.style.setProperty('--motd-scroll-duration', `${duration}s`);
     text.classList.add('motd-scroll');
   }
+}
+
+const applyMotdMarquee = () => {
+  applyMotdMarqueeFor(
+    document.getElementById('motd-container'),
+    document.getElementById('motd-text')
+  );
+  applyMotdMarqueeFor(
+    document.getElementById('motd-under-logo'),
+    document.getElementById('motd-text-under-logo')
+  );
 }
 
 const setupMotdMarquee = () => {
