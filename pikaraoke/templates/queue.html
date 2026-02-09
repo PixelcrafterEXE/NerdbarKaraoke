@@ -297,11 +297,17 @@
               if (d.status === 'complete') progressClass = "is-success";
               if (d.status === 'error') progressClass = "is-danger";
 
+              var numericProgress = typeof d.progress === "number" ? d.progress : parseFloat(d.progress);
+              var safeProgress = Math.max(0, Math.min(100, numericProgress || 0));
+              var progressHtml = `
+                  <progress class="progress download-progress ${progressClass}" value="${safeProgress}" max="100" style="background-color: #dbdbdb;">${safeProgress}%</progress>
+              `;
+
               html += `
                   <div class="box mb-4 has-background-dark">
                       <h4 class="title is-5 mb-2">${d.title}</h4>
                       <!-- inline style to ensure background visibility if theme overrides it -->
-                      <progress class="progress ${progressClass}" value="${d.progress}" max="100" style="background-color: #dbdbdb;">${d.progress}%</progress>
+                      ${progressHtml}
                       <div class="level is-mobile is-size-7 mt-1">
                           <div class="level-left">
                               <span class="level-item text-muted"><b>Status:</b>&nbsp;${d.status}</span>
@@ -310,6 +316,7 @@
                               <span class="level-item"><b>Speed:</b>&nbsp;${d.speed}&nbsp;&nbsp;&nbsp;<b>ETA:</b>&nbsp;${d.eta}</span>
                           </div>
                       </div>
+                      ${d.raw_progress ? "" : ""}
                   </div>
               `;
           }

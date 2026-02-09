@@ -134,6 +134,9 @@ def build_ytdl_download_command(
         dl_path,
         "-S",
         "vcodec:h264",
+        "--newline",
+        "--progress-template",
+        "download:%(progress.downloaded_bytes)s|%(progress.total_bytes)s|%(progress.total_bytes_estimate)s|%(progress.speed)s|%(progress.eta)s|%(progress.percent)s",
         "--compat-options",
         "filename-sanitization",
     ]

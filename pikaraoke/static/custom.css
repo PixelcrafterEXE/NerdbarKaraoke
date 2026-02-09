@@ -186,6 +186,27 @@ body.hide-cursor * {
   border-color: var(--warning-accent) !important;
 }
 
+/* Ensure progress bars are visible across browsers/themes */
+.progress.download-progress {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #2b2f34 !important;
+  border-radius: 999px;
+  height: 1rem;
+}
+
+.progress.download-progress::-webkit-progress-bar {
+  background-color: #2b2f34 !important;
+}
+
+.progress.download-progress::-webkit-progress-value {
+  background-color: #00d1b2 !important;
+}
+
+.progress.download-progress::-moz-progress-bar {
+  background-color: #00d1b2 !important;
+}
+
 /* Drag and drop highlight */
 .drag-chosen {
   background-color: #3273dc !important;

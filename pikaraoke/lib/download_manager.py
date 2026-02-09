@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 import subprocess
 import uuid
@@ -185,6 +186,44 @@ class DownloadManager:
                 if self.download_queue.empty():
                     _broadcast_helper(self.app, "download_stopped")
 
+    def _format_eta(self, value: str) -> str:
+        """Format seconds or already-formatted time strings into mm:ss or hh:mm:ss."""
+        v = value.strip()
+        if not v or v.lower() in {"none", "na", "n/a", "unknown"}:
+            return "--:--"
+        if ":" in v:
+            return v
+        try:
+            seconds = int(float(v))
+        except ValueError:
+            return v
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        secs = seconds % 60
+        if hours > 0:
+            return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        if minutes > 0:
+            return f"{minutes:02d}:{secs:02d}"
+        return f"{secs}s"
+
+    def _format_speed(self, value: str) -> str:
+        """Format numeric speed in B/s to human-readable units."""
+        v = value.strip()
+        if not v or v.lower() in {"none", "na", "n/a", "unknown"}:
+            return "---"
+        if any(u in v for u in ("KiB/s", "MiB/s", "GiB/s", "KB/s", "MB/s", "GB/s")):
+            return v
+        try:
+            bps = float(v)
+        except ValueError:
+            return v
+        units = ["B/s", "KiB/s", "MiB/s", "GiB/s", "TiB/s"]
+        idx = 0
+        while bps >= 1024 and idx < len(units) - 1:
+            bps /= 1024
+            idx += 1
+        return f"{bps:.2f} {units[idx]}"
+
     def _execute_download(
         self,
         video_url: str,
@@ -221,6 +260,9 @@ class DownloadManager:
         logging.debug("Youtube-dl command: " + " ".join(cmd))
 
         # Use Popen to capture output in real-time
+        env = os.environ.copy()
+        env.setdefault("PYTHONUNBUFFERED", "1")
+
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
@@ -228,16 +270,16 @@ class DownloadManager:
             text=True,
             bufsize=1,  # Line buffered
             universal_newlines=True,
+            env=env,
         )
 
         output_buffer = []
-
-        # Regex to parse progress from yt-dlp stdout
-        # Example: [download]   0.0% of    4.62MiB at  396.66KiB/s ETA 00:12
-        progress_regex = re.compile(
-            r"\[download\]\s+(\d+\.?\d*)%\s+of\s+.*?\s+at\s+([^\s]+)\s+ETA\s+([^\s]+)"
-        )
         video_id = get_youtube_id_from_url(video_url)
+
+        # Parse pipe-delimited progress format from yt-dlp: downloaded|total|total_est|speed|eta|percent
+        # Example: 1024|791367|NA|345393.43|0|NA
+        # Note: percent field is typically "NA", so we calculate it from downloaded/total
+        progress_regex = re.compile(r"^(\d+)\|(\d+)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)$")
 
         while True:
             line = process.stdout.readline()
@@ -245,18 +287,30 @@ class DownloadManager:
                 break
             if line:
                 output_buffer.append(line)
-                match = progress_regex.search(line)
-                if match and self.active_download:
-                    percent = float(match.group(1))
-                    speed = match.group(2)
-                    eta = match.group(3)
+                line_stripped = line.strip()
+                if self.active_download and "|" in line_stripped:
+                    match = progress_regex.match(line_stripped)
+                    if match:
+                        try:
+                            downloaded = int(match.group(1))
+                            total = int(match.group(2))
+                            total_est = match.group(3)  # Can be "NA" or numeric
+                            speed_raw = match.group(4)
+                            eta_raw = match.group(5)
+                            percent_str = match.group(6)
 
-                    self.active_download["progress"] = percent
-                    self.active_download["status"] = "downloading"
-                    self.active_download["speed"] = speed
-                    self.active_download["eta"] = eta
-                # Log only non-progress lines to avoid spamming logs, or log everything at debug
-                # logging.debug(line.strip())
+                            # Calculate percent from downloaded/total
+                            percent = 0.0
+                            if total > 0:
+                                percent = (downloaded / total) * 100.0
+                            percent = min(100.0, max(0.0, percent))
+
+                            self.active_download["progress"] = percent
+                            self.active_download["status"] = "downloading"
+                            self.active_download["speed"] = self._format_speed(speed_raw)
+                            self.active_download["eta"] = self._format_eta(eta_raw)
+                        except (ValueError, AttributeError) as e:
+                            logging.warning(f"Progress parsing error: {e}, line: {line_stripped}")
 
         rc = process.poll()
         output = "".join(output_buffer)
