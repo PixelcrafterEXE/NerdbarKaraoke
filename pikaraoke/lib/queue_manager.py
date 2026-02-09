@@ -236,18 +236,14 @@ class QueueManager:
             return {
                 "is_open": True,
                 "reason": None,
-                "closing_time": self._format_closing_time_display(
-                    self._get_closing_timestamp()
-                ),
+                "closing_time": self._format_closing_time_display(self._get_closing_timestamp()),
             }
 
         if not self._get_queue_add_open_value():
             return {
                 "is_open": False,
                 "reason": "manual",
-                "closing_time": self._format_closing_time_display(
-                    self._get_closing_timestamp()
-                ),
+                "closing_time": self._format_closing_time_display(self._get_closing_timestamp()),
             }
 
         now_ts = time.time()
@@ -276,8 +272,7 @@ class QueueManager:
 
         if status["reason"] == "time" and status.get("closing_time"):
             return (
-                _("Queue is closed. No more songs can be added after %s.")
-                % status["closing_time"]
+                _("Queue is closed. No more songs can be added after %s.") % status["closing_time"]
             )
 
         return _("Queue is closed. No more songs can be added right now.")
@@ -408,6 +403,7 @@ class QueueManager:
         semitones: int = 0,
         add_to_front: bool = False,
         log_action: bool = True,
+        bypass_queue_restrictions: bool = False,
     ) -> bool | list[bool | str]:
         """Add a song to the queue.
 
@@ -417,11 +413,12 @@ class QueueManager:
             semitones: Transpose value for playback.
             add_to_front: If True, add to front of queue instead of back.
             log_action: Whether to log and notify about the action.
+            bypass_queue_restrictions: If True, bypass queue open/closing checks (e.g., for downloads).
 
         Returns:
             False if song already in queue, or list of [success, message].
         """
-        if not (self._is_admin and self._is_admin()):
+        if not bypass_queue_restrictions and not (self._is_admin and self._is_admin()):
             if not self._get_queue_add_open_value():
                 return [False, self.get_queue_add_block_message()]
             can_add, reason = self.can_add_song_before_closing(song_path)
@@ -651,7 +648,9 @@ class QueueManager:
         if not self.is_shadowbanned(song_file):
             return self.get_song_rating(song_file)
 
-        effective_base = base_rating if base_rating is not None else self.get_shadowban_base_rating()
+        effective_base = (
+            base_rating if base_rating is not None else self.get_shadowban_base_rating()
+        )
         if user:
             return effective_base + self.get_shadowban_user_vote(song_file, user)
         return effective_base
