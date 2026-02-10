@@ -201,16 +201,24 @@
 			'yellow': '#b8860b'
 		};
 		
+		const isAdmin = {{ 'true' if admin else 'false' }};
+		
 		let html = "";
 		for (const [color, user] of Object.entries(microphones)) {
 			const colorLower = color.toLowerCase();
 			const colorHex = colorMap[colorLower] || colorLower;
 			const statusText = user || "Available";
 			const textColor = user ? colorHex : '#999';
-			html += `<div class="microphone-item" style="text-align: center;">
+			html += `<div class="microphone-item" style="text-align: center; position: relative;">
 				<i class="icon icon-mic-1" style="font-size: 2em; color: ${colorHex};"></i>
-				<div style="font-size: 0.9em; margin-top: 5px; color: ${textColor};">${statusText}</div>
-			</div>`;
+				<div style="font-size: 0.9em; margin-top: 5px; color: ${textColor};">${statusText}</div>`;
+			
+			// Add unassign button for admin if microphone is assigned
+			if (isAdmin && user) {
+				html += `<button class="button is-small is-danger mt-2" onclick="adminUnassignMicrophone('${color}')" title="Unassign ${color} microphone">Unassign</button>`;
+			}
+			
+			html += `</div>`;
 		}
 		container.html(html);
 	}
@@ -224,6 +232,21 @@
 				} else {
 					showNotification(data.message, "is-danger");
 				}
+			});
+		}
+	}
+
+	function adminUnassignMicrophone(color) {
+		if (confirm(`Are you sure you want to unassign the ${color} microphone?`)) {
+			$.post(`{{ url_for("microphone.admin_unassign_microphone", color="") }}${color}`, function (data) {
+				if (data.success) {
+					showNotification(data.message, "is-success");
+					loadMicrophoneStatus();
+				} else {
+					showNotification(data.message, "is-danger");
+				}
+			}).fail(function() {
+				showNotification("Failed to unassign microphone", "is-danger");
 			});
 		}
 	}
@@ -245,11 +268,16 @@
 	<h4 style="text-align: center;">{% trans %}Microphone Status{% endtrans %}</h4>
 	<div id="microphone-status" style="display: flex; justify-content: center; gap: 25px; margin-top: 10px; flex-wrap: wrap;">
 		{% for color, user in microphone_assignments.items() %}
-		<div class="microphone-item" style="text-align: center;">
+		<div class="microphone-item" style="text-align: center; position: relative;">
 			<i class="icon icon-mic-1" style="font-size: 2em; {% if color == 'Red' %}color: #cc0000;{% elif color == 'Blue' %}color: #0047ab;{% elif color == 'Green' %}color: #009900;{% elif color == 'Yellow' %}color: #b8860b;{% endif %}"></i>
 			<div style="font-size: 0.9em; margin-top: 5px; {% if user %}{% if color == 'Red' %}color: #cc0000;{% elif color == 'Blue' %}color: #0047ab;{% elif color == 'Green' %}color: #009900;{% elif color == 'Yellow' %}color: #b8860b;{% endif %}{% else %}color: #999;{% endif %}">
 				{{ user if user else "Available" }}
 			</div>
+			{% if admin and user %}
+			<button class="button is-small is-danger mt-2" onclick="adminUnassignMicrophone('{{ color }}')" title="Unassign {{ color }} microphone">
+				Unassign
+			</button>
+			{% endif %}
 		</div>
 		{% endfor %}
 	</div>

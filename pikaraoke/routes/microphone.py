@@ -155,6 +155,34 @@ def microphone_status():
     return jsonify(k.microphone_manager.to_dict())
 
 
+@microphone_bp.route("/admin/unassign_microphone/<color>", methods=["POST"])
+def admin_unassign_microphone(color):
+    """Unassign a specific microphone (admin only).
+    ---
+    tags:
+      - Microphone
+      - Admin
+    parameters:
+      - name: color
+        in: path
+        type: string
+        required: true
+        description: Microphone color to unassign
+    responses:
+      200:
+        description: JSON response with success status
+      403:
+        description: Unauthorized
+    """
+    k = get_karaoke_instance()
+    
+    if not is_admin():
+        return jsonify({"success": False, "message": "You don't have permission to unassign microphones"}), 403
+    
+    success, message = k.microphone_manager.release_microphone(color)
+    return jsonify({"success": success, "message": message})
+
+
 @microphone_bp.route("/admin/reset_microphones", methods=["POST", "GET"])
 def reset_microphones():
     """Reset all microphone assignments (admin only).
