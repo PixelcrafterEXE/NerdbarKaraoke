@@ -72,6 +72,12 @@ table {
   width: 100%;
 }
 
+table td {
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
 .queue-table-wrapper {
   width: 100%;
   overflow-x: visible;
@@ -109,12 +115,17 @@ table {
   #auto-refresh td,
   #auto-refresh th {
     white-space: normal;
-    word-break: break-word;
+    word-break: normal;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 }
 
 .break-word {
-  overflow-wrap: break-word; /* Renamed property in CSS3 draft spec */
+  overflow-wrap: break-word !important; /* Renamed property in CSS3 draft spec */
+  word-wrap: break-word !important; /* Legacy property for older browsers */
+  word-break: normal !important; /* Don't break words mid-word */
+  hyphens: auto !important; /* Add hyphens when breaking */
   width: 100%;
 }
 

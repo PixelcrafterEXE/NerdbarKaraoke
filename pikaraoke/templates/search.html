@@ -4,100 +4,276 @@
 <style>
 	.optgroup-header {
 		font-weight: bold;
+		color: #c8f3f1;
 	}
 
 	.row {
 		display: flex;
-		/* equal height of the children */
-		border-bottom: 1px solid #cccccc;
+		align-items: center;
+		border-bottom: none;
+		padding: 8px 0;
 	}
 
 	.col-icon {
-		padding-left: 1px;
+		padding-left: 0;
+		padding-right: 12px;
+		flex-shrink: 0;
 	}
 
 	.col-text {
-		padding-left: 2px;
-		font-size: 120%;
+		padding-left: 0;
+		font-size: 0.95rem;
+		color: #e7eef8;
+		flex: 1;
 	}
 
 	#youtube-link {
-		font-size: 80%;
+		font-size: 0.75rem;
+		color: #2aafaf;
+		word-break: break-all;
+		transition: color 0.2s ease;
+	}
+
+	#youtube-link:hover {
+		color: #3ecdcd;
 	}
 
 	.selectize-input {
 		height: 40px;
-		border-top-right-radius: 0;
-		border-bottom-right-radius: 0;
+		border-top-right-radius: 0 !important;
+		border-bottom-right-radius: 0 !important;
 		font-size: 1rem;
+		background-color: #2b2f34 !important;
+		border-color: rgba(255, 255, 255, 0.1) !important;
+		color: #e7eef8 !important;
 	}
 
+	.selectize-input input {
+		color: #e7eef8 !important;
+		background-color: transparent !important;
+	}
+
+	.selectize-input input::placeholder {
+		color: rgba(232, 238, 248, 0.5) !important;
+	}
+
+	.selectize-input.focus {
+		border-color: #2aafaf !important;
+		box-shadow: 0 0 0 2px rgba(42, 175, 175, 0.2) !important;
+	}
+
+	/* Selectize dropdown styling */
+	.selectize-dropdown {
+		background-color: #2b2f34 !important;
+		border-color: rgba(255, 255, 255, 0.1) !important;
+	}
+
+	.selectize-dropdown-content {
+		background-color: #2b2f34 !important;
+	}
+
+	.selectize-option {
+		color: #e7eef8 !important;
+		background-color: #2b2f34 !important;
+	}
+
+	.selectize-option:hover {
+		background-color: rgba(42, 175, 175, 0.15) !important;
+		color: #c8f3f1 !important;
+	}
+
+	.selectize-option.active {
+		background-color: rgba(42, 175, 175, 0.25) !important;
+		color: #c8f3f1 !important;
+	}
+
+	.selectize-dropdown-content .option {
+		color: #e7eef8 !important;
+		background-color: #2b2f34 !important;
+	}
+
+	.selectize-dropdown-content .option:hover {
+		background-color: rgba(42, 175, 175, 0.15) !important;
+		color: #c8f3f1 !important;
+	}
+
+	.selectize-dropdown .active {
+		background-color: rgba(42, 175, 175, 0.3) !important;
+		color: #c8f3f1 !important;
+	}
+
+	.selectize-dropdown .active.create {
+		color: #c8f3f1 !important;
+	}
+
+	.selectize-dropdown [data-selectable] {
+		color: #e7eef8 !important;
+	}
+
+	.selectize-dropdown [data-selectable] .highlight {
+		background: rgba(42, 175, 175, 0.2) !important;
+		color: #c8f3f1 !important;
+	}
+
+	/* Ensure selectize dropdown container is properly styled */
+	.selectize-dropdown,
+	.selectize-dropdown.single {
+		background-color: #2b2f34 !important;
+		border-color: rgba(42, 175, 175, 0.3) !important;
+		z-index: 1000 !important;
+	}
+
+	.selectize-dropdown-content {
+		background-color: #2b2f34 !important;
+	}
+
+	.selectize-input.input {
+		background-color: #2b2f34 !important;
+		color: #e7eef8 !important;
+	}
+
+	.optgroup-header {
+		color: #c8f3f1 !important;
+		background-color: #252930 !important;
+	}
+
+	.selectize-dropdown-content .option.selected,
+	.selectize-option.selected,
+	.selectize-option.active,
+	.selectize-dropdown-content .option.active {
+		background-color: rgba(42, 175, 175, 0.3) !important;
+		color: #c8f3f1 !important;
+		background: rgba(42, 175, 175, 0.3) !important;
+	}
+
+	/* Native option element styling */
+	#song-to-add option {
+		background-color: #2b2f34 !important;
+		color: #e7eef8 !important;
+	}
+
+	#song-to-add option:checked {
+		background: linear-gradient(rgba(42, 175, 175, 0.5), rgba(42, 175, 175, 0.5)) !important;
+		background-color: rgba(42, 175, 175, 0.5) !important;
+		color: #c8f3f1 !important;
+	}
+
+	#song-to-add option:hover {
+		background: linear-gradient(rgba(42, 175, 175, 0.5), rgba(42, 175, 175, 0.5)) !important;
+		background-color: rgba(42, 175, 175, 0.5) !important;
+		color: #c8f3f1 !important;
+	}
+
+	/* Remove default select appearance and use custom styling */
+	#song-to-add {
+		appearance: none !important;
+		-webkit-appearance: none !important;
+		-moz-appearance: none !important;
+	}
+
+	/* Search results styling */
 	ul.search_result_items {
 		list-style: none;
 		padding: 0;
 		margin: 0;
 	}
+
 	ul.search_result_items li {
 		text-align: center;
-		margin-bottom: 1rem;
+		margin-bottom: 0;
+		padding: 12px;
+		border-radius: 8px;
+		margin-bottom: 8px;
+		background: rgba(42, 43, 45, 0.5);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		transition: all 0.3s ease;
+		position: relative;
 	}
-	ul.search_result_items li:nth-child(odd) {
-		background-color: rgb(50, 55, 55);
+
+	ul.search_result_items li:hover {
+		background: rgba(42, 175, 175, 0.08);
+		border-color: rgba(42, 175, 175, 0.2);
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	}
+
 	.search_result_items_meta {
 		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0 1rem 1rem 1rem;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: flex-start;
+		padding: 0;
 		text-align: left;
-		margin: 0 .75rem .75rem .75rem;
+		margin: 0;
+		gap: 8px;
+		color: #e7eef8;
+		width: 100%;
+		padding-right: 120px;
 	}
+
+	.search_result_items_meta span {
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
 	.search_result_items_download {
-		margin-left: 1rem;
+		position: absolute;
+		bottom: 12px;
+		right: 12px;
+		margin: 0;
+		flex-shrink: 0;
 	}
+
 	@media screen and (min-width: 768px) {
-		{# ul.search_result_items img {
-			width: 30%;
-		} #}
 		ul.search_result_items li {
 			display: flex;
+			align-items: flex-start;
 		}
+
 		.search_result_items_meta {
-			align-items: start;
+			align-items: center;
 			flex: 1;
-			margin: .75rem;
-			padding-top: 1rem;
+			padding: 0;
+			margin: 0;
 		}
 	}
 
-	/* Wrapper da imagem */
+	/* Image wrapper styling */
 	#search-results .img-wrapper {
 		position: relative;
 		display: inline-block;
 		cursor: pointer;
+		border-radius: 8px;
+		overflow: hidden;
+		flex-shrink: 0;
+		width: 100%;
+		max-width: 180px;
 	}
 
 	#search-results .img-wrapper img {
 		display: block;
 		transition: opacity 0.3s ease;
 		width: 100%;
+		height: auto;
+		border-radius: 6px;
 	}
 
 	#search-results .img-wrapper:hover img {
 		opacity: 0.7;
-		box-shadow: 0px 0px 3px 1px #878787;
 	}
 
-	/* Círculo de fundo */
+	/* Play button background circle */
 	#search-results .img-wrapper::before {
 		content: "";
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		width: 80px;
-		height: 80px;
-		background-color: rgba(0, 0, 0, 0.6);
+		width: 70px;
+		height: 70px;
+		background-color: rgba(42, 175, 175, 0.85);
 		border-radius: 50%;
 		opacity: 0;
 		transition: opacity 0.3s ease;
@@ -105,38 +281,39 @@
 		z-index: 1;
 	}
 
-	/* Ícone de play do Fontello */
+	/* Play icon */
 	#search-results .img-wrapper::after {
 		font-family: "fontello";
 		content: "\e800";
 		position: absolute;
 		top: 50%;
-		left: 51%;
+		left: 50%;
 		transform: translate(-50%, -50%);
-		font-size: 2rem;
+		font-size: 2.5rem;
 		color: white;
 		opacity: 0;
 		transition: all 0.3s ease;
-		text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 		pointer-events: none;
 		z-index: 2;
 	}
 
-	/* Mostra o play ao passar o mouse */
+	/* Show play button on hover */
 	#search-results .img-wrapper:hover::before,
 	#search-results .img-wrapper:hover::after {
 		opacity: 1;
 	}
 
 	#search-results .img-wrapper:hover::after {
-		transform: translate(-50%, -50%) scale(1.2);
+		transform: translate(-50%, -50%) scale(1.1);
 	}
 
+	/* Video player modal */
 	.video-container {
 		position: relative;
-		padding-bottom: 56.25%; /* Proporção 16:9 */
+		padding-bottom: 56.25%; /* 16:9 aspect ratio */
 		height: 0;
 		overflow: hidden;
+		border-radius: 8px;
 	}
 
 	.video-container iframe {
@@ -145,6 +322,73 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
+		border-radius: 8px;
+	}
+
+	/* Advanced settings styling */
+	#advanced-settings {
+		background: linear-gradient(135deg, rgba(42, 43, 45, 0.6), rgba(42, 43, 45, 0.4)) !important;
+		border: 1px solid rgba(42, 175, 175, 0.2) !important;
+		border-radius: 8px;
+		padding: 16px;
+	}
+
+	#advanced-settings .label {
+		color: #e7eef8;
+		margin-bottom: 8px;
+	}
+
+	#advanced-settings input[type="text"] {
+		background-color: #2b2f34 !important;
+		border-color: rgba(255, 255, 255, 0.1) !important;
+		color: #e7eef8 !important;
+	}
+
+	#advanced-settings input[type="text"]:focus {
+		border-color: #2aafaf !important;
+		box-shadow: 0 0 0 2px rgba(42, 175, 175, 0.2) !important;
+	}
+
+	/* Checkbox styling */
+	.checkbox {
+		accent-color: #2aafaf;
+	}
+
+	/* Search info message styling */
+	.message {
+		background-color: rgba(42, 175, 175, 0.1) !important;
+		border-left: 4px solid #2aafaf !important;
+		border-radius: 6px;
+	}
+
+	.message-body {
+		background-color: transparent !important;
+		color: #e7eef8;
+		padding: 12px 16px;
+	}
+
+	/* Responsive improvements */
+	@media (max-width: 600px) {
+		ul.search_result_items li .columns {
+			flex-direction: column !important;
+		}
+
+		#search-results .img-wrapper {
+			max-width: 100% !important;
+			width: 100% !important;
+			margin-bottom: 12px !important;
+		}
+
+		.search_result_items_meta {
+			width: 100% !important;
+			padding-right: 0 !important;
+		}
+
+		.search_result_items_download {
+			position: static !important;
+			align-self: flex-start;
+			margin-top: 8px;
+		}
 	}
 </style>
 <script>
@@ -505,20 +749,20 @@
 				<div class="message-body">
 					<div class="columns is-vcentered is-mobile">
 						<div class="column is-narrow">
-							<span class="icon has-text-warning">
+							<span class="icon has-text-info">
 								{# MSG: Info icon at the start of the help text below the search bar. #}
-								<i class="icon icon-info-circled-1 is-size-4" title="Info"></i>
+								<i class="icon icon-info-circled-1 is-size-5" title="Info"></i>
 							</span>
 						</div>
-						<div class="column has-text-warning-light">
-							<p class="mb-1 is-italic">
-								{# MSG: Help text below the search bar. #} {% trans -%}- Type a song (title/artist) to search
-								the available songs and click 'Add to queue' to add it to the queue. {%- endtrans %}
-							</p>
-							<p class="is-italic">
-								{# MSG: Additonal help text below the search bar. #} {% trans -%}- If the song doesn't appear in
-								the "Available Songs" dropdown, click 'Search' to find it on Youtube {%- endtrans %}
-							</p>
+						<div class="column has-text-info-light">
+							<div class="mb-2">
+								<p class="mb-1" style="font-weight: 600; color: #c8f3f1;">
+									{# MSG: Help text below the search bar. #} {% trans -%}Search for songs{%- endtrans %}
+								</p>
+								<p style="font-size: 0.9rem; color: #b7c0cc; line-height: 1.5;">
+									{# MSG: Help text below the search bar. #} {% trans -%}Type a song title or artist name to search the available local library, or use 'Search' to find songs on YouTube. {%- endtrans %}
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -527,17 +771,17 @@
 	</div>
 
 	<div>
-		<div id="advanced-settings" class="box has-background-black-bis" style="margin-top: 10px; display: none">
-			<div class="control">
+		<div id="advanced-settings" class="box" style="margin-top: 12px; display: none;">
+			<div class="control mb-4">
 				<label class="checkbox is-flex is-align-items-center">
 					<input type="checkbox" class="checkbox" id="include-non-karaoke" name="include-non-karaoke" />
 					{# MSG: Checkbox label which enables matching songs which are not karaoke versions (i.e. the songs still
-					have a singer and are not just instrumentals.) #} {% trans %}Include non-karaoke matches{% endtrans %}
+					have a singer and are not just instrumentals.) #} <span style="margin-left: 8px;">{% trans %}Include non-karaoke matches{% endtrans %}</span>
 				</label>
 			</div>
-			<hr />
+			<hr style="background-color: rgba(255, 255, 255, 0.1);" />
 			<div class="control">
-				<div class="label">
+				<div class="label" style="font-weight: 600;">
 					{# MSG: Label for an input which takes a YouTube url directly instead of searching titles. #} {% trans
 					%}Direct download YouTube url:{% endtrans %}
 				</div>
@@ -551,14 +795,14 @@
 					/>
 					<input class="song-added-by" type="hidden" name="song-added-by" />
 					<input class="song-title" type="hidden" name="song-title" value="" />
-					<div class="field" style="margin-top: 5px">
+					<div class="field" style="margin-top: 12px;">
 						<label class="checkbox is-flex is-align-items-center">
 							<input type="checkbox" class="checkbox" checked name="queue" id="add-to-queue-direct" />
 							{# MSG: Checkbox label which marks the song to be added to the queue after it finishes downloading.
-							#} {% trans %}Add to queue once downloaded{% endtrans %}
+							#} <span style="margin-left: 8px;">{% trans %}Add to queue once downloaded{% endtrans %}</span>
 						</label>
 					</div>
-					<div class="has-text-right" style="margin-top: 5px">
+					<div class="has-text-right" style="margin-top: 16px;">
 						<button class="button is-rounded is-primary" disabled id="direct-download-button" type="submit">
 							{# MSG: Button label for the direct download form's submit button. #} {% trans %}Download{%
 							endtrans %}
@@ -589,12 +833,15 @@
 	{% if search_results %}
 	<div class="field" id="container_search_result">
 		<form action="{{ url_for('search.download') }}" method="post">
-			<label class="label">
-				{# MSG: Html text which displays what was searched for, in quotes. #} {% trans search_term=search_string -%}
-				Search results for
-				<small><i>'{{search_string}}'</i></small>
-				{%- endtrans %}
-			</label>
+			<div class="mb-4">
+				<p style="font-size: 0.9rem; color: #b7c0cc; margin-bottom: 8px;">
+					{# MSG: Html text which displays what was searched for, in quotes. #} {% trans search_term=search_string -%}
+					Search results for{%- endtrans %}
+				</p>
+				<p style="font-weight: 600; color: #c8f3f1; font-size: 1.1rem;">
+					<i>'{{search_string}}'</i>
+				</p>
+			</div>
 			<div class="is-hidden">
 				<div class="field select">
 					<select id="search_result_selector" name="song-url">
@@ -617,11 +864,11 @@
 				<p class="has-text-centered-mobile"><img id="youtube-thumb" /></p>
 			</div>
 
-			<div class="field">
+			<div class="field mb-3">
 				<label class="checkbox is-flex is-align-items-center">
 					<input type="checkbox" checked name="queue" id="add-to-queue-search" class="checkbox" />
-					{# MSG: Checkbox label which marks the song to be added to the queue after it finishes downloading. #} {%
-					trans %}Add to queue once downloaded{% endtrans %}
+					{# MSG: Checkbox label which marks the song to be added to the queue after it finishes downloading. #} 
+					<span style="margin-left: 8px;">{% trans %}Add to queue once downloaded{% endtrans %}</span>
 				</label>
 			</div>
 			<div class="field is-hidden">
@@ -631,16 +878,16 @@
 				</button>
 			</div>
 		</form>
-		<ul id="search-results" class="search_result_items">
+				<ul id="search-results" class="search_result_items">
 			{% for title,url,id in search_results %}
 			<li data-ytID="{{id}}" data-ytTitle="{{title}}" value="{{url}}" data-index="{{loop.index0}}">
-				<div class="columns">
-					<div class="img-wrapper column is-one-third" data-url="{{url}}">
+				<div class="columns is-mobile" style="margin: 0;">
+					<div class="img-wrapper column is-narrow is-full-mobile" data-url="{{url}}" style="margin: 0;">
 						<img src="https://img.youtube.com/vi/{{id}}/0.jpg" />
 					</div>
-					<div class="search_result_items_meta column">
-						{{title}}
-						<button class="button search_result_items_download">Download</button>
+					<div class="search_result_items_meta column" style="margin: 0;">
+						<span>{{title}}</span>
+						<button class="button is-warning search_result_items_download">Download</button>
 					</div>
 				</div>
 			</li>
