@@ -144,6 +144,7 @@ class DownloadManager:
 
         Runs indefinitely, blocking on queue.get() until items are available.
         Each download is processed completely before the next one starts.
+        Handles both YouTube downloads and local file transcoding.
         """
         while True:
             download_request = self.download_queue.get()
@@ -157,26 +158,46 @@ class DownloadManager:
 
             self._is_downloading = True
 
-            # Initialize active download state
-            self.active_download = {
-                "title": download_request.get("display_title", download_request["video_url"]),
-                "url": download_request["video_url"],
-                "user": download_request["user"],
-                "progress": 0.0,
-                "status": "starting",
-                "eta": "--:--",
-                "speed": "---",
-            }
+            # Check if this is a transcoding request or a download request
+            is_transcode = download_request.get("is_transcode", False)
 
             try:
-                self._execute_download(
-                    download_request["video_url"],
-                    download_request["enqueue"],
-                    download_request["user"],
-                    download_request["title"],
-                )
+                if is_transcode:
+                    # Initialize active transcode state
+                    self.active_download = {
+                        "title": download_request.get("display_title", "Transcoding"),
+                        "file": download_request["file_path"],
+                        "user": download_request["user"],
+                        "progress": 0.0,
+                        "status": "starting",
+                    }
+
+                    self._execute_transcode(
+                        download_request["file_path"],
+                        download_request["enqueue"],
+                        download_request["user"],
+                        download_request["title"],
+                    )
+                else:
+                    # Initialize active download state
+                    self.active_download = {
+                        "title": download_request.get("display_title", download_request["video_url"]),
+                        "url": download_request["video_url"],
+                        "user": download_request["user"],
+                        "progress": 0.0,
+                        "status": "starting",
+                        "eta": "--:--",
+                        "speed": "---",
+                    }
+
+                    self._execute_download(
+                        download_request["video_url"],
+                        download_request["enqueue"],
+                        download_request["user"],
+                        download_request["title"],
+                    )
             except Exception as e:
-                logging.error(f"Error processing download: {e}")
+                logging.error(f"Error processing request: {e}")
             finally:
                 self._is_downloading = False
                 self.active_download = None
@@ -375,3 +396,342 @@ class DownloadManager:
                     k.log_and_send(_("Error queueing song: ") + displayed_title, "danger")
 
         return rc
+
+    def queue_transcode_file(
+        self,
+        file_path: str,
+        enqueue: bool = False,
+        user: str = "Pikaraoke",
+        title: str | None = None,
+    ) -> None:
+        """Queue a local video file for transcoding.
+
+        Similar to queue_download but processes local files instead of downloading.
+        Files are transcoded to MP4 format and saved in the songs folder.
+
+        Args:
+            file_path: Path to the video file to transcode.
+            enqueue: Whether to add to playback queue after transcoding.
+            user: Username to attribute the transcoding to.
+            title: Display title (defaults to filename if not provided).
+        """
+        from flask_babel import _
+
+        # Extract filename for display
+        filename = os.path.basename(file_path)
+        displayed_title = title if title else os.path.splitext(filename)[0]
+
+        # Check how many items are ahead (in queue + currently downloading)
+        pending_count = self.download_queue.qsize() + (1 if self._is_downloading else 0)
+
+        if pending_count > 0:
+            # MSG: Message shown when transcode is added to queue (not first in line)
+            self.karaoke.log_and_send(
+                _("Transcoding queued (#%d): %s") % (pending_count + 1, displayed_title)
+            )
+        else:
+            # MSG: Message shown when transcode is added and will start immediately
+            self.karaoke.log_and_send(_("Transcoding starting: %s") % displayed_title)
+
+        # If queue was just started (was not downloading before), emit event
+        if not self._is_downloading and self.download_queue.empty():
+            _broadcast_helper(self.app, "download_started")
+
+        transcode_data = {
+            "file_path": file_path,
+            "enqueue": enqueue,
+            "user": user,
+            "title": title,
+            "display_title": displayed_title,
+            "is_transcode": True,  # Flag to distinguish from downloads
+        }
+
+        # Add to the download queue and shadow list
+        self.download_queue.put(transcode_data)
+        self.pending_downloads.append(transcode_data)
+
+    def _execute_transcode(
+        self,
+        file_path: str,
+        enqueue: bool,
+        user: str,
+        title: str | None,
+    ) -> int:
+        """Execute transcoding of a video file to MP4 format."""
+        from flask_babel import _
+
+        k = self.karaoke
+        filename = os.path.basename(file_path)
+        displayed_title = title if title else os.path.splitext(filename)[0]
+
+        k.log_and_send(_("Transcoding file: %s") % displayed_title)
+
+        if self.active_download:
+            self.active_download["progress"] = 0
+            self.active_download["status"] = "transcoding"
+
+        try:
+            # Generate unique output filename
+            output_path = os.path.join(k.download_path, f"{displayed_title}.mp4")
+            counter = 1
+            while os.path.exists(output_path):
+                output_path = os.path.join(k.download_path, f"{displayed_title}_{counter}.mp4")
+                counter += 1
+
+            # Check if input has audio stream
+            has_audio = False
+            try:
+                probe_result = subprocess.run(
+                    ["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries", "stream=codec_type", "-of", "default=noprint_wrappers=1:nokey=1", file_path],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                has_audio = probe_result.stdout.strip() == "audio"
+            except Exception as e:
+                logging.warning(f"Could not probe audio stream: {e}")
+            
+            if not has_audio:
+                # For video-only files, generate silence to match video duration
+                try:
+                    duration_result = subprocess.run(
+                        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", file_path],
+                        capture_output=True,
+                        text=True,
+                        timeout=5
+                    )
+                    video_duration = float(duration_result.stdout.strip())
+                    # Create filter string with exact duration
+                    audio_input = f"anullsrc=channel_layout=stereo:sample_rate=48000[a];[a]atrim=duration={video_duration}"
+                except (ValueError, subprocess.TimeoutExpired):
+                    # Fallback: use standard anullsrc without trimming (may create very long audio)
+                    logging.warning("Could not get video duration, using standard silent audio")
+                    audio_input = "anullsrc=channel_layout=stereo:sample_rate=48000"
+                
+                cmd = [
+                    "ffmpeg", "-nostdin",
+                    "-i", file_path,
+                    "-f", "lavfi", "-i", audio_input,
+                    "-c:v", "libx264", "-profile:v", "high", "-preset", "medium", "-crf", "23", "-pix_fmt", "yuv420p",
+                    "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
+                    "-map", "0:v:0", "-map", "1:a:0",
+                    "-movflags", "+faststart", "-f", "mp4", "-y",
+                    output_path,
+                ]
+            else:
+                # For files with audio, standard transcode
+                cmd = [
+                    "ffmpeg",
+                    "-nostdin",
+                    "-i", file_path,
+                    "-c:v", "libx264",
+                    "-profile:v", "high",
+                    "-preset", "medium",
+                    "-crf", "23",
+                    "-pix_fmt", "yuv420p",
+                    "-c:a", "aac",
+                    "-b:a", "192k",
+                    "-ar", "48000",
+                    "-ac", "2",
+                    "-movflags", "+faststart",
+                    "-f", "mp4",
+                    "-y",
+                    output_path,
+                ]
+
+            logging.debug("Transcode command: " + " ".join(cmd))
+
+            # Use Popen to capture output in real-time
+            env = os.environ.copy()
+            env.setdefault("PYTHONUNBUFFERED", "1")
+
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1,  # Line buffered
+                universal_newlines=True,
+                env=env,
+            )
+
+            output_buffer = []
+            stderr_buffer = []
+            
+            def read_stream(stream, buffer_list):
+                """Read from a stream and buffer output."""
+                try:
+                    for line in stream:
+                        if line:
+                            buffer_list.append(line)
+                except:
+                    pass
+
+            # Start threads to read from both streams
+            from threading import Thread
+            import time
+            
+            stdout_thread = Thread(target=read_stream, args=(process.stdout, output_buffer), daemon=True)
+            stderr_thread = Thread(target=read_stream, args=(process.stderr, stderr_buffer), daemon=True)
+            
+            stdout_thread.start()
+            stderr_thread.start()
+            
+            # Parse progress while process is running
+            duration = None
+            duration_regex = re.compile(r"Duration: (\d+):(\d+):(\d+\.\d+)")
+            progress_regex = re.compile(r"time=(\d+):(\d+):(\d+\.\d+)")
+            
+            while True:
+                # Check if process is still running
+                if process.poll() is not None:
+                    # Process has ended
+                    stdout_thread.join(timeout=1)
+                    stderr_thread.join(timeout=1)
+                    break
+                
+                # Update progress from accumulated output
+                output = "".join(output_buffer)
+                
+                if duration is None:
+                    match = duration_regex.search(output)
+                    if match:
+                        hours = int(match.group(1))
+                        minutes = int(match.group(2))
+                        seconds = float(match.group(3))
+                        duration = hours * 3600 + minutes * 60 + seconds
+                
+                if self.active_download and duration:
+                    match = progress_regex.search(output)
+                    if match:
+                        try:
+                            h = int(match.group(1))
+                            m = int(match.group(2))
+                            s = float(match.group(3))
+                            current_time = h * 3600 + m * 60 + s
+                            percent = (current_time / duration) * 100.0
+                            percent = min(100.0, max(0.0, percent))
+                            self.active_download["progress"] = percent
+                        except (ValueError, ZeroDivisionError):
+                            pass
+                
+                time.sleep(0.1)
+
+            rc = process.poll()
+            output = "".join(output_buffer)
+            stderr_output = "".join(stderr_buffer)
+
+            if rc != 0:
+                # MSG: Message shown when transcoding fails
+                k.log_and_send(_("Error transcoding file: ") + displayed_title, "danger")
+                logging.error(f"FFmpeg error code {rc}")
+                logging.error(f"Input file: {file_path}")
+                logging.error(f"Output file: {output_path}")
+                logging.error(f"ffmpeg stdout: {output}")
+                logging.error(f"ffmpeg stderr: {stderr_output}")
+                
+                # Clean up partial output file if it exists
+                try:
+                    if os.path.exists(output_path):
+                        os.remove(output_path)
+                        logging.info(f"Cleaned up partial output file: {output_path}")
+                except Exception as e:
+                    logging.warning(f"Could not delete partial output file {output_path}: {e}")
+                
+                self.download_errors.append(
+                    {
+                        "id": str(uuid.uuid4()),
+                        "title": displayed_title,
+                        "file": file_path,
+                        "user": user,
+                        "error": stderr_output or output or "Unknown error",
+                    }
+                )
+            else:
+                if self.active_download:
+                    self.active_download["progress"] = 100
+                    self.active_download["status"] = "complete"
+
+                if enqueue:
+                    # MSG: Message shown after transcoding is completed and queued
+                    k.log_and_send(_("Transcoded and queued: %s") % displayed_title, "success")
+                else:
+                    # MSG: Message shown after transcoding is completed but not queued
+                    k.log_and_send(_("Transcoded: %s") % displayed_title, "success")
+
+                # Verify the output file was created
+                if not os.path.exists(output_path):
+                    logging.error(f"Transcoded file not found at {output_path}")
+                    k.log_and_send(_("Error: Transcoded file was not created: %s") % displayed_title, "danger")
+                    self.download_errors.append(
+                        {
+                            "id": str(uuid.uuid4()),
+                            "title": displayed_title,
+                            "file": file_path,
+                            "user": user,
+                            "error": "Transcoded file not created despite ffmpeg exit code 0",
+                        }
+                    )
+                else:
+                    # Verify file has content (at least 1MB for a valid video)
+                    file_size = os.path.getsize(output_path)
+                    min_size = 1024 * 1024  # 1MB minimum
+                    
+                    if file_size < min_size:
+                        logging.error(f"Transcoded file too small ({file_size} bytes) at {output_path}")
+                        k.log_and_send(_("Error: Transcoded file is too small (incomplete): %s") % displayed_title, "danger")
+                        try:
+                            os.remove(output_path)
+                        except:
+                            pass
+                        self.download_errors.append(
+                            {
+                                "id": str(uuid.uuid4()),
+                                "title": displayed_title,
+                                "file": file_path,
+                                "user": user,
+                                "error": f"Transcoded file incomplete (only {file_size} bytes)",
+                            }
+                        )
+                    else:
+                        logging.info(f"Transcoded file created successfully: {output_path} ({file_size} bytes)")
+                        # Add the transcoded file to the available songs
+                        song_is_valid = k.available_songs.add_if_valid(output_path)
+
+                        if song_is_valid:
+                            # Don't trim silence on transcoded files - they're already the right length
+                            # (trim_silence would corrupt files with generated audio like silent tracks)
+                            if enqueue:
+                                k.queue_manager.enqueue(
+                                    output_path, user, log_action=False, bypass_queue_restrictions=True
+                                )
+                        else:
+                            # MSG: Message shown after transcoding is completed but the adding to available songs fails
+                            k.log_and_send(_("Error adding transcoded song: %s") % displayed_title, "danger")
+
+            # Clean up the temporary source file
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                logging.warning(f"Could not delete temporary file {file_path}: {e}")
+
+        except Exception as e:
+            logging.error(f"Error during transcoding: {e}")
+            # MSG: Message shown when transcoding encounters an exception
+            k.log_and_send(_("Transcoding error: ") + displayed_title, "danger")
+            self.download_errors.append(
+                {
+                    "id": str(uuid.uuid4()),
+                    "title": displayed_title,
+                    "file": file_path,
+                    "user": user,
+                    "error": str(e),
+                }
+            )
+            # Clean up temporary file on error
+            try:
+                os.remove(file_path)
+            except Exception:
+                pass
+
+        return rc if 'rc' in locals() else 1

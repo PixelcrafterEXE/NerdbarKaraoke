@@ -1,11 +1,16 @@
 """File management routes for browsing, editing, and deleting songs."""
 
+import json
+import logging
 import os
+import tempfile
+import uuid
 from urllib.parse import unquote
 
 import flask_babel
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for, jsonify
 from flask_paginate import Pagination, get_page_parameter
+from werkzeug.utils import secure_filename
 
 from pikaraoke.lib.current_app import get_karaoke_instance, get_site_name, is_admin
 
@@ -191,3 +196,48 @@ def edit_file():
             # MSG: Message shown after trying to edit a song without specifying the filename.
             flash(_("Error: No filename parameters were specified!"), "is-danger")
         return redirect(url_for("files.browse"))
+
+
+@files_bp.route("/files/upload_video", methods=["POST"])
+def upload_video():
+    """Upload and transcode a video file."""
+    k = get_karaoke_instance()
+    
+    if not is_admin():
+        return jsonify({"success": False, "message": _("You don't have permission to upload videos")}), 403
+    
+    if "video" not in request.files or request.files["video"].filename == "":
+        return jsonify({"success": False, "message": _("No video file selected")}), 400
+    
+    video_file = request.files["video"]
+    file_ext = os.path.splitext(video_file.filename)[1].lower()
+    
+    # Validate file extension
+    if file_ext not in {".mp4", ".mkv", ".avi", ".webm", ".mov"}:
+        return jsonify({"success": False, "message": _("File type not supported. Allowed: MP4, MKV, AVI, WebM, MOV")}), 400
+    
+    # Save to temporary location with UUID filename
+    tmp_file_path = os.path.join(tempfile.gettempdir(), f"pikaraoke_upload_{uuid.uuid4().hex}{file_ext}")
+    
+    try:
+        video_file.save(tmp_file_path)
+        
+        # Queue for transcoding
+        display_title = os.path.splitext(secure_filename(video_file.filename))[0]
+        k.download_manager.queue_transcode_file(
+            tmp_file_path,
+            enqueue=False,
+            user="Pikaraoke",
+            title=display_title,
+        )
+        
+        return jsonify({"success": True, "message": display_title})
+    
+    except Exception as e:
+        logging.error(f"Error uploading video: {e}")
+        try:
+            if os.path.exists(tmp_file_path):
+                os.remove(tmp_file_path)
+        except:
+            pass
+        return jsonify({"success": False, "message": _("Error uploading video")}), 500

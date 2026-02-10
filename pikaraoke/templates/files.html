@@ -37,6 +37,87 @@
 				}
 			});
 		});
+
+		// Drag and drop support for video files (admin only)
+		{% if admin %}
+		const dropZone = document.body;
+		let dragCounter = 0;
+
+		dropZone.addEventListener('dragenter', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			dragCounter++;
+			$('#drop-overlay').fadeIn();
+		});
+
+		dropZone.addEventListener('dragleave', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			dragCounter--;
+			if (dragCounter === 0) {
+				$('#drop-overlay').fadeOut();
+			}
+		});
+
+		dropZone.addEventListener('dragover', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
+		dropZone.addEventListener('drop', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			dragCounter = 0;
+			$('#drop-overlay').fadeOut();
+
+			const files = e.dataTransfer.files;
+			if (files.length > 0) {
+				uploadVideoFiles(files);
+			}
+		});
+
+		function uploadVideoFiles(files) {
+			const supportedFormats = ['mp4', 'mkv', 'avi', 'webm', 'mov'];
+			const videoFiles = [];
+
+			for (let file of files) {
+				const ext = file.name.split('.').pop().toLowerCase();
+				if (supportedFormats.includes(ext)) {
+					videoFiles.push(file);
+				}
+			}
+
+			if (videoFiles.length === 0) {
+				showNotification("No valid video files found. Supported formats: MP4, MKV, AVI, WebM, MOV", "is-warning");
+				return;
+			}
+
+			// Upload each file
+			videoFiles.forEach((file, index) => {
+				const formData = new FormData();
+				formData.append('video', file);
+
+				$.ajax({
+					url: '{{ url_for("files.upload_video") }}',
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function(data) {
+						const obj = JSON.parse(data);
+						if (obj.success) {
+							showNotification("Transcoding: " + obj.message, "is-info");
+						} else {
+							showNotification("Error uploading " + file.name + ": " + obj.message, "is-danger");
+						}
+					},
+					error: function() {
+						showNotification("Error uploading " + file.name, "is-danger");
+					}
+				});
+			});
+		}
+		{% endif %}
 	});
 </script>
 
@@ -64,6 +145,34 @@
 	}
 	.break-word {
 		word-break: break-all; /* Ensures long words break to fit within the cell */
+	}
+
+	#drop-overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 150, 255, 0.2);
+		border: 3px dashed #0096ff;
+		z-index: 9999;
+		pointer-events: none;
+	}
+
+	#drop-overlay::before {
+		content: 'Drop video files here to upload';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-color: #0096ff;
+		color: white;
+		padding: 20px 40px;
+		border-radius: 8px;
+		font-weight: bold;
+		font-size: 18px;
+		white-space: nowrap;
 	}
 
 	@media screen and (max-width: 500px) {
@@ -154,4 +263,6 @@
 	</tr>
 </table>
 
-{{ pagination.links }} {% endblock %}
+{{ pagination.links }}
+{% if admin %}<div id="drop-overlay"></div>{% endif %}
+{% endblock %}
