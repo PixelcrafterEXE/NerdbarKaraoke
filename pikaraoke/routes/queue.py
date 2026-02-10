@@ -366,17 +366,25 @@ def enqueue():
     broadcast_event("queue_update")
     song_title = k.filename_from_path(song)
 
+    response_data = {"song": song_title, "success": True, "message": _("Song added to the queue: %s") % song_title}
+    
     if isinstance(rc, list):
         success = bool(rc[0])
         message = rc[1]
+        closing_ts = rc[2] if len(rc) > 2 else None
+        response_data = {"song": song_title, "success": success, "message": message}
+        if closing_ts:
+            response_data["closing_ts"] = closing_ts
     elif rc is False:
         success = False
         message = _("Song is already in the queue: %s") % song_title
+        response_data = {"song": song_title, "success": success, "message": message}
     else:
         success = True
         message = _("Song added to the queue: %s") % song_title
+        response_data = {"song": song_title, "success": success, "message": message}
 
-    return json.dumps({"song": song_title, "success": success, "message": message})
+    return json.dumps(response_data)
 
 
 @queue_bp.route("/queue/downloads")
