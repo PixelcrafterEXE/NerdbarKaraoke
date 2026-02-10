@@ -5,8 +5,10 @@
   // Pass admin status from server to JavaScript
   var isAdmin = JSON.parse('{{ admin | tojson }}');
   
-  // Pass voting enabled status from server to JavaScript
-  var votingEnabled = JSON.parse('{{ enable_voting | tojson }}');
+    // Pass queue mode from server to JavaScript
+    var queueMode = {{ queue_mode | tojson }};
+    // Enable voting UI only in democratic mode
+    var votingEnabled = (queueMode === "democratic");
 
     // Labels for shadowban toggle
     var shadowbanLabel = "{{ _('Shadowban') }}";
@@ -723,6 +725,25 @@
 {% endblock %}
 
 {% block content %}
+
+{% if queue_mode == "chronological" %}
+    {% set queue_mode_label = _( "Chronological" ) %}
+    {% set queue_mode_desc = _( "Songs play in the order they were added." ) %}
+{% elif queue_mode == "democratic" %}
+    {% set queue_mode_label = _( "Democratical" ) %}
+    {% set queue_mode_desc = _( "Songs are ordered by votes (highest first)." ) %}
+{% elif queue_mode == "fair" %}
+    {% set queue_mode_label = _( "Fair" ) %}
+    {% set queue_mode_desc = _( "Songs are ordered to rotate users; new users are prioritized, then the user who has waited the longest." ) %}
+{% else %}
+    {% set queue_mode_label = _( "Chronological" ) %}
+    {% set queue_mode_desc = _( "Songs play in the order they were added." ) %}
+{% endif %}
+
+<div class="notification is-dark mb-4" style="padding: 12px 16px;">
+    <p><strong>{{ _("Queue mode") }}:</strong> {{ queue_mode_label }}</p>
+    <p class="is-size-7">{{ queue_mode_desc }}</p>
+</div>
 
 <div class="box has-background-dark mb-4" style="padding: 12px 16px;">
     <div class="level is-mobile" style="margin-bottom: 0;">

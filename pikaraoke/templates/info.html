@@ -288,15 +288,17 @@
 					</div>
 
 					<div class="user-preference-container">
-						<input id="pref-fair-queue" type="checkbox" class="user-preference-checkbox checkbox" data-pref="enable_fair_queue" {% if enable_fair_queue == True %}checked{% endif %}>
-						<label class="label" for="pref-fair-queue">{# MSG: Checkbox label which enable/disables fair queue (round-robin) mode #} {% trans %}Enable fair queue (round-robin mode ensures users take turns){% endtrans %}
+						<label class="label" for="pref-queue-mode">
+							{# MSG: Label for selecting how queue order is determined. #}
+							{% trans %}Queue order mode{% endtrans %}
 						</label>
-					</div>
-
-					<div class="user-preference-container">
-						<input id="pref-voting" type="checkbox" class="user-preference-checkbox checkbox" data-pref="enable_voting" {% if enable_voting == True %}checked{% endif %}>
-						<label class="label" for="pref-voting">{# MSG: Checkbox label which enable/disables the voting system for queue songs #} {% trans %}Enable voting system (users can upvote/downvote songs to influence queue order){% endtrans %}
-						</label>
+						<div class="select">
+							<select id="pref-queue-mode" class="user-preference-input" data-pref="queue_mode" data-start-value="{{ queue_mode }}">
+								<option value="chronological" {% if queue_mode == "chronological" %}selected{% endif %}>{% trans %}Chronological{% endtrans %}</option>
+								<option value="democratic" {% if queue_mode == "democratic" %}selected{% endif %}>{% trans %}Democratical{% endtrans %}</option>
+								<option value="fair" {% if queue_mode == "fair" %}selected{% endif %}>{% trans %}Fair{% endtrans %}</option>
+							</select>
+						</div>
 					</div>
 
 				</div>

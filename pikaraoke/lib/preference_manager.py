@@ -38,14 +38,13 @@ class PreferenceManager:
         "disable_bg_video": False,
         "disable_score": False,
         "limit_user_songs_by": 0,
-        "enable_fair_queue": False,
+        "queue_mode": "chronological",  # "chronological", "democratic", or "fair"
         "cdg_pixel_scaling": False,
         "avsync": 0,
         "browse_results_per_page": 500,
         "low_score_phrases": "",
         "mid_score_phrases": "",
         "high_score_phrases": "",
-        "enable_voting": False,
         "song_add_cooldown_count": -1,
         "song_add_cooldown_duration": -1,
         "queue_add_open": True,
@@ -210,6 +209,29 @@ class PreferenceManager:
                 self.set(pref, cli_value)  # Persist CLI arg to config
             else:
                 setattr(self._target, pref, default)
+
+        self._apply_queue_mode(cli_overrides)
+
+    def _apply_queue_mode(self, cli_overrides: dict[str, Any]) -> None:
+        """Resolve queue mode and sync legacy flags on the target.
+
+                Priority:
+                    1) queue_mode config value
+                    2) default "chronological"
+        """
+        if self._target is None:
+            return
+
+        queue_mode = getattr(self._target, "queue_mode", None)
+
+        config_queue_mode = self.get("queue_mode", None)
+        if isinstance(config_queue_mode, str) and config_queue_mode in ("chronological", "democratic", "fair"):
+            queue_mode = config_queue_mode
+        else:
+            queue_mode = "chronological"
+            self.set("queue_mode", queue_mode)
+
+        setattr(self._target, "queue_mode", queue_mode)
 
     def reset_all(self) -> tuple[bool, str]:
         """Clear config file and reset target to defaults.

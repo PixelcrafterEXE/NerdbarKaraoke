@@ -15,6 +15,7 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 - Volume Normalization
 - Multi-language support (English, German)
 - User voting on songs in the queue (upvote/downvote)
+- Fair queue mode (users with fewer songs in the queue get priority)
 - Message of the day (MOTD) 
 - Queue open/close system with optional closing time
 - NFC-based Microphone tracking (song will wait for you, show singers on display)

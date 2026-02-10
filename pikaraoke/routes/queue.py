@@ -41,7 +41,7 @@ def queue():
         site_title=site_name,
         title="Queue",
         admin=is_admin(),
-        enable_voting=k.enable_voting,
+      queue_mode=k.queue_mode,
     )
 
 
@@ -292,7 +292,9 @@ def queue_edit():
 
           if matched_file:
             now_shadowbanned = k.queue_manager.toggle_shadowban(matched_file)
-            if not k.queue_manager._get_enable_fair_queue():
+            if k.queue_mode == "fair":
+              k.queue_manager._reorder_queue_fair()
+            elif k.queue_mode == "democratic":
               k.queue_manager._reorder_queue_by_votes()
             message = (
               _("Shadowbanned") if now_shadowbanned else _("Unshadowbanned")
@@ -487,8 +489,8 @@ def vote_on_song():
     """
     k = get_karaoke_instance()
 
-    # Check if voting is enabled
-    if not k.enable_voting:
+    # Check if voting is enabled (democratic queue mode)
+    if k.queue_mode != "democratic":
         return (
             json.dumps({"success": False, "error": "Voting is disabled"}),
             400,

@@ -131,7 +131,6 @@ class Karaoke:
         disable_bg_music: bool | None = None,
         disable_bg_video: bool | None = None,
         disable_score: bool | None = None,
-        enable_voting: bool | None = None,
         hide_notifications: bool | None = None,
         hide_overlay: bool | None = None,
         hide_url: bool | None = None,
@@ -258,7 +257,7 @@ class Karaoke:
         self.queue_manager = QueueManager(
             socketio=socketio,
             get_limit_user_songs_by=lambda: self.limit_user_songs_by,
-            get_enable_fair_queue=lambda: self.enable_fair_queue,
+            get_queue_mode=lambda: self.queue_mode,
             get_now_playing_user=lambda: self.now_playing_user,
             filename_from_path=self.filename_from_path,
             log_and_send=self.log_and_send,

@@ -596,13 +596,19 @@ msgid "Queue closing time (24-hour HH:MM, leave blank to disable)"
 msgstr ""
 
 #: pikaraoke/templates/info.html:292
-msgid "Enable fair queue (round-robin mode ensures users take turns)"
+msgid "Queue order mode"
 msgstr ""
 
 #: pikaraoke/templates/info.html:298
-msgid ""
-"Enable voting system (users can upvote/downvote songs to influence queue "
-"order)"
+msgid "Chronological"
+msgstr ""
+
+#: pikaraoke/templates/info.html:299
+msgid "Democratical"
+msgstr ""
+
+#: pikaraoke/templates/info.html:300
+msgid "Fair"
 msgstr ""
 
 #: pikaraoke/templates/info.html:308
@@ -1001,6 +1007,22 @@ msgstr ""
 
 #: pikaraoke/templates/queue.html:260
 msgid "Now"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:645
+msgid "Queue mode"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:646
+msgid "Songs play in the order they were added."
+msgstr ""
+
+#: pikaraoke/templates/queue.html:648
+msgid "Songs are ordered by votes (highest first)."
+msgstr ""
+
+#: pikaraoke/templates/queue.html:650
+msgid "Songs are ordered to rotate users; new users are prioritized, then the user who has waited the longest."
 msgstr ""
 
 #: pikaraoke/templates/queue.html:269 pikaraoke/templates/queue.html:453

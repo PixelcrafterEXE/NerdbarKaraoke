@@ -31,7 +31,7 @@ class QueueManager:
         self,
         socketio,
         get_limit_user_songs_by: Callable[[], int],
-        get_enable_fair_queue: Callable[[], bool],
+        get_queue_mode: Callable[[], str] | None = None,
         get_now_playing_user: Callable[[], str | None] | None = None,
         filename_from_path: Callable[[str, bool], str] | None = None,
         log_and_send: Callable[[str, str], None] | None = None,
@@ -56,7 +56,7 @@ class QueueManager:
         Args:
             socketio: SocketIO instance for real-time event emission.
             get_limit_user_songs_by: Callback to get max songs per user in queue.
-            get_enable_fair_queue: Callback to check if fair queue is enabled.
+            get_queue_mode: Callback to get queue mode (chronological/democratic/fair).
             get_now_playing_user: Callback to get current playing user.
             filename_from_path: Callback to extract clean filename from path.
             log_and_send: Callback to log and send notifications.
@@ -79,7 +79,7 @@ class QueueManager:
         self.queue: list[dict[str, Any]] = []
         self.socketio = socketio
         self._get_limit_user_songs_by = get_limit_user_songs_by
-        self._get_enable_fair_queue = get_enable_fair_queue
+        self._get_queue_mode = get_queue_mode or (lambda: "chronological")
         self._get_now_playing_user = get_now_playing_user
         self._filename_from_path = filename_from_path
         self._log_and_send = log_and_send
@@ -108,6 +108,11 @@ class QueueManager:
         self.shadowban_votes: dict[str, dict[str, int]] = {}
         self.song_durations: dict[str, int | None] = {}
 
+        # Fair queue playback history
+        self.played_users: set[str] = set()
+        self.last_played_order: dict[str, int] = {}
+        self.play_sequence = 0
+
     def is_song_in_queue(self, song_path: str) -> bool:
         """Check if a song is already in the queue.
 
@@ -124,7 +129,6 @@ class QueueManager:
 
     def is_user_limited(self, user: str) -> bool:
         """Check if a user has reached their queue limit.
-
         Args:
             user: Username to check.
 
@@ -474,12 +478,13 @@ class QueueManager:
                     self._log_and_send(
                         _("%s added to the queue: %s") % (user, queue_item["title"]), "info"
                     )
-                if self._get_enable_fair_queue():
-                    insert_pos = self._calculate_fair_queue_position(user)
-                    self.queue.insert(insert_pos, queue_item)
+                if self._get_queue_mode() == "fair":
+                    self.queue.append(queue_item)
+                    self._reorder_queue_fair()
                 else:
                     self.queue.append(queue_item)
-                    self._reorder_queue_by_votes()
+                    if self._get_queue_mode() == "democratic":
+                        self._reorder_queue_by_votes()
             self.update_queue_socket()
             if self._update_now_playing_socket:
                 self._update_now_playing_socket()
@@ -525,7 +530,6 @@ class QueueManager:
 
         for song in selected:
             self.enqueue(song, "Randomizer")
-
         if sample_size < amount:
             logging.warning("Ran out of songs! Only added %d" % sample_size)
             return False
@@ -671,10 +675,108 @@ class QueueManager:
         """Get the next song to play, skipping shadowbanned entries when possible."""
         if not self.queue:
             return None
+        if self._get_queue_mode() == "fair":
+            fair_next = self._get_fair_next_song()
+            if fair_next:
+                return fair_next
         for item in self.queue:
             if not self.is_shadowbanned(item["file"]):
                 return item
         return self.queue[0]
+
+    def _get_fair_next_song(self) -> dict[str, Any] | None:
+        """Select next song using fair queue playback history rules."""
+        candidates = self._get_fair_candidates()
+        if not candidates:
+            return None
+
+        # Prefer the first song whose user has never played before
+        for item in candidates:
+            user = (item.get("user") or "").strip()
+            if not user or user not in self.played_users:
+                return item
+
+        # Otherwise, pick the user whose last play was the longest ago
+        oldest_item = None
+        oldest_order = None
+        for item in candidates:
+            user = (item.get("user") or "").strip()
+            order = self.last_played_order.get(user, 0)
+            if oldest_order is None or order < oldest_order:
+                oldest_item = item
+                oldest_order = order
+        return oldest_item
+
+    def _get_fair_candidates(self) -> list[dict[str, Any]]:
+        """Return fair queue candidates, ignoring shadowbanned songs when possible."""
+        if not self.queue:
+            return []
+        non_shadowbanned = [item for item in self.queue if not self.is_shadowbanned(item["file"])]
+        return non_shadowbanned if non_shadowbanned else list(self.queue)
+
+    def _reorder_queue_fair(self) -> None:
+        """Reorder queue according to fair-queue playback history rules."""
+        if not self.queue:
+            return
+
+        non_shadowbanned = [item for item in self.queue if not self.is_shadowbanned(item["file"])]
+        shadowbanned = [item for item in self.queue if self.is_shadowbanned(item["file"])]
+        candidates = non_shadowbanned if non_shadowbanned else list(self.queue)
+
+        temp_played_users = set(self.played_users)
+        temp_last_played = dict(self.last_played_order)
+        temp_sequence = self.play_sequence
+
+        ordered: list[dict[str, Any]] = []
+        remaining = list(candidates)
+
+        while remaining:
+            chosen_index = None
+            for idx, item in enumerate(remaining):
+                user = (item.get("user") or "").strip()
+                if not user or user not in temp_played_users:
+                    chosen_index = idx
+                    break
+
+            if chosen_index is None:
+                oldest_order = None
+                for idx, item in enumerate(remaining):
+                    user = (item.get("user") or "").strip()
+                    order = temp_last_played.get(user, 0)
+                    if oldest_order is None or order < oldest_order:
+                        oldest_order = order
+                        chosen_index = idx
+
+            if chosen_index is None:
+                break
+
+            chosen = remaining.pop(chosen_index)
+            ordered.append(chosen)
+
+            user = (chosen.get("user") or "").strip()
+            if user:
+                temp_sequence += 1
+                temp_played_users.add(user)
+                temp_last_played[user] = temp_sequence
+
+        if non_shadowbanned:
+            self.queue = ordered + shadowbanned
+        else:
+            self.queue = ordered
+
+        self.update_queue_socket()
+        if self._update_now_playing_socket:
+            self._update_now_playing_socket()
+
+    def record_play(self, user: str | None) -> None:
+        """Record that a user's song has been played for fair-queue selection."""
+        if not user:
+            return
+        self.play_sequence += 1
+        self.played_users.add(user)
+        self.last_played_order[user] = self.play_sequence
+        if self._get_queue_mode() == "fair":
+            self._reorder_queue_fair()
 
     def pop_song_by_file(self, song_file: str) -> dict[str, Any] | None:
         """Remove and return a song entry by file path."""
@@ -747,8 +849,8 @@ class QueueManager:
 
         logging.debug(f"Vote recorded: {user} {vote_type}d {song_file} (net: {net_votes})")
 
-        # Reorder queue based on votes if fair queue is disabled
-        if not self._get_enable_fair_queue():
+        # Reorder queue based on votes only when voting is enabled and fair queue is disabled
+        if self._get_queue_mode() != "fair" and self._get_queue_mode() == "democratic":
             self._reorder_queue_by_votes()
 
         return {

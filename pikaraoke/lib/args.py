@@ -338,12 +338,6 @@ def parse_pikaraoke_args() -> argparse.Namespace:
         required=False,
     )
     parser.add_argument(
-        "--enable-voting",
-        action="store_true",
-        help="Enable voting system for songs in the queue to influence queue order",
-        required=False,
-    )
-    parser.add_argument(
         "--song-add-cooldown-count",
         help="Number of songs a user must add before cooldown is triggered (default: -1 = disabled)",
         default=None,
