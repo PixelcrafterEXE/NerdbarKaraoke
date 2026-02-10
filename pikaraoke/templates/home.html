@@ -266,12 +266,19 @@
 </h1>
 {% endblock %} {% block content %}
 
-<p class="is-size-4 has-text-warning" id="now-playing">&nbsp;</p>
-
-<hr />
-<h3>{# MSG: Title for the section displaying the next song to be played. #} {% trans %}Next Song{% endtrans %}</h3>
-<p id="up-next" class="has-text-warning"></p>
-<hr />
+<div class="columns is-vcentered">
+	<div class="column is-three-quarters">
+		<p class="is-size-4 has-text-warning" id="now-playing">&nbsp;</p>
+		
+		<hr />
+		<h3>{# MSG: Title for the section displaying the next song to be played. #} {% trans %}Next Song{% endtrans %}</h3>
+		<p id="up-next" class="has-text-warning"></p>
+		<hr />
+	</div>
+	<div class="column is-one-quarter has-text-centered control-box" style="display: none;">
+		<img id="bowser-gif" src="{{ url_for('static', filename='images/boswer.gif') }}" alt="Bowser dancing" />
+	</div>
+</div>
 
 {% if admin %}
 <div class="has-background-black-bis box control-box" style="display: none">

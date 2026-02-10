@@ -233,3 +233,24 @@ body.hide-cursor * {
   0% { background-color: #3273dc; }
   100% { background-color: transparent; }
 }
+
+/* Bowser GIF styling for now playing section */
+#bowser-gif {
+  max-width: 500px;
+  height: auto;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+}
+
+/* Responsive adjustments for Bowser GIF */
+@media (max-width: 1024px) {
+  #bowser-gif {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  #bowser-gif {
+    max-width: 200px;
+  }
+}
