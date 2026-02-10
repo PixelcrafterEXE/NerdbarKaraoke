@@ -283,7 +283,8 @@ class QueueManager:
         offset = remaining
 
         total_queue_len = len(self.queue) + (1 if extra_song_path else 0)
-        if total_queue_len > 0:
+        # Only add splash delay if there are queued songs (not just the song being added)
+        if len(self.queue) > 0:
             offset += splash_delay
 
         for idx, item in enumerate(self.queue):
@@ -304,13 +305,13 @@ class QueueManager:
 
         return offset
 
-    def can_add_song_before_closing(self, song_path: str) -> tuple[bool, str | None]:
+    def can_add_song_before_closing(self, song_path: str) -> tuple[bool, str | None, int | None]:
         if self._is_admin and self._is_admin():
-            return (True, None)
+            return (True, None, None)
 
         closing_ts = self._get_closing_timestamp()
         if not closing_ts:
-            return (True, None)
+            return (True, None, None)
 
         now_ts = time.time()
         current_end_offset = self._estimate_queue_end_offset_seconds(extra_song_path=None)
@@ -318,6 +319,7 @@ class QueueManager:
             return (
                 False,
                 _("Cannot add songs because queue timing cannot be estimated."),
+                closing_ts,
             )
 
         new_end_offset = self._estimate_queue_end_offset_seconds(extra_song_path=song_path)
@@ -325,25 +327,26 @@ class QueueManager:
             return (
                 False,
                 _("Cannot add this song because its duration is unknown."),
+                closing_ts,
             )
 
         current_end_ts = now_ts + current_end_offset
         if current_end_ts > closing_ts:
             return (
                 False,
-                _("Queue is closed. The queue already ends after %s.")
-                % self._format_closing_time_display(closing_ts),
+                _("Queue is closed. The queue already ends after %s."),
+                closing_ts,
             )
 
         new_end_ts = now_ts + new_end_offset
         if new_end_ts > closing_ts:
             return (
                 False,
-                _("Queue is closed. This song would end after %s.")
-                % self._format_closing_time_display(closing_ts),
+                _("Queue is closed. This song would end after %s."),
+                closing_ts,
             )
 
-        return (True, None)
+        return (True, None, None)
 
     def get_song_duration(self, song_path: str) -> int | None:
         if song_path in self.song_durations:
@@ -421,9 +424,9 @@ class QueueManager:
         if not bypass_queue_restrictions and not (self._is_admin and self._is_admin()):
             if not self._get_queue_add_open_value():
                 return [False, self.get_queue_add_block_message()]
-            can_add, reason = self.can_add_song_before_closing(song_path)
+            can_add, reason, closing_ts = self.can_add_song_before_closing(song_path)
             if not can_add:
-                return [False, reason or self.get_queue_add_block_message()]
+                return [False, reason or self.get_queue_add_block_message(), closing_ts]
 
         if self.is_song_in_queue(song_path):
             logging.warning("Song is already in queue, will not add: " + song_path)
