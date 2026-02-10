@@ -262,15 +262,16 @@ const handleNowPlayingUpdate = (np) => {
   // Handle waiting for microphone
   if (np.waiting_for_microphone) {
     const waitInfo = np.waiting_for_microphone;
+    const waitingText = PikaraokeConfig.translations.waitingForMicrophone.replace('%s', waitInfo.waiting_for_user);
     const waitingHtml = `
       <div class="has-text-warning is-size-4">
-        <i class="icon icon-mic-1"></i> Waiting for ${waitInfo.waiting_for_user} to get a microphone...
+        <i class="icon icon-mic-1"></i> ${waitingText}
       </div>
       <div class="has-text-info is-size-5" style="margin-top: 10px;">
-        Song: ${waitInfo.waiting_for_song}
+        ${PikaraokeConfig.translations.song}: ${waitInfo.waiting_for_song}
       </div>
       <div class="has-text-grey is-size-6" style="margin-top: 5px;">
-        Time remaining: ${waitInfo.time_remaining}s
+        ${PikaraokeConfig.translations.timeRemaining}: ${waitInfo.time_remaining}s
       </div>
     `;
     $("#waiting-for-microphone").html(waitingHtml).fadeIn();

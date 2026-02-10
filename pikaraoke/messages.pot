@@ -641,6 +641,44 @@ msgstr ""
 msgid "Keep queue position"
 msgstr ""
 
+#: pikaraoke/templates/home.html
+msgid "Available"
+msgstr ""
+
+#: pikaraoke/templates/home.html
+msgid "Unassign"
+msgstr ""
+
+#: pikaraoke/templates/home.html
+msgid "microphone"
+msgstr ""
+
+#: pikaraoke/templates/home.html
+#, python-format
+msgid "You have the %(microphone)s microphone"
+msgstr ""
+
+#: pikaraoke/templates/home.html
+msgid "Hand Back Microphone"
+msgstr ""
+
+#: pikaraoke/templates/splash.html
+#, python-format
+msgid "Waiting for %s to get a microphone..."
+msgstr ""
+
+#: pikaraoke/templates/splash.html
+msgid "Song"
+msgstr ""
+
+#: pikaraoke/templates/splash.html
+msgid "Time remaining"
+msgstr ""
+
+#: pikaraoke/templates/edit.html
+msgid "Suggest from Last.fm"
+msgstr ""
+
 #: pikaraoke/templates/info.html:359
 msgid "Interface settings"
 msgstr ""

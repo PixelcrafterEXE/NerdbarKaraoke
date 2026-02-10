@@ -671,6 +671,44 @@ msgstr "Lied überspringen"
 msgid "Keep queue position"
 msgstr "Position beibehalten"
 
+#: pikaraoke/templates/home.html
+msgid "Available"
+msgstr "Verfügbar"
+
+#: pikaraoke/templates/home.html
+msgid "Unassign"
+msgstr "Freigeben"
+
+#: pikaraoke/templates/home.html
+msgid "microphone"
+msgstr "Mikrofon"
+
+#: pikaraoke/templates/home.html
+#, python-format
+msgid "You have the %(microphone)s microphone"
+msgstr "Du hast das %(microphone)s Mikrofon"
+
+#: pikaraoke/templates/home.html
+msgid "Hand Back Microphone"
+msgstr "Mikrofon zurückgeben"
+
+#: pikaraoke/templates/splash.html
+#, python-format
+msgid "Waiting for %s to get a microphone..."
+msgstr "Warte darauf, dass %s ein Mikrofon bekommt..."
+
+#: pikaraoke/templates/splash.html
+msgid "Song"
+msgstr "Lied"
+
+#: pikaraoke/templates/splash.html
+msgid "Time remaining"
+msgstr "Verbleibende Zeit"
+
+#: pikaraoke/templates/edit.html
+msgid "Suggest from Last.fm"
+msgstr "Von Last.fm vorschlagen"
+
 #: pikaraoke/templates/info.html:359
 msgid "Interface settings"
 msgstr "Interface-Einstellungen"
@@ -1003,7 +1041,7 @@ msgstr "Anmelden"
 
 #: pikaraoke/templates/info.html:741
 msgid "Click here to login as admin."
-msgstr ""
+msgstr "Hier klicken, um sich als Admin anzumelden."
 
 #: pikaraoke/templates/info.html:743
 msgid "Log in"
@@ -1066,10 +1104,6 @@ msgstr "Stimmen"
 #, fuzzy
 msgid "Downvote"
 msgstr "Herunterladen"
-
-#: pikaraoke/templates/queue.html:468
-msgid "Song"
-msgstr "Song"
 
 #: pikaraoke/templates/queue.html:469
 msgid "Duration"
@@ -1422,9 +1456,6 @@ msgstr "Bestätigen"
 
 #~ msgid "Up next:"
 #~ msgstr "Als Nächstes:"
-
-#~ msgid "Hand Back Microphone"
-#~ msgstr "Mikrofon zurückgeben"
 
 #~ msgid "Assign Microphone"
 #~ msgstr "Mikrofon zuweisen"
