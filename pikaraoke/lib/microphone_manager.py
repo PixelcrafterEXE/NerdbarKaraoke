@@ -157,6 +157,14 @@ class MicrophoneManager:
         """
         return self.microphones.copy()
 
+    def get_users_with_microphones(self) -> set[str]:
+        """Get a set of all users who currently have microphones assigned.
+
+        Returns:
+            Set of usernames with microphones assigned.
+        """
+        return {username for username in self.microphones.values() if username is not None}
+
     def reset_all_microphones(self) -> None:
         """Release all microphone assignments."""
         for color in self.MICROPHONE_COLORS:

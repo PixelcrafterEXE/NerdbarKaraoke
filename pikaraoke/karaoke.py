@@ -818,6 +818,47 @@ class Karaoke:
                                             _("Song skipped: %s didn't get a microphone") % next_song['user'],
                                             "warning"
                                         )
+                                    elif self.microphone_timeout_action == "keep_position":
+                                        # Find next song by someone with a microphone and move it to top
+                                        mic_holders = self.microphone_manager.get_users_with_microphones()
+                                        logging.info(f"Looking for next song by users with microphones: {mic_holders}")
+                                        
+                                        # Create case-insensitive lookup set for better matching
+                                        mic_holders_lower = {holder.lower() for holder in mic_holders if holder}
+                                        
+                                        found_song = None
+                                        # Skip the first song (next_song) since it's the one that timed out
+                                        for queue_entry in self.queue_manager.queue[1:]:
+                                            entry_user = queue_entry.get("user", "").strip()
+                                            if entry_user and entry_user.lower() in mic_holders_lower:
+                                                found_song = queue_entry
+                                                break
+                                        
+                                        if found_song:
+                                            # Move the found song to the top of the queue
+                                            logging.info(f"Moving song to top: {found_song['title']} by {found_song['user']}")
+                                            self.queue_manager.queue_edit(found_song["file"], "top")
+                                            self.send_notification(
+                                                _("Timeout: Playing next song by microphone holder %s") % found_song['user'],
+                                                "info"
+                                            )
+                                            # Get the new top song (which is the one we just moved) and play it
+                                            new_top_song = self.queue_manager.peek_next_song()
+                                            if new_top_song:
+                                                logging.info(f"Playing moved song: {new_top_song['title']}")
+                                                self.play_file(
+                                                    new_top_song["file"],
+                                                    new_top_song["semitones"],
+                                                    queue_entry=new_top_song,
+                                                )
+                                        else:
+                                            # No songs by mic holders found, play current song in queue order
+                                            logging.info(f"No songs by microphone holders found. Playing in queue order: {next_song['title']}")
+                                            self.play_file(
+                                                next_song["file"],
+                                                next_song["semitones"],
+                                                queue_entry=next_song,
+                                            )
                                     else:
                                         # Play anyway
                                         logging.info(f"Playing song anyway: {next_song['title']}")

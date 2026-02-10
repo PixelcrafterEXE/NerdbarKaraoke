@@ -552,7 +552,7 @@ class QueueManager:
 
         Args:
             song_name: Name/path of the song to edit.
-            action: Action to perform ('up', 'down', 'delete').
+            action: Action to perform ('up', 'down', 'top', 'delete').
 
         Returns:
             True if the action was successful.
@@ -569,7 +569,16 @@ class QueueManager:
         if song is None:
             logging.error("Song not found in queue: " + song_name)
             return rc
-        if action == "up":
+        if action == "top":
+            if index == 0:
+                logging.warning("Song is already at top of queue: " + song["file"])
+                rc = True  # Still return True since it's already where we want it
+            else:
+                logging.info("Moving song to top of queue: " + song["file"])
+                del self.queue[index]
+                self.queue.insert(0, song)
+                rc = True
+        elif action == "up":
             if index < 1:
                 logging.warning("Song is up next, can't bump up in queue: " + song["file"])
             else:

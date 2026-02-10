@@ -52,6 +52,11 @@ msgstr ""
 msgid "Song skipped: %s didn't get a microphone"
 msgstr ""
 
+#: pikaraoke/karaoke.py:833
+#, python-format
+msgid "Timeout: Playing next song by microphone holder %s"
+msgstr ""
+
 #: pikaraoke/lib/download_manager.py:120
 #, python-format
 msgid "Download queued (#%d): %s"
@@ -630,6 +635,10 @@ msgstr ""
 
 #: pikaraoke/templates/info.html:348
 msgid "Skip song"
+msgstr ""
+
+#: pikaraoke/templates/info.html:349
+msgid "Keep queue position"
 msgstr ""
 
 #: pikaraoke/templates/info.html:359

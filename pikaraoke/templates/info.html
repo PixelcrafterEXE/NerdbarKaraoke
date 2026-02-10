@@ -346,6 +346,7 @@
 							<select id="pref-microphone-timeout-action" class="user-preference-input" data-pref="microphone_timeout_action" data-start-value="{{ microphone_timeout_action }}">
 								<option value="play" {% if microphone_timeout_action == "play" %}selected{% endif %}>{% trans %}Play song anyway{% endtrans %}</option>
 								<option value="skip" {% if microphone_timeout_action == "skip" %}selected{% endif %}>{% trans %}Skip song{% endtrans %}</option>
+								<option value="keep_position" {% if microphone_timeout_action == "keep_position" %}selected{% endif %}>{% trans %}Keep queue position{% endtrans %}</option>
 							</select>
 						</div>
 					</div>

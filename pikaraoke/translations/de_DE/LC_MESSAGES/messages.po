@@ -53,6 +53,11 @@ msgstr "Lautstärke: %s"
 msgid "Song skipped: %s didn't get a microphone"
 msgstr "Lied übersprungen: %s hat kein Mikrofon bekommen"
 
+#: pikaraoke/karaoke.py:833
+#, python-format
+msgid "Timeout: Playing next song by microphone holder %s"
+msgstr "Zeitüberschreitung: Spiele nächstes Lied von Mikrofonhalter %s"
+
 #: pikaraoke/lib/download_manager.py:120
 #, python-format
 msgid "Download queued (#%d): %s"
@@ -661,6 +666,10 @@ msgstr "Lied trotzdem abspielen"
 #: pikaraoke/templates/info.html:348
 msgid "Skip song"
 msgstr "Lied überspringen"
+
+#: pikaraoke/templates/info.html:349
+msgid "Keep queue position"
+msgstr "Position beibehalten"
 
 #: pikaraoke/templates/info.html:359
 msgid "Interface settings"

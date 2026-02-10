@@ -57,7 +57,7 @@ class PreferenceManager:
         "reset_microphones_after_song": False,
         "wait_for_microphone": True,
         "microphone_wait_timeout": 30,
-        "microphone_timeout_action": "play",  # "play" or "skip"
+        "microphone_timeout_action": "play",  # "play", "skip", or "keep_position"
     }
 
     def __init__(self, config_file_path: str = "config.ini", target: object | None = None) -> None:
