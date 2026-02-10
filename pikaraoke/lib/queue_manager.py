@@ -431,14 +431,14 @@ class QueueManager:
         if self.is_song_in_queue(song_path):
             logging.warning("Song is already in queue, will not add: " + song_path)
             return False
-        elif self.is_user_limited(user):
+        elif not bypass_queue_restrictions and self.is_user_limited(user):
             limit = self._get_limit_user_songs_by()
             logging.debug("User limited by: " + str(limit))
             return [
                 False,
                 _("You reached the limit of %s song(s) from an user in queue!") % (str(limit)),
             ]
-        elif self.is_user_in_add_cooldown(user):
+        elif not bypass_queue_restrictions and self.is_user_in_add_cooldown(user):
             logging.debug(f"User {user} is in song addition cooldown")
             return [
                 False,
