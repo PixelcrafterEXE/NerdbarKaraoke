@@ -262,7 +262,9 @@ const handleNowPlayingUpdate = (np) => {
   // Handle waiting for microphone
   if (np.waiting_for_microphone) {
     const waitInfo = np.waiting_for_microphone;
-    const waitingText = PikaraokeConfig.translations.waitingForMicrophone.replace('%s', waitInfo.waiting_for_user);
+    const waitingText = PikaraokeConfig.translations.waitingForMicrophone
+      .replace('%s', waitInfo.waiting_for_user)
+      .replace('{}', waitInfo.waiting_for_user);
     const waitingHtml = `
       <div class="has-text-warning is-size-4">
         <i class="icon icon-mic-1"></i> ${waitingText}
