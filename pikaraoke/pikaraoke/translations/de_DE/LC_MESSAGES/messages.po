@@ -1411,9 +1411,6 @@ msgstr "Startet um"
 msgid "Votes"
 msgstr "Stimmen"
 
-msgid "Add <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" pattern=\"\\d*\" maxlength=\"2\" value=\"3\" min=\"1\" max=\"99\" style=\"width: 42px\" /> random songs"
-msgstr "Füge <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" pattern=\"\\d*\" maxlength=\"2\" value=\"3\" min=\"1\" max=\"99\" style=\"width: 42px\" /> zufällige Songs hinzu"
-
 #~ msgid "Song will be added to queue."
 #~ msgstr "Lied wird der Warteschlange hinzugefügt."
 
@@ -1464,4 +1461,25 @@ msgstr "Füge <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" pattern=\
 
 #~ msgid "Memory: %(memory)s"
 #~ msgstr "Speicher: %(memory)s"
+
+#: templates/home.html
+msgid "Available"
+msgstr "Verfügbar"
+
+#: templates/home.html
+msgid "Unassign"
+msgstr "Freigeben"
+
+#: templates/home.html
+msgid "microphone"
+msgstr "Mikrofon"
+
+#: templates/home.html
+#, python-format
+msgid "You have the %(microphone)s microphone"
+msgstr "Du hast das %(microphone)s Mikrofon"
+
+#: templates/home.html
+msgid "Hand Back Microphone"
+msgstr "Mikrofon zurückgeben"
 
