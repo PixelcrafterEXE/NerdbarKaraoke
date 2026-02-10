@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-10 01:31+0100\n"
+"POT-Creation-Date: 2026-02-10 01:42+0100\n"
 "PO-Revision-Date: 2025-01-13 22:53-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de_DE\n"
@@ -38,7 +38,8 @@ msgstr "Übersprungen: %s"
 msgid "Resume: %s"
 msgstr "Fortsetzen: %s"
 
-#: pikaraoke/karaoke.py:613
+#: pikaraoke/karaoke.py:613 pikaraoke/templates/queue.html:604
+#: pikaraoke/templates/queue.html:804
 msgid "Pause"
 msgstr "Pause"
 
@@ -121,12 +122,12 @@ msgstr ""
 #: pikaraoke/lib/queue_manager.py:337
 #, python-format
 msgid "Queue is closed. The queue already ends after %s."
-msgstr ""
+msgstr "Warteschlange ist geschlossen. Die Warteschlange endet bereits nach %s."
 
 #: pikaraoke/lib/queue_manager.py:345
 #, python-format
 msgid "Queue is closed. This song would end after %s."
-msgstr ""
+msgstr "Warteschlange ist geschlossen. Dieses Lied würde nach %s enden."
 
 #: pikaraoke/lib/queue_manager.py:439
 #, python-format
@@ -148,7 +149,7 @@ msgid "%s added to the queue: %s"
 msgstr "%s wurde der Warteschlange hinzugefügt: %s"
 
 #: pikaraoke/lib/queue_manager.py:488 pikaraoke/routes/queue.py:369
-#: pikaraoke/routes/queue.py:384
+#: pikaraoke/routes/queue.py:385
 #, python-format
 msgid "Song added to the queue: %s"
 msgstr "Lied wurde der Warteschlange hinzugefügt: %s"
@@ -227,6 +228,7 @@ msgid "Accept suggested name"
 msgstr ""
 
 #: pikaraoke/routes/batch_song_renamer.py:388
+#: pikaraoke/templates/batch-song-renamer.html:133
 msgid "Batch Song Renamer"
 msgstr ""
 
@@ -247,7 +249,7 @@ msgstr ""
 msgid "Error: No filename parameters were specified!"
 msgstr "Fehler: Keine Dateinamenparameter angegeben!"
 
-#: pikaraoke/routes/files.py:104
+#: pikaraoke/routes/files.py:104 pikaraoke/templates/base.html:218
 msgid "Browse"
 msgstr "Durchsuchen"
 
@@ -347,7 +349,7 @@ msgstr ""
 msgid "Song not found in queue"
 msgstr ""
 
-#: pikaraoke/routes/queue.py:380
+#: pikaraoke/routes/queue.py:381
 #, fuzzy, python-format
 msgid "Song is already in the queue: %s"
 msgstr "Lied wurde der Warteschlange hinzugefügt: %s"
@@ -359,6 +361,975 @@ msgstr "Datei nicht gefunden."
 #: pikaraoke/routes/stream.py:235
 msgid "Failed to stream subtitle: "
 msgstr ""
+
+#: pikaraoke/templates/base.html:25
+msgid ""
+"Do you want to change the name of the person using this device? This will"
+" show up on queued songs. Current: CURRENT_NAME"
+msgstr ""
+"Möchtest du den Namen der Person ändern, die dieses Gerät benutzt? Dieser"
+" Name erscheint bei den Songs in der Warteschlange. Aktuell: CURRENT_NAME"
+
+#: pikaraoke/templates/base.html:27
+#, fuzzy
+msgid "Are you sure you want to clear the ENTIRE queue? Type ok to continue"
+msgstr "Die Einstellungen wirklich zurücksetzen?"
+
+#: pikaraoke/templates/base.html:29
+#, fuzzy
+msgid "Are you sure you want to delete SONG_TITLE from the queue?"
+msgstr "Dieses Lied wirklich aus der Bibliothek löschen?"
+
+#: pikaraoke/templates/base.html:31
+msgid "Are you sure you want to delete this song from the library?"
+msgstr "Dieses Lied wirklich aus der Bibliothek löschen?"
+
+#: pikaraoke/templates/base.html:87
+msgid ""
+"Please enter your name. This will show up next to the songs you queue up "
+"from this device."
+msgstr ""
+"Bitte gib deinen Namen ein. Der Name wird neben den von dir hinzugefügten"
+" Liedern angezeigt."
+
+#: pikaraoke/templates/base.html:202
+msgid "Home"
+msgstr "Startseite"
+
+#: pikaraoke/templates/base.html:208 pikaraoke/templates/queue.html:722
+msgid "Queue"
+msgstr "Warteschlange"
+
+#: pikaraoke/templates/base.html:213 pikaraoke/templates/search.html:487
+msgid "Search"
+msgstr "Suche"
+
+#: pikaraoke/templates/base.html:236 pikaraoke/templates/info.html:210
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: pikaraoke/templates/batch-song-renamer.html:136
+msgid ""
+"The loading process may take a few seconds, as the song titles are "
+"compared online. Loading time may vary\n"
+"\tbased on your internet connection."
+msgstr ""
+
+#: pikaraoke/templates/batch-song-renamer.html:141
+msgid ""
+"Showing all\n"
+"\tsongs"
+msgstr ""
+
+#: pikaraoke/templates/batch-song-renamer.html:144
+msgid "Show only songs to rename"
+msgstr ""
+
+#: pikaraoke/templates/batch-song-renamer.html:147
+msgid ""
+"Showing only songs\n"
+"\tto rename"
+msgstr ""
+
+#: pikaraoke/templates/batch-song-renamer.html:150
+msgid "Show all songs"
+msgstr ""
+
+#: pikaraoke/templates/batch-song-renamer.html:158
+msgid "Loading songs..."
+msgstr "Lieder werden geladen..."
+
+#: pikaraoke/templates/edit.html:83
+msgid "No suggestion!"
+msgstr "Kein Vorschlag!"
+
+#: pikaraoke/templates/edit.html:98
+msgid "Edit Song"
+msgstr "Lied bearbeiten"
+
+#: pikaraoke/templates/edit.html:111
+msgid "Edit Song Name"
+msgstr "Liedname bearbeiten"
+
+#: pikaraoke/templates/edit.html:118
+msgid "Auto-format"
+msgstr "Automatische Formatierung"
+
+#: pikaraoke/templates/edit.html:120
+msgid "Swap artist/song order"
+msgstr "Künstler-/Liedreihenfolge tauschen"
+
+#: pikaraoke/templates/edit.html:130
+msgid "Save"
+msgstr "Speichern"
+
+#: pikaraoke/templates/edit.html:140
+msgid "Delete this song"
+msgstr "Dieses Lied löschen"
+
+#: pikaraoke/templates/files.html:101
+msgid "Sorted Alphabetically"
+msgstr "Alphabetisch sortiert"
+
+#: pikaraoke/templates/files.html:103
+msgid ""
+"Sort by\n"
+"\t\t\tDate"
+msgstr "Nach Datum sortiert"
+
+#: pikaraoke/templates/files.html:107
+msgid "Sorted by date"
+msgstr "Nach Datum sortiert"
+
+#: pikaraoke/templates/files.html:109
+msgid ""
+"Sort by\n"
+"\t\t\tAlphabetical"
+msgstr "Alphabetisch sortieren"
+
+#: pikaraoke/templates/files.html:116
+msgid "Edit all songs"
+msgstr "Alle Lieder bearbeiten"
+
+#: pikaraoke/templates/home.html:35
+msgid "Nothing is playing right now."
+msgstr "Es wird gerade nichts abgespielt."
+
+#: pikaraoke/templates/home.html:43
+msgid "Next wish"
+msgstr "Nächster Wunsch"
+
+#: pikaraoke/templates/home.html:46
+msgid "No song is queued."
+msgstr "Kein Lied in der Warteschlange"
+
+#: pikaraoke/templates/home.html:134
+msgid ""
+"Are you sure you want to skip this track? If you didn't add this song, "
+"ask permission first!"
+msgstr ""
+"Bist du sicher, dass du dieses Lied überspringen möchtest? Wenn du diesen"
+" Song nicht selbst hinzugefügt hast, frage um Erlaubnis!"
+
+#: pikaraoke/templates/home.html:233
+msgid "Now Playing"
+msgstr "Jetzt läuft"
+
+#: pikaraoke/templates/home.html:245
+msgid "Microphone Status"
+msgstr "Mikrofonstatus"
+
+#: pikaraoke/templates/home.html:274
+msgid "Next Song"
+msgstr "Nächstes Lied"
+
+#: pikaraoke/templates/home.html:281
+msgid "Player Control"
+msgstr "Player-Steuerung"
+
+#: pikaraoke/templates/home.html:285
+msgid "Restart Song"
+msgstr "Lied neu starten"
+
+#: pikaraoke/templates/home.html:287
+msgid "Play/Pause"
+msgstr "Abspielen/Pause"
+
+#: pikaraoke/templates/home.html:289
+msgid "Stop Current Song"
+msgstr "Aktuelles Lied stoppen"
+
+#: pikaraoke/templates/home.html:311
+msgid "Change Key"
+msgstr "Tonart ändern"
+
+#: pikaraoke/templates/home.html:331
+msgid "Change"
+msgstr "Ändern"
+
+#: pikaraoke/templates/info.html:119
+msgid "Are you sure you want to quit?"
+msgstr "Wirklich beenden?"
+
+#: pikaraoke/templates/info.html:127
+msgid "Are you sure you want to shut down?"
+msgstr "Das System wirklich herunterfahren?"
+
+#: pikaraoke/templates/info.html:135
+msgid "Are you sure you want to clear your preferences?"
+msgstr "Die Einstellungen wirklich zurücksetzen?"
+
+#: pikaraoke/templates/info.html:143
+msgid "Are you sure you want to reboot?"
+msgstr "Das System wirklich neu starten?"
+
+#: pikaraoke/templates/info.html:153
+msgid ""
+"Are you sure you want to update Youtube-dl right now? Current and pending"
+" downloads may fail."
+msgstr ""
+"Bist du sicher, dass du Youtube-DL jetzt aktualisieren möchtest? Aktive "
+"und ausstehende Downloads könnten fehlschlagen."
+
+#: pikaraoke/templates/info.html:222
+#, python-format
+msgid "URL of %(site_title)s:"
+msgstr "URL von %(site_title)s:"
+
+#: pikaraoke/templates/info.html:228
+msgid "Handy URL QR code to share with a pal:"
+msgstr "Praktischer URL-QR-Code, um ihn mit einem Freund zu teilen:"
+
+#: pikaraoke/templates/info.html:237
+msgid "System Settings"
+msgstr "Systemeinstellungen"
+
+#: pikaraoke/templates/info.html:241
+msgid "Queue settings"
+msgstr "Warteschlangen-Einstellungen"
+
+#: pikaraoke/templates/info.html:249
+msgid "Limit of songs an individual user can add to the queue (0 = unlimited)"
+msgstr ""
+"Limit an Liedern, die ein Benutzer zur Warteschlange hinzufügen kann (0 ="
+" unbegrenzt)"
+
+#: pikaraoke/templates/info.html:256
+msgid ""
+"Song add cooldown count (number of songs to trigger cooldown, -1 = "
+"disabled)"
+msgstr ""
+"Cooldown-Anzahl beim Hinzufügen von Songs (Anzahl der Songs bis zum "
+"Cooldown, -1 = deaktiviert)"
+
+#: pikaraoke/templates/info.html:263
+msgid "Song add cooldown duration in minutes (-1 = disabled)"
+msgstr "Cooldown-Dauer für Song-Hinzufügen in Minuten (-1 = deaktiviert)"
+
+#: pikaraoke/templates/info.html:269
+msgid "Allow adding songs to the queue"
+msgstr "Hinzufügen von Songs zur Warteschlange erlauben"
+
+#: pikaraoke/templates/info.html:286
+msgid "Queue closing time (24-hour HH:MM, leave blank to disable)"
+msgstr ""
+"Schließzeit der Warteschlange (24-Stunden HH:MM, leer lassen zum "
+"Deaktivieren)"
+
+#: pikaraoke/templates/info.html:292
+msgid "Enable fair queue (round-robin mode ensures users take turns)"
+msgstr ""
+"Faires Queue-System aktivieren (Round-Robin-Modus sorgt dafür, dass "
+"Nutzer abwechseln)"
+
+#: pikaraoke/templates/info.html:298
+msgid ""
+"Enable voting system (users can upvote/downvote songs to influence queue "
+"order)"
+msgstr ""
+"Abstimmungssystem aktivieren (Nutzer können Songs hoch-/runtervoten, um "
+"die Reihenfolge zu beeinflussen)"
+
+#: pikaraoke/templates/info.html:308
+msgid "Microphone Tracking"
+msgstr "Mikrofon-Tracking"
+
+#: pikaraoke/templates/info.html:316
+msgid "Show microphone status on home page (non-admins)"
+msgstr "Mikrofonstatus auf der Startseite anzeigen (Nicht-Admins)"
+
+#: pikaraoke/templates/info.html:323
+msgid "Reset microphone assignments after each song"
+msgstr "Mikrofonzuweisungen nach jedem Lied zurücksetzen"
+
+#: pikaraoke/templates/info.html:330
+msgid "Wait for singer to get a microphone before playing their song"
+msgstr "Warten bis der Sänger ein Mikrofon hat, bevor sein Lied gespielt wird"
+
+#: pikaraoke/templates/info.html:337
+msgid "Microphone wait timeout in seconds"
+msgstr "Mikrofon-Wartezeit in Sekunden"
+
+#: pikaraoke/templates/info.html:343
+msgid "Action when microphone wait timeout expires:"
+msgstr "Aktion wenn Mikrofon-Wartezeit abläuft:"
+
+#: pikaraoke/templates/info.html:347
+msgid "Play song anyway"
+msgstr "Lied trotzdem abspielen"
+
+#: pikaraoke/templates/info.html:348
+msgid "Skip song"
+msgstr "Lied überspringen"
+
+#: pikaraoke/templates/info.html:359
+msgid "Interface settings"
+msgstr "Interface-Einstellungen"
+
+#: pikaraoke/templates/info.html:364
+msgid ""
+"*You may need to refresh the splash screen for these changes to take "
+"effect."
+msgstr ""
+"Möglicherweise muss der Begrüßungsbildschirm neu geladen werden, damit "
+"die Änderungen sichtbar sind."
+
+#: pikaraoke/templates/info.html:367
+msgid "Message of the day (MOTD)"
+msgstr ""
+
+#: pikaraoke/templates/info.html:373
+msgid "Hide notifications"
+msgstr "Benachrichtigungen ausblenden"
+
+#: pikaraoke/templates/info.html:379
+msgid "Hide the URL and QR code"
+msgstr "URL und QR-Code ausblenden"
+
+#: pikaraoke/templates/info.html:385
+msgid "Hide all overlays, including now playing, up next, and QR code"
+msgstr ""
+"Alle Overlays ausblenden, einschließlich 'Jetzt läuft', 'Als Nächstes' "
+"und QR-Code"
+
+#: pikaraoke/templates/info.html:391
+msgid "Disable the score screen after each song"
+msgstr "Bewertungsbildschirm nach jedem Lied deaktivieren"
+
+#: pikaraoke/templates/info.html:398
+msgid ""
+"The amount of idle time in seconds before the screen saver activates. Set"
+" to 0 to disable it."
+msgstr ""
+"Inaktivzeit bis sich der Bildschirmschoner aktiviert. Zum Deaktivieren "
+"auf 0 setzen."
+
+#: pikaraoke/templates/info.html:405
+msgid "The delay in seconds before starting the next song"
+msgstr "Die Verzögerung in Sekunden vor dem Start des nächsten Liedes"
+
+#: pikaraoke/templates/info.html:412
+msgid "Score phrases"
+msgstr ""
+
+#: pikaraoke/templates/info.html:414
+msgid "Add one phrase per line in each box and hit save."
+msgstr ""
+
+#: pikaraoke/templates/info.html:416
+msgid "LOW Score Phrases (score < 30)"
+msgstr ""
+
+#: pikaraoke/templates/info.html:418
+msgid "Could be better..."
+msgstr ""
+
+#: pikaraoke/templates/info.html:421
+msgid "MID Score Phrases (30 > score < 60)"
+msgstr ""
+
+#: pikaraoke/templates/info.html:423
+msgid "That was ok..."
+msgstr ""
+
+#: pikaraoke/templates/info.html:426
+msgid "HIGH Score Phrases (60 < score)"
+msgstr ""
+
+#: pikaraoke/templates/info.html:428
+msgid "Wonderfull..."
+msgstr ""
+
+#: pikaraoke/templates/info.html:441
+msgid "Preferred language (requires restart)"
+msgstr ""
+
+#: pikaraoke/templates/info.html:448
+msgid "Browse page results per page (10-1000, default 500)"
+msgstr "Ergebnisse pro Seite auf der Durchsuchen-Seite (10-1000, Standard 500)"
+
+#: pikaraoke/templates/info.html:457
+msgid "Sound/Video settings"
+msgstr "Ton-/Video-Einstellungen"
+
+#: pikaraoke/templates/info.html:464
+msgid "Disable background video"
+msgstr "Hintergrundvideo deaktivieren"
+
+#: pikaraoke/templates/info.html:470
+msgid "Disable background music"
+msgstr "Hintergrundmusik deaktivieren"
+
+#: pikaraoke/templates/info.html:476
+msgid "Default volume of the videos (min 0, max 100)"
+msgstr "Standardlautstärke der Videos (min 0, max 100)"
+
+#: pikaraoke/templates/info.html:482
+msgid "Volume of the background music (min 0, max 100)"
+msgstr "Lautstärke der Hintergrundmusik (min 0, max 100)"
+
+#: pikaraoke/templates/info.html:488
+msgid "Normalize audio volume"
+msgstr "Audio-Lautstärke normalisieren"
+
+#: pikaraoke/templates/info.html:494
+msgid "Trim silence at the start/end of downloads"
+msgstr ""
+
+#: pikaraoke/templates/info.html:501
+msgid "Silence threshold for trimming (dB)"
+msgstr ""
+
+#: pikaraoke/templates/info.html:508
+msgid "Minimum silence duration for trimming (seconds)"
+msgstr ""
+
+#: pikaraoke/templates/info.html:514
+msgid "Download high quality videos"
+msgstr "Videos in hoher Qualität herunterladen"
+
+#: pikaraoke/templates/info.html:520
+msgid ""
+"Transcode video completely before playing (better browser compatibility, "
+"slower starts). Buffer size will be ignored.*"
+msgstr ""
+"Video vor dem Abspielen vollständig transkodieren (Bessere Browser-"
+"Kompatibilität, langsamerer Liedstart). Puffergröße wird ignoriert."
+
+#: pikaraoke/templates/info.html:526
+msgid ""
+"Enable CDG pixel scaling (crisper visuals for CDG files, may increase CPU"
+" usage)"
+msgstr ""
+"CDG-Pixel-Skalierung aktivieren (schärfere Darstellung für CDG-Dateien, "
+"kann die CPU-Auslastung erhöhen)"
+
+#: pikaraoke/templates/info.html:533
+msgid ""
+"Fix the audio and video synchronization in seconds (negative = advances "
+"audio | positive = delays audio)"
+msgstr ""
+"Audio- und Videosynchronisation in Sekunden korrigieren (negativ = Audio "
+"voraus | positiv = Audio verzögert)"
+
+#: pikaraoke/templates/info.html:540
+msgid ""
+"Buffer size in kilobytes. Transcode this amount of the video before "
+"sending it to the splash screen. "
+msgstr ""
+"Puffergröße in Kilobytes. Transkodiert diesen Teil des Videos, bevor es "
+"abgespielt wird."
+
+#: pikaraoke/templates/info.html:546
+msgid "Clear preferences"
+msgstr "Einstellungen löschen"
+
+#: pikaraoke/templates/info.html:554
+msgid "Updates"
+msgstr "Aktualisierungen"
+
+#: pikaraoke/templates/info.html:559
+msgid "Refresh the song list"
+msgstr "Liederliste aktualisieren"
+
+#: pikaraoke/templates/info.html:564
+msgid ""
+"You should only need to do this if you manually copied files to the "
+"download directory while pikaraoke was running."
+msgstr ""
+"Nur nötig, wenn manuell Dateien in das Liederverzeichnis kopiert wurden, "
+"während nerdBar-Karaoke aktiv ist."
+
+#: pikaraoke/templates/info.html:569
+msgid "Rescan song directory"
+msgstr "Liederverzeichnis erneut scannen"
+
+#: pikaraoke/templates/info.html:578
+msgid "YT-DLP update"
+msgstr ""
+
+#: pikaraoke/templates/info.html:583
+#, python-format
+msgid ""
+"\n"
+"\t\t\t\t\t\tIf downloads or searches stopped working, updating youtube-dl"
+" will probably fix it.<br/>\n"
+"\t\t\t\t\t\tThe current installed version is: \"%(youtubedl_version)s\".\n"
+"\t\t\t\t\t"
+msgstr ""
+"\n"
+"Wenn das Herunterladen oder die Suche nicht funktionieren, wird eine "
+"Aktualisierung von Youtube-DL das Problem wahrscheinlich beheben. Die "
+"aktuell installierte Version ist: \"%(youtubedl_version)s\"."
+
+#: pikaraoke/templates/info.html:589
+msgid "Update youtube-dl"
+msgstr "Youtube-DL aktualisieren"
+
+#: pikaraoke/templates/info.html:593
+msgid ""
+"* This update link above may fail if you don't have proper file "
+"permissions.\n"
+"\t\t\t\t\t\t\tCheck the pikaraoke log for errors."
+msgstr ""
+"* Diese Aktualisierung kann ohne die nötigen Dateiberechtigungen "
+"fehlschlagen. Pikaraoke-Log auf Fehler überprüfen."
+
+#: pikaraoke/templates/info.html:605
+msgid "Shutdown"
+msgstr "Herunterfahren"
+
+#: pikaraoke/templates/info.html:612
+msgid ""
+"Don't just pull the plug! Always shut down your server properly to avoid "
+"data corruption."
+msgstr ""
+"Zieh nicht einfach den Stecker! Fahr den Server immer korrekt herunter, "
+"um Datenkorruption zu vermeiden."
+
+#: pikaraoke/templates/info.html:619
+msgid "Quit Pikaraoke"
+msgstr "nerdBar-Karaoke beenden"
+
+#: pikaraoke/templates/info.html:622
+msgid "Reboot System"
+msgstr "System neustarten"
+
+#: pikaraoke/templates/info.html:625
+msgid "Shutdown System"
+msgstr "System herunterfahren"
+
+#: pikaraoke/templates/info.html:636
+msgid "Other"
+msgstr "Sonstiges"
+
+#: pikaraoke/templates/info.html:641 pikaraoke/templates/info.html:653
+msgid "Expand Raspberry Pi filesystem"
+msgstr "Raspberry Pi-Dateisystem erweitern"
+
+#: pikaraoke/templates/info.html:646
+msgid ""
+"If you just installed the pre-built pikaraoke pi image and your SD card "
+"is larger than 4GB,\n"
+"\t\t\t\t\t\t\tyou may want to expand the filesystem to utilize the "
+"remaining space. You only need to do this once.\n"
+"\t\t\t\t\t\t\tThis will reboot the system."
+msgstr ""
+"Wenn du das vorgefertigte Pikaraoke-Pi-Image installiert hast und deine "
+"SD-Karte größer als 4GB ist, solltest du das Dateisystem erweitern, um "
+"den gesamten Speicherplatz nutzbar zu machen. Dies musst du nur einmal "
+"machen. Das System startet hierzu neu."
+
+#: pikaraoke/templates/info.html:662 pikaraoke/templates/info.html:729
+msgid "Admin"
+msgstr ""
+
+#: pikaraoke/templates/info.html:669
+msgid "Logout"
+msgstr ""
+
+#: pikaraoke/templates/info.html:675
+msgid "Click here to logout from admin mode."
+msgstr "Hier klicken, um den Admin-Modus zu verlassen."
+
+#: pikaraoke/templates/info.html:677
+msgid "Log out"
+msgstr ""
+
+#: pikaraoke/templates/info.html:686
+msgid "System Data"
+msgstr "Systemstatistiken"
+
+#: pikaraoke/templates/info.html:691
+msgid "System Info"
+msgstr "Systeminfo"
+
+#: pikaraoke/templates/info.html:697
+msgid "Platform:"
+msgstr "Plattform:"
+
+#: pikaraoke/templates/info.html:699
+msgid "OS Version:"
+msgstr "OS-Version:"
+
+#: pikaraoke/templates/info.html:701
+msgid "Youtube-dl (yt-dlp) version:"
+msgstr "Youtube-DL (yt-dlp)-Version:"
+
+#: pikaraoke/templates/info.html:703
+msgid "FFmpeg version:"
+msgstr "FFmpeg-Version:"
+
+#: pikaraoke/templates/info.html:705
+#, fuzzy
+msgid "nerdBar-Karaoke version:"
+msgstr "nerdBar-Karaoke-Version:"
+
+#: pikaraoke/templates/info.html:711
+msgid "System stats"
+msgstr "Systemstatistiken"
+
+#: pikaraoke/templates/info.html:717
+msgid "CPU:"
+msgstr ""
+
+#: pikaraoke/templates/info.html:717 pikaraoke/templates/info.html:719
+#: pikaraoke/templates/info.html:721
+#, fuzzy
+msgid "Loading..."
+msgstr "Lieder werden geladen..."
+
+#: pikaraoke/templates/info.html:719
+msgid "Disk Usage:"
+msgstr ""
+
+#: pikaraoke/templates/info.html:721
+msgid "Memory:"
+msgstr ""
+
+#: pikaraoke/templates/info.html:735 pikaraoke/templates/login.html:8
+#: pikaraoke/templates/login.html:20
+msgid "Login"
+msgstr "Anmelden"
+
+#: pikaraoke/templates/info.html:741
+msgid "Click here to login as admin."
+msgstr ""
+
+#: pikaraoke/templates/info.html:743
+msgid "Log in"
+msgstr "Anmelden"
+
+#: pikaraoke/templates/login.html:11
+msgid "Enter the administrator password"
+msgstr "Administratorpasswort eingeben"
+
+#: pikaraoke/templates/queue.html:12 pikaraoke/templates/queue.html:780
+#, fuzzy
+msgid "Shadowban"
+msgstr "Herunterfahren"
+
+#: pikaraoke/templates/queue.html:13
+#, fuzzy
+msgid "Unshadowban"
+msgstr "Herunterfahren"
+
+#: pikaraoke/templates/queue.html:260
+msgid "Now"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:269 pikaraoke/templates/queue.html:453
+msgid "Options"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:325
+msgid "Pending downloads"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:330
+#, fuzzy
+msgid "Queued"
+msgstr "Warteschlange"
+
+#: pikaraoke/templates/queue.html:338
+#, fuzzy
+msgid "Download Errors"
+msgstr "Heruntergeladen: %s"
+
+#: pikaraoke/templates/queue.html:347
+msgid "Failed"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:348
+msgid "Dismiss"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:410
+msgid "Drag to reorder"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:442
+#, fuzzy
+msgid "Upvote"
+msgstr "Stimmen"
+
+#: pikaraoke/templates/queue.html:446
+#, fuzzy
+msgid "Downvote"
+msgstr "Herunterladen"
+
+#: pikaraoke/templates/queue.html:468
+msgid "Song"
+msgstr "Song"
+
+#: pikaraoke/templates/queue.html:469
+msgid "Duration"
+msgstr "Dauer"
+
+#: pikaraoke/templates/queue.html:470
+msgid "Starts at"
+msgstr "Startet um"
+
+#: pikaraoke/templates/queue.html:472
+msgid "Votes"
+msgstr "Stimmen"
+
+#: pikaraoke/templates/queue.html:496
+msgid "The queue is empty"
+msgstr "Die Warteschlange ist leer"
+
+#: pikaraoke/templates/queue.html:602
+msgid "Play"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:666
+#, fuzzy
+msgid "Enter your name for voting"
+msgstr "Bitte geben Sie Ihren Namen ein, um das"
+
+#: pikaraoke/templates/queue.html:707
+#, fuzzy
+msgid "Error recording vote"
+msgstr "Fehler beim Herunterladen des Liedes: "
+
+#: pikaraoke/templates/queue.html:730
+msgid "Queue duration"
+msgstr "Warteschlangendauer"
+
+#: pikaraoke/templates/queue.html:731
+msgid "Estimated end time"
+msgstr "Voraussichtliche Endzeit"
+
+#: pikaraoke/templates/queue.html:746
+msgid ""
+"Add <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" "
+"pattern=\"\\d*\" maxlength=\"2\" value=\"3\" min=\"1\" max=\"99\" "
+"style=\"width: 42px\" /> random songs"
+msgstr ""
+"Füge <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" "
+"pattern=\"\\d*\" maxlength=\"2\" value=\"3\" min=\"1\" max=\"99\" "
+"style=\"width: 42px\" /> zufällige Songs hinzu"
+
+#: pikaraoke/templates/queue.html:750
+msgid "Clear all"
+msgstr "Alles löschen"
+
+#: pikaraoke/templates/queue.html:764
+#, fuzzy
+msgid "Play Next"
+msgstr "Als Nächstes:"
+
+#: pikaraoke/templates/queue.html:764
+msgid "Move to Top"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:768
+msgid "Move Up"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:772
+msgid "Move Down"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:776
+msgid "Move to Bottom"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:784
+#, fuzzy
+msgid "Remove from Queue"
+msgstr "Aus der Warteschlange entfernt"
+
+#: pikaraoke/templates/queue.html:800
+#, fuzzy
+msgid "Restart"
+msgstr "Lied neu starten"
+
+#: pikaraoke/templates/queue.html:808
+msgid "Skip"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:816
+#, fuzzy
+msgid "Download queue"
+msgstr "Heruntergeladen und in die Warteschlange eingereiht: %s"
+
+#: pikaraoke/templates/search.html:194
+msgid "Available songs in local library"
+msgstr "Verfügbare Lieder in der lokalen Bibliothek"
+
+#: pikaraoke/templates/search.html:472
+msgid "Search / Add New"
+msgstr "Suchen / Neu hinzufügen"
+
+#: pikaraoke/templates/search.html:482
+msgid "Available Songs"
+msgstr "Verfügbare Lieder"
+
+#: pikaraoke/templates/search.html:490
+msgid "Add to queue"
+msgstr "Zur Warteschlange hinzufügen"
+
+#: pikaraoke/templates/search.html:496
+msgid "Clear"
+msgstr "Löschen"
+
+#: pikaraoke/templates/search.html:500
+msgid "Advanced"
+msgstr "Erweitert"
+
+#: pikaraoke/templates/search.html:515
+msgid ""
+"- Type a song (title/artist) to search\n"
+"\t\t\t\t\t\t\t\tthe available songs and click 'Add to queue' to add it to"
+" the queue."
+msgstr ""
+"Tippe ein Lied ein (Titel/Künstler), um die verfügbaren Lieder zu "
+"durchsuchen und klicke auf \"Zur Warteschlange hinzufügen\", um es zur "
+"Warteschlange hinzufügen."
+
+#: pikaraoke/templates/search.html:519
+msgid ""
+"- If the song doesn't appear in\n"
+"\t\t\t\t\t\t\t\tthe \"Available Songs\" dropdown, click 'Search' to find "
+"it on Youtube"
+msgstr ""
+"Wenn das Lied nicht im \"Verfügbare Lieder\"-Dropdown-Menü erscheint, "
+"klicke auf \"Suche\", um es auf Youtube zu finden"
+
+#: pikaraoke/templates/search.html:535
+msgid "Include non-karaoke matches"
+msgstr "Nicht-Karaoke-Treffer einbeziehen"
+
+#: pikaraoke/templates/search.html:541
+msgid "Direct download YouTube url:"
+msgstr "Direktes Herunterladen von einer YouTube-URL:"
+
+#: pikaraoke/templates/search.html:558 pikaraoke/templates/search.html:624
+msgid "Add to queue once downloaded"
+msgstr "Nach dem Herunterladen zur Warteschlange hinzufügen"
+
+#: pikaraoke/templates/search.html:563 pikaraoke/templates/search.html:629
+msgid "Download"
+msgstr "Herunterladen"
+
+#: pikaraoke/templates/search.html:585
+#, python-format
+msgid ""
+"Searching YouTube for\n"
+"\t\t<small><i>'%(search_term)s'</i></small>"
+msgstr "Suche auf Youtube nach <small><i>'%(search_term)s'</i></small>"
+
+#: pikaraoke/templates/search.html:593
+#, python-format
+msgid ""
+"Search results for\n"
+"\t\t\t\t<small><i>'%(search_string)s'</i></small>"
+msgstr "Suchergebnisse für <small><i>'%(search_string)s'</i></small>"
+
+#: pikaraoke/templates/search.html:610
+msgid "Click dropdown to show more results"
+msgstr "Klicke auf das Dropdown-Menü für weitere Ergebnisse"
+
+#: pikaraoke/templates/search.html:613
+msgid "Link:"
+msgstr "Link:"
+
+#: pikaraoke/templates/splash.html:27
+msgid "Connection lost. Is the server still running?"
+msgstr ""
+
+#: pikaraoke/templates/splash.html:28
+msgid ""
+"This browser is not fully supported. You may experience streaming issues."
+" Please use Chrome/Safari/Firefox/Edge for best results."
+msgstr ""
+
+#: pikaraoke/templates/splash.html:32
+msgid "Never sing again... ever."
+msgstr "Sing bloß nie wieder... niemals."
+
+#: pikaraoke/templates/splash.html:33
+msgid "That was a really good impression of a dying cat!"
+msgstr "Das war eine wirklich gute Imitation einer sterbenden Katze!"
+
+#: pikaraoke/templates/splash.html:34
+msgid "Thank God it's over."
+msgstr "Gott sei Dank ist es vorbei."
+
+#: pikaraoke/templates/splash.html:35
+msgid "Pass the mic, please!"
+msgstr "Lass lieber jemand anderes singen!"
+
+#: pikaraoke/templates/splash.html:36
+msgid "Well, I'm sure you're very good at your day job."
+msgstr "Nun, bestimmt bist du wenigstens in deinem Hauptberuf sehr gut."
+
+#: pikaraoke/templates/splash.html:40
+msgid "I've seen better."
+msgstr "Ich habe schon Besseres gesehen."
+
+#: pikaraoke/templates/splash.html:41
+msgid "Ok... just ok."
+msgstr "Okay... einfach okay."
+
+#: pikaraoke/templates/splash.html:42
+msgid "Not bad for an amateur."
+msgstr "Nicht schlecht für einen Amateur."
+
+#: pikaraoke/templates/splash.html:43
+msgid "You put on a decent show."
+msgstr "Du hast eine ordentliche Show abgeliefert."
+
+#: pikaraoke/templates/splash.html:44
+msgid "That was... something."
+msgstr "Das war... etwas."
+
+#: pikaraoke/templates/splash.html:48
+msgid "Congratulations! That was unbelievable!"
+msgstr "Herzlichen Glückwunsch! Das war unglaublich!"
+
+#: pikaraoke/templates/splash.html:49
+msgid "Wow, have you tried auditioning for The Voice?"
+msgstr "Wow, hast du dich schon für 'The Voice' beworben?"
+
+#: pikaraoke/templates/splash.html:50
+msgid "Please, sing another one!"
+msgstr "Bitte, sing noch eins!"
+
+#: pikaraoke/templates/splash.html:51
+msgid "You rock! You know that?!"
+msgstr "Du rockst! Weißt du das?!"
+
+#: pikaraoke/templates/splash.html:52
+msgid "Woah, who let Freddie Mercury in here?"
+msgstr "Wow, wer hat Freddie Mercury hier reingelassen?"
+
+#: pikaraoke/templates/splash.html:123
+#, fuzzy
+msgid "Next up:"
+msgstr "Nächster Wunsch:"
+
+#: pikaraoke/templates/splash.html:151
+msgid "Your Score"
+msgstr "Deine Punktzahl"
+
+#: pikaraoke/templates/splash.html:165
+msgid ""
+"Due to limitations with browser permissions, you must interact\n"
+"      with the page once before it allows autoplay of videos. Pikaraoke "
+"will not\n"
+"      play otherwise. Click the button below to\n"
+"      <a onClick=\"handleConfirmation()\">confirm</a>."
+msgstr ""
+"Aufgrund eingeschränkter Browserberechtigungen musst du mit der Seite "
+"interagieren, damit Autoplay für Videos aktiviert werden kann. nerdBar-"
+"Karaoke kann ansonsten keine Videos abspielen. Klicke hierzu auf den "
+"Button <a onClick=\"handleConfirmation()\">Bestätigen</a>."
+
+#: pikaraoke/templates/splash.html:178
+msgid "Confirm"
+msgstr "Bestätigen"
 
 #~ msgid "Add 3 random songs"
 #~ msgstr "3 zufällige Lieder hinzufügen"
@@ -440,755 +1411,8 @@ msgstr ""
 #~ msgid "Memory: %(memory)s"
 #~ msgstr "Speicher: %(memory)s"
 
-#~ msgid ""
-#~ "Do you want to change the name "
-#~ "of the person using this device? "
-#~ "This will show up on queued songs."
-#~ " Current: CURRENT_NAME"
-#~ msgstr ""
-#~ "Möchtest du den Namen der Person "
-#~ "ändern, die dieses Gerät benutzt? Dieser"
-#~ " Name erscheint bei den Songs in "
-#~ "der Warteschlange. Aktuell: CURRENT_NAME"
-
-#~ msgid "Are you sure you want to clear the ENTIRE queue? Type ok to continue"
-#~ msgstr "Die Einstellungen wirklich zurücksetzen?"
-
-#~ msgid "Are you sure you want to delete SONG_TITLE from the queue?"
-#~ msgstr "Dieses Lied wirklich aus der Bibliothek löschen?"
-
-#~ msgid "Are you sure you want to delete this song from the library?"
-#~ msgstr "Dieses Lied wirklich aus der Bibliothek löschen?"
-
-#~ msgid ""
-#~ "Please enter your name. This will "
-#~ "show up next to the songs you "
-#~ "queue up from this device."
-#~ msgstr ""
-#~ "Bitte gib deinen Namen ein. Der "
-#~ "Name wird neben den von dir "
-#~ "hinzugefügten Liedern angezeigt."
-
-#~ msgid "Home"
-#~ msgstr "Startseite"
-
-#~ msgid "Queue"
-#~ msgstr "Warteschlange"
-
-#~ msgid "Search"
-#~ msgstr "Suche"
-
-#~ msgid ""
-#~ "The loading process may take a few"
-#~ " seconds, as the song titles are "
-#~ "compared online. Loading time may vary"
-#~ "\n"
-#~ "\tbased on your internet connection."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Showing all\n"
-#~ "\tsongs"
-#~ msgstr ""
-
-#~ msgid "Show only songs to rename"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Showing only songs\n"
-#~ "\tto rename"
-#~ msgstr ""
-
-#~ msgid "Show all songs"
-#~ msgstr ""
-
-#~ msgid "Loading songs..."
-#~ msgstr "Lieder werden geladen..."
-
-#~ msgid "No suggestion!"
-#~ msgstr "Kein Vorschlag!"
-
-#~ msgid "Edit Song"
-#~ msgstr "Lied bearbeiten"
-
-#~ msgid "Edit Song Name"
-#~ msgstr "Liedname bearbeiten"
-
-#~ msgid "Auto-format"
-#~ msgstr "Automatische Formatierung"
-
-#~ msgid "Swap artist/song order"
-#~ msgstr "Künstler-/Liedreihenfolge tauschen"
-
-#~ msgid "Save"
-#~ msgstr "Speichern"
-
-#~ msgid "Delete this song"
-#~ msgstr "Dieses Lied löschen"
-
-#~ msgid "Sorted Alphabetically"
-#~ msgstr "Alphabetisch sortiert"
-
-#~ msgid ""
-#~ "Sort by\n"
-#~ "\t\t\tDate"
-#~ msgstr "Nach Datum sortiert"
-
-#~ msgid "Sorted by date"
-#~ msgstr "Nach Datum sortiert"
-
-#~ msgid ""
-#~ "Sort by\n"
-#~ "\t\t\tAlphabetical"
-#~ msgstr "Alphabetisch sortieren"
-
-#~ msgid "Edit all songs"
-#~ msgstr "Alle Lieder bearbeiten"
-
-#~ msgid "Nothing is playing right now."
-#~ msgstr "Es wird gerade nichts abgespielt."
-
-#~ msgid "Next wish"
-#~ msgstr "Nächster Wunsch"
-
-#~ msgid "No song is queued."
-#~ msgstr "Kein Lied in der Warteschlange"
-
-#~ msgid ""
-#~ "Are you sure you want to skip "
-#~ "this track? If you didn't add this"
-#~ " song, ask permission first!"
-#~ msgstr ""
-#~ "Bist du sicher, dass du dieses "
-#~ "Lied überspringen möchtest? Wenn du "
-#~ "diesen Song nicht selbst hinzugefügt "
-#~ "hast, frage um Erlaubnis!"
-
-#~ msgid "Now Playing"
-#~ msgstr "Jetzt läuft"
-
-#~ msgid "Next Song"
-#~ msgstr "Nächstes Lied"
-
-#~ msgid "Player Control"
-#~ msgstr "Player-Steuerung"
-
-#~ msgid "Restart Song"
-#~ msgstr "Lied neu starten"
-
-#~ msgid "Play/Pause"
-#~ msgstr "Abspielen/Pause"
-
-#~ msgid "Stop Current Song"
-#~ msgstr "Aktuelles Lied stoppen"
-
-#~ msgid "Change Key"
-#~ msgstr "Tonart ändern"
-
-#~ msgid "Change"
-#~ msgstr "Ändern"
-
-#~ msgid "Are you sure you want to quit?"
-#~ msgstr "Wirklich beenden?"
-
-#~ msgid "Are you sure you want to shut down?"
-#~ msgstr "Das System wirklich herunterfahren?"
-
-#~ msgid "Are you sure you want to clear your preferences?"
-#~ msgstr "Die Einstellungen wirklich zurücksetzen?"
-
-#~ msgid "Are you sure you want to reboot?"
-#~ msgstr "Das System wirklich neu starten?"
-
-#~ msgid ""
-#~ "Are you sure you want to update"
-#~ " Youtube-dl right now? Current and"
-#~ " pending downloads may fail."
-#~ msgstr ""
-#~ "Bist du sicher, dass du Youtube-DL"
-#~ " jetzt aktualisieren möchtest? Aktive und"
-#~ " ausstehende Downloads könnten fehlschlagen."
-
-#~ msgid "Settings"
-#~ msgstr "Einstellungen"
-
-#~ msgid "URL of %(site_title)s:"
-#~ msgstr "URL von %(site_title)s:"
-
-#~ msgid "Handy URL QR code to share with a pal:"
-#~ msgstr "Praktischer URL-QR-Code, um ihn mit einem Freund zu teilen:"
-
-#~ msgid "System Data"
-#~ msgstr "Systemstatistiken"
-
-#~ msgid "System Info"
-#~ msgstr "Systeminfo"
-
-#~ msgid "Platform:"
-#~ msgstr "Plattform:"
-
-#~ msgid "OS Version:"
-#~ msgstr "OS-Version:"
-
-#~ msgid "Youtube-dl (yt-dlp) version:"
-#~ msgstr "Youtube-DL (yt-dlp)-Version:"
-
-#~ msgid "FFmpeg version:"
-#~ msgstr "FFmpeg-Version:"
-
-#~ msgid "Pikaraoke version:"
-#~ msgstr "nerdBar-Karaoke-Version:"
-
-#~ msgid "System stats"
-#~ msgstr "Systemstatistiken"
-
-#~ msgid "CPU:"
-#~ msgstr ""
-
-#~ msgid "Loading..."
-#~ msgstr "Lieder werden geladen..."
-
-#~ msgid "Disk Usage:"
-#~ msgstr ""
-
-#~ msgid "Memory:"
-#~ msgstr ""
-
-#~ msgid "System Settings"
-#~ msgstr "Systemeinstellungen"
-
-#~ msgid "Queue settings"
-#~ msgstr "Warteschlangen-Einstellungen"
-
-#~ msgid "Interface settings"
-#~ msgstr "Interface-Einstellungen"
-
-#~ msgid "Sound/Video settings"
-#~ msgstr "Ton-/Video-Einstellungen"
-
-#~ msgid ""
-#~ "*You may need to refresh the "
-#~ "splash screen for these changes to "
-#~ "take effect."
-#~ msgstr ""
-#~ "Möglicherweise muss der Begrüßungsbildschirm "
-#~ "neu geladen werden, damit die Änderungen"
-#~ " sichtbar sind."
-
-#~ msgid "Disable background video"
-#~ msgstr "Hintergrundvideo deaktivieren"
-
-#~ msgid "Disable background music"
-#~ msgstr "Hintergrundmusik deaktivieren"
-
-#~ msgid "Disable the score screen after each song"
-#~ msgstr "Bewertungsbildschirm nach jedem Lied deaktivieren"
-
-#~ msgid "Hide notifications"
-#~ msgstr "Benachrichtigungen ausblenden"
-
-#~ msgid "Hide the URL and QR code"
-#~ msgstr "URL und QR-Code ausblenden"
-
-#~ msgid "Hide all overlays, including now playing, up next, and QR code"
-#~ msgstr ""
-#~ "Alle Overlays ausblenden, einschließlich "
-#~ "'Jetzt läuft', 'Als Nächstes' und QR-"
-#~ "Code"
-
-#~ msgid "Default volume of the videos (min 0, max 100)"
-#~ msgstr "Standardlautstärke der Videos (min 0, max 100)"
-
-#~ msgid "Volume of the background music (min 0, max 100)"
-#~ msgstr "Lautstärke der Hintergrundmusik (min 0, max 100)"
-
-#~ msgid ""
-#~ "The amount of idle time in seconds"
-#~ " before the screen saver activates. "
-#~ "Set to 0 to disable it."
-#~ msgstr ""
-#~ "Inaktivzeit bis sich der Bildschirmschoner "
-#~ "aktiviert. Zum Deaktivieren auf 0 "
-#~ "setzen."
-
-#~ msgid "The delay in seconds before starting the next song"
-#~ msgstr "Die Verzögerung in Sekunden vor dem Start des nächsten Liedes"
-
-#~ msgid "Score phrases"
-#~ msgstr ""
-
-#~ msgid "Add one phrase per line in each box and hit save."
-#~ msgstr ""
-
-#~ msgid "LOW Score Phrases (score < 30)"
-#~ msgstr ""
-
-#~ msgid "Could be better..."
-#~ msgstr ""
-
-#~ msgid "MID Score Phrases (30 > score < 60)"
-#~ msgstr ""
-
-#~ msgid "That was ok..."
-#~ msgstr ""
-
-#~ msgid "HIGH Score Phrases (60 < score)"
-#~ msgstr ""
-
-#~ msgid "Wonderfull..."
-#~ msgstr ""
-
-#~ msgid "Preferred language (requires restart)"
-#~ msgstr ""
-
-#~ msgid "Normalize audio volume"
-#~ msgstr "Audio-Lautstärke normalisieren"
-
-#~ msgid "Download high quality videos"
-#~ msgstr "Videos in hoher Qualität herunterladen"
-
-#~ msgid ""
-#~ "Transcode video completely before playing "
-#~ "(better browser compatibility, slower starts)."
-#~ " Buffer size will be ignored.*"
-#~ msgstr ""
-#~ "Video vor dem Abspielen vollständig "
-#~ "transkodieren (Bessere Browser-Kompatibilität, "
-#~ "langsamerer Liedstart). Puffergröße wird "
-#~ "ignoriert."
-
-#~ msgid ""
-#~ "Enable CDG pixel scaling (crisper "
-#~ "visuals for CDG files, may increase "
-#~ "CPU usage)"
-#~ msgstr ""
-#~ "CDG-Pixel-Skalierung aktivieren (schärfere "
-#~ "Darstellung für CDG-Dateien, kann die"
-#~ " CPU-Auslastung erhöhen)"
-
-#~ msgid ""
-#~ "Fix the audio and video synchronization"
-#~ " in seconds (negative = advances "
-#~ "audio | positive = delays audio)"
-#~ msgstr ""
-#~ "Audio- und Videosynchronisation in Sekunden"
-#~ " korrigieren (negativ = Audio voraus "
-#~ "| positiv = Audio verzögert)"
-
-#~ msgid "Limit of songs an individual user can add to the queue (0 = unlimited)"
-#~ msgstr ""
-#~ "Limit an Liedern, die ein Benutzer "
-#~ "zur Warteschlange hinzufügen kann (0 ="
-#~ " unbegrenzt)"
-
-#~ msgid "Allow adding songs to the queue"
-#~ msgstr "Hinzufügen von Songs zur Warteschlange erlauben"
-
-#~ msgid "Queue closing time (24-hour HH:MM, leave blank to disable)"
-#~ msgstr ""
-#~ "Schließzeit der Warteschlange (24-Stunden "
-#~ "HH:MM, leer lassen zum Deaktivieren)"
-
-#~ msgid ""
-#~ "Song add cooldown count (number of "
-#~ "songs to trigger cooldown, -1 = "
-#~ "disabled)"
-#~ msgstr ""
-#~ "Cooldown-Anzahl beim Hinzufügen von "
-#~ "Songs (Anzahl der Songs bis zum "
-#~ "Cooldown, -1 = deaktiviert)"
-
-#~ msgid "Song add cooldown duration in minutes (-1 = disabled)"
-#~ msgstr "Cooldown-Dauer für Song-Hinzufügen in Minuten (-1 = deaktiviert)"
-
-#~ msgid "Enable fair queue (round-robin mode ensures users take turns)"
-#~ msgstr ""
-#~ "Faires Queue-System aktivieren (Round-"
-#~ "Robin-Modus sorgt dafür, dass Nutzer "
-#~ "abwechseln)"
-
-#~ msgid ""
-#~ "Enable voting system (users can "
-#~ "upvote/downvote songs to influence queue "
-#~ "order)"
-#~ msgstr ""
-#~ "Abstimmungssystem aktivieren (Nutzer können "
-#~ "Songs hoch-/runtervoten, um die Reihenfolge"
-#~ " zu beeinflussen)"
-
-#~ msgid ""
-#~ "Buffer size in kilobytes. Transcode this"
-#~ " amount of the video before sending"
-#~ " it to the splash screen. "
-#~ msgstr ""
-#~ "Puffergröße in Kilobytes. Transkodiert diesen"
-#~ " Teil des Videos, bevor es abgespielt"
-#~ " wird."
-
-#~ msgid "Browse page results per page (10-1000, default 500)"
-#~ msgstr "Ergebnisse pro Seite auf der Durchsuchen-Seite (10-1000, Standard 500)"
-
-#~ msgid "Clear preferences"
-#~ msgstr "Einstellungen löschen"
-
-#~ msgid "Updates"
-#~ msgstr "Aktualisierungen"
-
-#~ msgid "Refresh the song list"
-#~ msgstr "Liederliste aktualisieren"
-
-#~ msgid ""
-#~ "You should only need to do this"
-#~ " if you manually copied files to "
-#~ "the download directory while pikaraoke "
-#~ "was running."
-#~ msgstr ""
-#~ "Nur nötig, wenn manuell Dateien in "
-#~ "das Liederverzeichnis kopiert wurden, während"
-#~ " nerdBar-Karaoke aktiv ist."
-
-#~ msgid "Rescan song directory"
-#~ msgstr "Liederverzeichnis erneut scannen"
-
-#~ msgid "YT-DLP update"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "\n"
-#~ "\t\t\t\t\t\tIf downloads or searches "
-#~ "stopped working, updating youtube-dl "
-#~ "will probably fix it.<br/>\n"
-#~ "\t\t\t\t\t\tThe current installed version "
-#~ "is: \"%(youtubedl_version)s\".\n"
-#~ "\t\t\t\t\t"
-#~ msgstr ""
-#~ "\n"
-#~ "Wenn das Herunterladen oder die Suche"
-#~ " nicht funktionieren, wird eine "
-#~ "Aktualisierung von Youtube-DL das "
-#~ "Problem wahrscheinlich beheben. Die aktuell"
-#~ " installierte Version ist: "
-#~ "\"%(youtubedl_version)s\"."
-
-#~ msgid "Update youtube-dl"
-#~ msgstr "Youtube-DL aktualisieren"
-
-#~ msgid ""
-#~ "* This update link above may fail"
-#~ " if you don't have proper file "
-#~ "permissions.\n"
-#~ "\t\t\t\t\t\t\tCheck the pikaraoke log for errors."
-#~ msgstr ""
-#~ "* Diese Aktualisierung kann ohne die "
-#~ "nötigen Dateiberechtigungen fehlschlagen. "
-#~ "Pikaraoke-Log auf Fehler überprüfen."
-
-#~ msgid ""
-#~ "Don't just pull the plug! Always "
-#~ "shut down your server properly to "
-#~ "avoid data corruption."
-#~ msgstr ""
-#~ "Zieh nicht einfach den Stecker! Fahr "
-#~ "den Server immer korrekt herunter, um"
-#~ " Datenkorruption zu vermeiden."
-
-#~ msgid "Quit Pikaraoke"
-#~ msgstr "nerdBar-Karaoke beenden"
-
-#~ msgid "Reboot System"
-#~ msgstr "System neustarten"
-
-#~ msgid "Shutdown System"
-#~ msgstr "System herunterfahren"
-
-#~ msgid "Other"
-#~ msgstr "Sonstiges"
-
-#~ msgid "Expand Raspberry Pi filesystem"
-#~ msgstr "Raspberry Pi-Dateisystem erweitern"
-
-#~ msgid ""
-#~ "If you just installed the pre-"
-#~ "built pikaraoke pi image and your "
-#~ "SD card is larger than 4GB,\n"
-#~ "\t\t\t\t\t\t\tyou may want to expand "
-#~ "the filesystem to utilize the remaining"
-#~ " space. You only need to do "
-#~ "this once.\n"
-#~ "\t\t\t\t\t\t\tThis will reboot the system."
-#~ msgstr ""
-#~ "Wenn du das vorgefertigte Pikaraoke-"
-#~ "Pi-Image installiert hast und deine "
-#~ "SD-Karte größer als 4GB ist, solltest"
-#~ " du das Dateisystem erweitern, um den"
-#~ " gesamten Speicherplatz nutzbar zu machen."
-#~ " Dies musst du nur einmal machen. "
-#~ "Das System startet hierzu neu."
-
-#~ msgid "Admin"
-#~ msgstr ""
-
-#~ msgid "Logout"
-#~ msgstr ""
-
-#~ msgid "Click here to logout from admin mode."
-#~ msgstr "Hier klicken, um den Admin-Modus zu verlassen."
-
-#~ msgid "Log out"
-#~ msgstr ""
-
-#~ msgid "Login"
-#~ msgstr "Anmelden"
-
-#~ msgid "Click here to login as admin."
-#~ msgstr ""
-
-#~ msgid "Log in"
-#~ msgstr "Anmelden"
-
-#~ msgid "Enter the administrator password"
-#~ msgstr "Administratorpasswort eingeben"
-
-#~ msgid "Options"
-#~ msgstr ""
-
-#~ msgid "Pending downloads"
-#~ msgstr ""
-
-#~ msgid "Queued"
-#~ msgstr "Warteschlange"
-
-#~ msgid "Download Errors"
-#~ msgstr "Heruntergeladen: %s"
-
-#~ msgid "Failed"
-#~ msgstr ""
-
-#~ msgid "Dismiss"
-#~ msgstr ""
-
-#~ msgid "Drag to reorder"
-#~ msgstr ""
-
-#~ msgid "The queue is empty"
-#~ msgstr "Die Warteschlange ist leer"
-
-#~ msgid "Play"
-#~ msgstr ""
-
-#~ msgid "Clear all"
-#~ msgstr "Alles löschen"
-
-#~ msgid "Play Next"
-#~ msgstr "Als Nächstes:"
-
-#~ msgid "Move to Top"
-#~ msgstr ""
-
-#~ msgid "Move Up"
-#~ msgstr ""
-
-#~ msgid "Move Down"
-#~ msgstr ""
-
-#~ msgid "Move to Bottom"
-#~ msgstr ""
-
-#~ msgid "Remove from Queue"
-#~ msgstr "Aus der Warteschlange entfernt"
-
-#~ msgid "Restart"
-#~ msgstr "Lied neu starten"
-
-#~ msgid "Skip"
-#~ msgstr ""
-
-#~ msgid "Download queue"
-#~ msgstr "Heruntergeladen und in die Warteschlange eingereiht: %s"
-
-#~ msgid "Available songs in local library"
-#~ msgstr "Verfügbare Lieder in der lokalen Bibliothek"
-
-#~ msgid "Search / Add New"
-#~ msgstr "Suchen / Neu hinzufügen"
-
-#~ msgid "Available Songs"
-#~ msgstr "Verfügbare Lieder"
-
-#~ msgid "Add to queue"
-#~ msgstr "Zur Warteschlange hinzufügen"
-
-#~ msgid "Clear"
-#~ msgstr "Löschen"
-
-#~ msgid "Advanced"
-#~ msgstr "Erweitert"
-
-#~ msgid ""
-#~ "- Type a song (title/artist) to search\n"
-#~ "\t\t\t\t\t\t\t\tthe available songs and "
-#~ "click 'Add to queue' to add it "
-#~ "to the queue."
-#~ msgstr ""
-#~ "Tippe ein Lied ein (Titel/Künstler), um"
-#~ " die verfügbaren Lieder zu durchsuchen "
-#~ "und klicke auf \"Zur Warteschlange "
-#~ "hinzufügen\", um es zur Warteschlange "
-#~ "hinzufügen."
-
-#~ msgid ""
-#~ "- If the song doesn't appear in\n"
-#~ "\t\t\t\t\t\t\t\tthe \"Available Songs\" "
-#~ "dropdown, click 'Search' to find it "
-#~ "on Youtube"
-#~ msgstr ""
-#~ "Wenn das Lied nicht im \"Verfügbare "
-#~ "Lieder\"-Dropdown-Menü erscheint, klicke auf"
-#~ " \"Suche\", um es auf Youtube zu "
-#~ "finden"
-
-#~ msgid "Include non-karaoke matches"
-#~ msgstr "Nicht-Karaoke-Treffer einbeziehen"
-
-#~ msgid "Direct download YouTube url:"
-#~ msgstr "Direktes Herunterladen von einer YouTube-URL:"
-
-#~ msgid "Add to queue once downloaded"
-#~ msgstr "Nach dem Herunterladen zur Warteschlange hinzufügen"
-
-#~ msgid "Download"
-#~ msgstr "Herunterladen"
-
-#~ msgid ""
-#~ "Searching YouTube for\n"
-#~ "\t\t<small><i>'%(search_term)s'</i></small>"
-#~ msgstr "Suche auf Youtube nach <small><i>'%(search_term)s'</i></small>"
-
-#~ msgid ""
-#~ "Search results for\n"
-#~ "\t\t\t\t<small><i>'%(search_string)s'</i></small>"
-#~ msgstr "Suchergebnisse für <small><i>'%(search_string)s'</i></small>"
-
-#~ msgid "Click dropdown to show more results"
-#~ msgstr "Klicke auf das Dropdown-Menü für weitere Ergebnisse"
-
-#~ msgid "Link:"
-#~ msgstr "Link:"
-
-#~ msgid "Connection lost. Is the server still running?"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "This browser is not fully supported. "
-#~ "You may experience streaming issues. "
-#~ "Please use Chrome/Safari/Firefox/Edge for best"
-#~ " results."
-#~ msgstr ""
-
-#~ msgid "Never sing again... ever."
-#~ msgstr "Sing bloß nie wieder... niemals."
-
-#~ msgid "That was a really good impression of a dying cat!"
-#~ msgstr "Das war eine wirklich gute Imitation einer sterbenden Katze!"
-
-#~ msgid "Thank God it's over."
-#~ msgstr "Gott sei Dank ist es vorbei."
-
-#~ msgid "Pass the mic, please!"
-#~ msgstr "Lass lieber jemand anderes singen!"
-
-#~ msgid "Well, I'm sure you're very good at your day job."
-#~ msgstr "Nun, bestimmt bist du wenigstens in deinem Hauptberuf sehr gut."
-
-#~ msgid "I've seen better."
-#~ msgstr "Ich habe schon Besseres gesehen."
-
-#~ msgid "Ok... just ok."
-#~ msgstr "Okay... einfach okay."
-
-#~ msgid "Not bad for an amateur."
-#~ msgstr "Nicht schlecht für einen Amateur."
-
-#~ msgid "You put on a decent show."
-#~ msgstr "Du hast eine ordentliche Show abgeliefert."
-
-#~ msgid "That was... something."
-#~ msgstr "Das war... etwas."
-
-#~ msgid "Congratulations! That was unbelievable!"
-#~ msgstr "Herzlichen Glückwunsch! Das war unglaublich!"
-
-#~ msgid "Wow, have you tried auditioning for The Voice?"
-#~ msgstr "Wow, hast du dich schon für 'The Voice' beworben?"
-
-#~ msgid "Please, sing another one!"
-#~ msgstr "Bitte, sing noch eins!"
-
-#~ msgid "You rock! You know that?!"
-#~ msgstr "Du rockst! Weißt du das?!"
-
-#~ msgid "Woah, who let Freddie Mercury in here?"
-#~ msgstr "Wow, wer hat Freddie Mercury hier reingelassen?"
-
 #~ msgid "Up next:"
 #~ msgstr "Als Nächstes:"
-
-#~ msgid "Next wish:"
-#~ msgstr "Nächster Wunsch:"
-
-#~ msgid "Your Score"
-#~ msgstr "Deine Punktzahl"
-
-#~ msgid ""
-#~ "Due to limitations with browser permissions, you must interact\n"
-#~ "      with the page once before it"
-#~ " allows autoplay of videos. Pikaraoke "
-#~ "will not\n"
-#~ "      play otherwise. Click the button below to\n"
-#~ "      <a onClick=\"handleConfirmation()\">confirm</a>."
-#~ msgstr ""
-#~ "Aufgrund eingeschränkter Browserberechtigungen musst"
-#~ " du mit der Seite interagieren, damit"
-#~ " Autoplay für Videos aktiviert werden "
-#~ "kann. nerdBar-Karaoke kann ansonsten "
-#~ "keine Videos abspielen. Klicke hierzu "
-#~ "auf den Button <a "
-#~ "onClick=\"handleConfirmation()\">Bestätigen</a>."
-
-#~ msgid "Confirm"
-#~ msgstr "Bestätigen"
-
-#~ msgid "Queue duration"
-#~ msgstr "Warteschlangendauer"
-
-#~ msgid "Estimated end time"
-#~ msgstr "Voraussichtliche Endzeit"
-
-#~ msgid "Song"
-#~ msgstr "Song"
-
-#~ msgid "Duration"
-#~ msgstr "Dauer"
-
-#~ msgid "Starts at"
-#~ msgstr "Startet um"
-
-#~ msgid "Votes"
-#~ msgstr "Stimmen"
-
-#~ msgid ""
-#~ "Add <input id=\"randomNumberInput\" class=\"input"
-#~ " mx-2 p-2\" pattern=\"\\d*\" maxlength=\"2\" "
-#~ "value=\"3\" min=\"1\" max=\"99\" style=\"width: "
-#~ "42px\" /> random songs"
-#~ msgstr ""
-#~ "Füge <input id=\"randomNumberInput\" class=\"input"
-#~ " mx-2 p-2\" pattern=\"\\d*\" maxlength=\"2\" "
-#~ "value=\"3\" min=\"1\" max=\"99\" style=\"width: "
-#~ "42px\" /> zufällige Songs hinzu"
-
-#~ msgid "Microphone Status"
-#~ msgstr "Mikrofonstatus"
 
 #~ msgid "Hand Back Microphone"
 #~ msgstr "Mikrofon zurückgeben"
@@ -1196,36 +1420,9 @@ msgstr ""
 #~ msgid "Assign Microphone"
 #~ msgstr "Mikrofon zuweisen"
 
-#~ msgid "Please enter your name to assign the"
-#~ msgstr "Bitte geben Sie Ihren Namen ein, um das"
-
 #~ msgid "microphone to yourself."
 #~ msgstr "Mikrofon sich selbst zuzuweisen."
 
 #~ msgid "Your Name"
 #~ msgstr "Ihr Name"
-
-#~ msgid "Microphone Tracking"
-#~ msgstr "Mikrofon-Tracking"
-
-#~ msgid "Show microphone status on home page (non-admins)"
-#~ msgstr "Mikrofonstatus auf der Startseite anzeigen (Nicht-Admins)"
-
-#~ msgid "Reset microphone assignments after each song"
-#~ msgstr "Mikrofonzuweisungen nach jedem Lied zurücksetzen"
-
-#~ msgid "Wait for singer to get a microphone before playing their song"
-#~ msgstr "Warten bis der Sänger ein Mikrofon hat, bevor sein Lied gespielt wird"
-
-#~ msgid "Microphone wait timeout in seconds"
-#~ msgstr "Mikrofon-Wartezeit in Sekunden"
-
-#~ msgid "Action when microphone wait timeout expires:"
-#~ msgstr "Aktion wenn Mikrofon-Wartezeit abläuft:"
-
-#~ msgid "Play song anyway"
-#~ msgstr "Lied trotzdem abspielen"
-
-#~ msgid "Skip song"
-#~ msgstr "Lied überspringen"
 

@@ -19,6 +19,7 @@
 			var user = Cookies.get("user");
 			$.get(this.href + encodeURIComponent(user), function (data) {
 				var obj = JSON.parse(data);
+				console.log('Enqueue response:', obj);
 				var message = obj.message || "";
 				// If closing timestamp is provided, format it using browser's local timezone
 				if (obj.closing_ts && !obj.success) {

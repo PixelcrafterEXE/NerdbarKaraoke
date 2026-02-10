@@ -316,13 +316,14 @@
 					data: $("#queue-form").serialize(),
 					success: function (data) {
 						var obj = JSON.parse(data);
+						console.log('Enqueue response:', obj);
 						var message = obj.message || "";
 						// If closing timestamp is provided, format it using browser's local timezone
 						if (obj.closing_ts && !obj.success) {
 							const closingTime = new Date(obj.closing_ts * 1000);
 							const hours = String(closingTime.getHours()).padStart(2, '0');
 							const minutes = String(closingTime.getMinutes()).padStart(2, '0');
-							message = obj.message.replace(/%s/, `${hours}:${minutes}`);
+							message = message.replace(/%s/, `${hours}:${minutes}`);
 						}
 						var category = obj.success ? "is-success" : "is-danger";
 						showNotification(message, category);

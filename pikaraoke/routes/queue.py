@@ -375,6 +375,7 @@ def enqueue():
         response_data = {"song": song_title, "success": success, "message": message}
         if closing_ts:
             response_data["closing_ts"] = closing_ts
+        logging.debug(f"Enqueue response: success={success}, has_closing_ts={closing_ts is not None}, message={message[:50]}")
     elif rc is False:
         success = False
         message = _("Song is already in the queue: %s") % song_title
