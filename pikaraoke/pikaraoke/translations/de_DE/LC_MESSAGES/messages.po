@@ -892,8 +892,8 @@ msgid "Chronological"
 msgstr "Chronologisch"
 
 #: templates/info.html:429
-msgid "Democratical"
-msgstr "Demokratisch"
+msgid "Voting"
+msgstr "Abstimmung"
 
 #: templates/info.html:430
 msgid "Fair"

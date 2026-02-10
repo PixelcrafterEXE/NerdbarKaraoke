@@ -630,8 +630,8 @@ msgid "Chronological"
 msgstr "Chronologisch"
 
 #: pikaraoke/templates/info.html:299
-msgid "Democratical"
-msgstr "Demokratisch"
+msgid "Voting"
+msgstr "Abstimmung"
 
 #: pikaraoke/templates/info.html:300
 msgid "Fair"
