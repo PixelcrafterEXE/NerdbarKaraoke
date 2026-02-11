@@ -155,7 +155,7 @@ def reorder():
         description: Unauthorized access (admin only)
     """
     if not is_admin():
-        return json.dumps({"success": False, "error": "Unauthorized"}), 403
+        return json.dumps({"success": False, "error": _('Unauthorized')}), 403
 
     k = get_karaoke_instance()
     try:
@@ -184,7 +184,7 @@ def queue_edit():
 
     if not is_admin():
         if is_ajax:
-            return json.dumps({"success": False, "error": "Unauthorized"}), 403
+            return json.dumps({"success": False, "error": _('Unauthorized')}), 403
         # MSG: Message shown when non-admin tries to edit queue
         flash(_("Unauthorized"), "is-danger")
         return redirect(url_for("queue.queue"))

@@ -83,7 +83,7 @@ def effects_state():
         return jsonify(response)
 
     if not user_microphone:
-        return jsonify({"error": "No microphone assigned"}), 403
+        return jsonify({"error": _("No microphone assigned")}), 403
 
     return jsonify(k.effects_manager.get_user_state(user_microphone))
 
@@ -93,9 +93,9 @@ def effects_admin_update():
     """Update effect settings for a microphone (admin only)."""
     k = get_karaoke_instance()
     if not k.effects_enabled:
-        return jsonify({"success": False, "message": "Effects disabled"}), 403
+        return jsonify({"success": False, "message": _("Effects disabled")}), 403
     if not is_admin():
-        return jsonify({"success": False, "message": "Unauthorized"}), 403
+        return jsonify({"success": False, "message": _("Unauthorized")}), 403
 
     data = request.get_json(silent=True) or {}
     effect_id = data.get("effect_id")
@@ -119,10 +119,10 @@ def effects_user_update():
     """Update effect parameter values for the current user's microphone."""
     k = get_karaoke_instance()
     if not k.effects_enabled:
-        return jsonify({"success": False, "message": "Effects disabled"}), 403
+        return jsonify({"success": False, "message": _("Effects disabled")}), 403
     user_microphone = _get_user_microphone(k)
     if not user_microphone:
-        return jsonify({"success": False, "message": "No microphone assigned"}), 403
+        return jsonify({"success": False, "message": _("No microphone assigned")}), 403
 
     data = request.get_json(silent=True) or {}
     effect_id = data.get("effect_id")
@@ -135,7 +135,7 @@ def effects_user_update():
         else:
             success, message = k.effects_manager.set_microphone_effect(user_microphone, effect_id)
             if not success:
-                return jsonify({"success": False, "message": message}), 400
+                return jsonify({"success": False, "message": _(message)}), 400
             if isinstance(parameters, dict) and parameters:
                 k.effects_manager.update_user_parameters(user_microphone, parameters)
             k.effects_manager.apply_effect_to_mixer(user_microphone)

@@ -57,7 +57,12 @@ babel = Babel()
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.jinja_env.add_extension("jinja2.ext.i18n")
-app.config["BABEL_TRANSLATION_DIRECTORIES"] = "translations"
+# Search both top-level `translations/` and the package-local translations directory
+app.config["BABEL_TRANSLATION_DIRECTORIES"] = ";".join([
+    "translations",
+    os.path.join(os.path.dirname(__file__), "pikaraoke", "translations"),
+])
+logging.debug(f"Babel translation dirs: {app.config['BABEL_TRANSLATION_DIRECTORIES']}")
 app.config["JSON_SORT_KEYS"] = False
 # Initialize Swagger API docs if enabled via CLI flag
 app.config["SWAGGER"] = {

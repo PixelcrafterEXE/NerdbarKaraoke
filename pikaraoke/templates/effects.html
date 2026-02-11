@@ -68,11 +68,15 @@
 			effectsUser: null
 		};
 
+		// Localized constants for JavaScript
+		const STR_OFF = {{ _('OFF') | tojson }};
+		const STR_ON = {{ _('ON') | tojson }};
+
 		function formatValue(value, param) {
 			const numValue = Number.parseFloat(value);
 			// Boolean enum: min=0, max=1, step=1
 			if (param && param.min === 0 && param.max === 1 && param.step === 1) {
-				return numValue === 0 ? 'OFF' : 'ON';
+				return numValue === 0 ? STR_OFF : STR_ON;
 			}
 			// Integer values: step=1.0
 			if (param && param.step === 1) {

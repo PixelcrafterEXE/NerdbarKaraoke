@@ -258,6 +258,113 @@ msgstr "Fehler: Keine Dateinamenparameter angegeben!"
 msgid "Browse"
 msgstr "Durchsuchen"
 
+#: templates/effects.html:1
+msgid "Effects"
+msgstr "Effekte"
+
+#: templates/effects.html:1
+msgid "OFF"
+msgstr "Aus"
+
+#: templates/effects.html:1
+msgid "ON"
+msgstr "An"
+
+#: templates/effects.html:1
+msgid "Effect"
+msgstr "Effekt"
+
+#: templates/effects.html:1
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: templates/effects.html:1
+msgid "None"
+msgstr "Keine"
+#: templates/effects.html:1
+msgid "No effects data available."
+msgstr "Keine Effektdaten verfügbar."
+
+#: templates/effects.html:1
+msgid "No effects are available for your microphone."
+msgstr "Für dein Mikrofon sind keine Effekte verfügbar."
+
+#: templates/effects.html:1
+msgid "Failed to load effects data."
+msgstr "Fehler beim Laden der Effektdaten."
+
+#: templates/effects.html:1
+msgid "Failed to update effects."
+msgstr "Aktualisierung der Effekte fehlgeschlagen."
+
+#: templates/effects.html:1
+msgid "My Effects"
+msgstr "Meine Effekte"
+
+#: templates/effects.html:1
+msgid "Allow for users"
+msgstr "Für Benutzer zulassen"
+
+#: templates/effects.html:1
+msgid "Parameter"
+msgstr "Parameter"
+
+#: templates/effects.html:1
+msgid "Value"
+msgstr "Wert"
+
+#: templates/effects.html:1
+msgid "Allow user"
+msgstr "Für Benutzer zulassen"
+
+#: templates/info.html:304
+msgid "Effects & Mixer"
+msgstr "Effekte & Mixer"
+
+#: templates/info.html:304
+msgid "Enable effects UI and OSC output"
+msgstr "Effekte-Oberfläche und OSC-Ausgabe aktivieren"
+
+#: templates/info.html:304
+msgid "OSC mixer IP address"
+msgstr "OSC-Mixer-IP-Adresse"
+
+#: templates/info.html:304
+msgid "OSC mixer port"
+msgstr "OSC-Mixer-Port"
+
+#: templates/info.html:304
+msgid "Microphone Channels & FX Racks"
+msgstr "Mikrofonkanäle & FX-Racks"
+
+#: templates/info.html:304
+msgid "Channel values map to FX source (0 = INS, 1-16 = MIX1..MIX16, 17 = M/C). Racks must be 1-4."
+msgstr "Kanalwerte entsprechen der FX-Quelle (0 = INS, 1–16 = MIX1..MIX16, 17 = M/C). Racks müssen 1–4 sein."
+
+#: templates/info.html:304
+msgid "Red microphone"
+msgstr "Rotes Mikrofon"
+
+#: templates/info.html:304
+msgid "Green microphone"
+msgstr "Grünes Mikrofon"
+
+#: templates/info.html:304
+msgid "Blue Microphone"
+msgstr "Blaues Mikrofon"
+
+#: templates/info.html:304
+msgid "Yellow Microphone"
+msgstr "Gelbes Mikrofon"
+
+#: templates/info.html:304
+msgid "Channel"
+msgstr "Kanal"
+
+#: templates/info.html:304
+msgid "FX rack"
+msgstr "FX-Rack"
+
 #. Message shown after trying to delete a song that is in the queue.
 #: routes/files.py:132
 msgid "Error: Can't delete this song because it is in the current queue"
@@ -310,7 +417,31 @@ msgstr "Nicht genügend Lieder zum Hinzufügen!"
 #. Message shown when non-admin tries to edit queue
 #: routes/queue.py:172
 msgid "Unauthorized"
-msgstr ""
+msgstr "Nicht autorisiert"
+
+#: routes/effects.py:96
+msgid "Effects disabled"
+msgstr "Effekte deaktiviert"
+
+#: routes/effects.py:103
+msgid "Missing effect"
+msgstr "Fehlender Effekt"
+
+#: routes/effects.py:131
+msgid "Invalid parameters"
+msgstr "Ungültige Parameter"
+
+#: routes/effects.py:86
+msgid "No microphone assigned"
+msgstr "Kein Mikrofon zugewiesen"
+
+#: lib/effects_manager.py:209
+msgid "Invalid effect"
+msgstr "Ungültiger Effekt"
+
+#: lib/effects_manager.py:211
+msgid "Effect not available"
+msgstr "Effekt nicht verfügbar"
 
 #: routes/queue.py:182
 msgid "Cleared the queue!"

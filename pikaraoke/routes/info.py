@@ -120,7 +120,7 @@ def get_system_stats():
         JSON response with system stats.
     """
     if not is_admin():
-        return jsonify({"error": "Unauthorized"}), 403
+        return jsonify({"error": _("Unauthorized")}), 403
 
     # cpu
     try:
