@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import flask_babel
+import logging
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 
 from pikaraoke.lib.current_app import get_karaoke_instance, get_site_name, is_admin
@@ -127,6 +128,7 @@ def effects_user_update():
     data = request.get_json(silent=True) or {}
     effect_id = data.get("effect_id")
     parameters = data.get("parameters", {})
+
     if parameters and not isinstance(parameters, dict):
         return jsonify({"success": False, "message": "Invalid parameters"}), 400
     if effect_id:

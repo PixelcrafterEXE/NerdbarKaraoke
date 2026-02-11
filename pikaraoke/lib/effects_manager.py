@@ -116,21 +116,14 @@ class EffectsManager:
 
     def _sync_state(self) -> None:
         """Ensure state matches current microphone list and effect configs."""
-        default_effect_id = next(iter(self.effects), None)
+        # Default: no effect selected for microphones (user must choose)
+        default_effect_id = None
 
-        visible_effects = [
-            effect_id
-            for effect_id, effect in self.effects.items()
-            if effect.get("visible", True)
-        ]
-        if not visible_effects:
-            visible_effects = list(self.effects.keys())
-        default_effect_id = visible_effects[0] if visible_effects else default_effect_id
         for mic_color in MicrophoneManager.MICROPHONE_COLORS:
             mic_state = self.state["microphones"].get(mic_color, {}) or {}
-            effect_id = mic_state.get("effect_id") or default_effect_id
+            effect_id = mic_state.get("effect_id")
             if effect_id not in self.effects:
-                effect_id = default_effect_id
+                effect_id = None
 
             mic_state.setdefault("enabled", False)
             mic_state["effect_id"] = effect_id
@@ -205,13 +198,18 @@ class EffectsManager:
         return self.get_effects_for_user(mic_color)
 
     def set_microphone_effect(self, mic_color: str, effect_id: str) -> tuple[bool, str]:
+        logging.debug("set_microphone_effect: mic=%s effect=%s", mic_color, effect_id)
         if effect_id not in self.effects:
+            logging.debug("Attempt to set invalid effect %s for mic %s", effect_id, mic_color)
             return False, "Invalid effect"
         if not self.effects[effect_id].get("visible", True):
+            logging.debug("Attempt to set unavailable effect %s for mic %s", effect_id, mic_color)
             return False, "Effect not available"
         mic_state = self.state["microphones"].setdefault(mic_color, {})
         mic_state["effect_id"] = effect_id
         mic_state["parameters"] = mic_state.get("parameters", {}) or self._default_parameters(effect_id)
+        # Enabling microphone when a user selects an effect so OSC messages are applied
+        mic_state["enabled"] = True
         self.state["microphones"][mic_color] = mic_state
         self.save_state()
         return True, "Effect updated"
@@ -262,6 +260,7 @@ class EffectsManager:
         effect_id = mic_state.get("effect_id")
         effect = self.effects.get(effect_id)
         if not effect:
+            logging.debug("No active effect for mic %s; skipping parameter update", mic_color)
             return
         user_editable = effect.get("user_editable", {})
         param_defs = {str(param["index"]): param for param in effect["parameters"]}
@@ -289,6 +288,9 @@ class EffectsManager:
                 float_value = max_val
 
             mic_state.setdefault("parameters", {})[key_str] = float_value
+
+        # Enabling microphone when a user changes parameters so changes are applied
+        mic_state["enabled"] = True
 
         self.state["microphones"][mic_color] = mic_state
         self.save_state()
@@ -335,11 +337,15 @@ class EffectsManager:
         try:
             client = SimpleUDPClient(mixer_ip, int(mixer_port))
             # Set FX source to OFF (0) for both left and right channels
+            logging.debug("Sending OSC %s -> %s", f"/fx/{rack}/source/l", 0)
+            print(f"OSC SEND: /fx/{rack}/source/l 0", flush=True)
             client.send_message(f"/fx/{rack}/source/l", 0)
+            logging.debug("Sending OSC %s -> %s", f"/fx/{rack}/source/r", 0)
+            print(f"OSC SEND: /fx/{rack}/source/r 0", flush=True)
             client.send_message(f"/fx/{rack}/source/r", 0)
             logging.info("Disabled microphone input for %s (FX rack %d)", mic_color, rack)
-        except Exception as exc:
-            logging.warning("Failed to send OSC to mixer: %s", exc)
+        except Exception:
+            logging.exception("Failed to send OSC to mixer")
 
         # Clear the effect_id from state
         mic_state = self.state["microphones"].setdefault(mic_color, {})
@@ -351,16 +357,16 @@ class EffectsManager:
         if not getattr(self.karaoke, "effects_enabled", True):
             return
         mic_state = self.state["microphones"].get(mic_color)
-        if not mic_state:
-            return
-        if not mic_state.get("enabled"):
+        if not mic_state or not mic_state.get("enabled"):
             return
 
         effect_id = mic_state.get("effect_id")
         effect = self.effects.get(effect_id)
         if not effect:
+            logging.debug("Effect %s not found for mic %s; skipping OSC send", effect_id, mic_color)
             return
         if not effect.get("visible", True):
+            logging.debug("Effect %s not visible for mic %s; skipping OSC send", effect_id, mic_color)
             return
 
         mixer_ip = getattr(self.karaoke, "mixer_ip", "")
@@ -374,17 +380,25 @@ class EffectsManager:
 
         try:
             client = SimpleUDPClient(mixer_ip, int(mixer_port))
+            logging.debug("Sending OSC %s -> %s", f"/fx/{rack}/type", int(effect["type"]))
+            print(f"OSC SEND: /fx/{rack}/type {int(effect['type'])}", flush=True)
             client.send_message(f"/fx/{rack}/type", int(effect["type"]))
+            logging.debug("Sending OSC %s -> %s", f"/fx/{rack}/source/l", int(source))
+            print(f"OSC SEND: /fx/{rack}/source/l {int(source)}", flush=True)
             client.send_message(f"/fx/{rack}/source/l", int(source))
+            logging.debug("Sending OSC %s -> %s", f"/fx/{rack}/source/r", int(source))
+            print(f"OSC SEND: /fx/{rack}/source/r {int(source)}", flush=True)
             client.send_message(f"/fx/{rack}/source/r", int(source))
 
             param_defs = {str(param["index"]): param for param in effect["parameters"]}
             for key, param in param_defs.items():
                 default_value = param.get("default", 0.0)
                 value = mic_state.get("parameters", {}).get(key, default_value)
+                logging.debug("Sending OSC %s -> %s", f"/fx/{rack}/par/{int(key):02d}", float(value))
+                print(f"OSC SEND: /fx/{rack}/par/{int(key):02d} {float(value)}", flush=True)
                 client.send_message(f"/fx/{rack}/par/{int(key):02d}", float(value))
-        except Exception as exc:
-            logging.warning("Failed to send OSC to mixer: %s", exc)
+        except Exception:
+            logging.exception("Failed to send OSC to mixer")
 
     def _get_mic_fx_rack(self, mic_color: str) -> int:
         color_key = mic_color.lower()
