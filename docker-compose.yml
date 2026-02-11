@@ -12,12 +12,6 @@ services:
     command: >
       -u ${ADDRESS}
       --admin-password ${ADMIN_PASSWORD}
-      --disable-score
-      --preferred-language de_DE
-      --normalize-audio
-      --motd "${MOTD}"
-      --song-add-cooldown-count ${SONG_ADD_COOLDOWN_COUNT}
-      --song-add-cooldown-duration ${SONG_ADD_COOLDOWN_DURATION}
     volumes:
       - ./songs:/app/pikaraoke-songs      
       - ./data:/home/pikaraoke/.pikaraoke
