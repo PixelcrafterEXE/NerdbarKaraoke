@@ -1,6 +1,7 @@
 """Microphone assignment routes."""
 
 import flask_babel
+import logging
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 
 from pikaraoke.lib.current_app import get_karaoke_instance, is_admin
@@ -128,7 +129,17 @@ def release_microphone():
         flash("No username found", "is-danger")
         return redirect(url_for("home.home"))
     
+# Determine which mic is being released so we can disable its effect
+    color = k.microphone_manager.get_user_microphone(username)
     success, message = k.microphone_manager.release_microphone_by_user(username)
+
+    # Disable OSC for the released mic (in memory only)
+    if success and color:
+        try:
+            k.effects_manager.disable_microphone_input(color)
+        except Exception:
+            # best-effort; don't break release flow
+            logging.exception("Failed to disable effects for released microphone %s", color)
     
     if request.method == "POST" or request.args.get("ajax"):
         return jsonify({"success": success, "message": message})
@@ -180,6 +191,11 @@ def admin_unassign_microphone(color):
         return jsonify({"success": False, "message": "You don't have permission to unassign microphones"}), 403
     
     success, message = k.microphone_manager.release_microphone(color)
+    if success:
+        try:
+            k.effects_manager.disable_microphone_input(color)
+        except Exception:
+            logging.exception("Failed to disable effects for unassigned microphone %s", color)
     return jsonify({"success": success, "message": message})
 
 
@@ -201,6 +217,12 @@ def reset_microphones():
         return redirect(url_for("home.home"))
     
     k.microphone_manager.reset_all_microphones()
+    # Disable effects for all microphones (best-effort, in memory only)
+    for color in k.microphone_manager.MICROPHONE_COLORS:
+        try:
+            k.effects_manager.disable_microphone_input(color)
+        except Exception:
+            logging.exception("Failed to disable effects for microphone %s during reset", color)
     flash("All microphones have been reset", "is-success")
     
     return redirect(url_for("home.home"))

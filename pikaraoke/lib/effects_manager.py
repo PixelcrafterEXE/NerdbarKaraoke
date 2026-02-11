@@ -91,16 +91,9 @@ class EffectsManager:
             }
 
     def load_state(self) -> None:
-        """Load persisted effect state from disk if available, otherwise initialize."""
+        """Initialize effect state in memory only (do not persist user selections)."""
+        # Do not load persisted microphone state from disk; user selections are memory-only
         self.state = {"microphones": {}}
-        try:
-            if os.path.exists(self.state_path):
-                with open(self.state_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    if isinstance(data, dict) and "microphones" in data and isinstance(data["microphones"], dict):
-                        self.state = data
-        except (OSError, json.JSONDecodeError) as exc:
-            logging.warning("Failed to load effects state %s: %s", self.state_path, exc)
         # Ensure state matches current configs/microphones
         self._sync_state()
 
@@ -211,14 +204,13 @@ class EffectsManager:
         # Enabling microphone when a user selects an effect so OSC messages are applied
         mic_state["enabled"] = True
         self.state["microphones"][mic_color] = mic_state
-        self.save_state()
         return True, "Effect updated"
 
     def set_microphone_enabled(self, mic_color: str, enabled: bool) -> None:
         mic_state = self.state["microphones"].setdefault(mic_color, {})
         mic_state["enabled"] = bool(enabled)
         self.state["microphones"][mic_color] = mic_state
-        self.save_state()
+        # Do not persist microphone enabled flag to disk; user state is in-memory only
 
     def update_effect_defaults(self, effect_id: str, parameters: dict[str, Any]) -> None:
         effect = self.effects.get(effect_id)
@@ -347,10 +339,11 @@ class EffectsManager:
         except Exception:
             logging.exception("Failed to send OSC to mixer")
 
-        # Clear the effect_id from state
+        # Clear the effect_id and mark the mic disabled in memory (do not persist)
         mic_state = self.state["microphones"].setdefault(mic_color, {})
         mic_state["effect_id"] = None
-        self.save_state()
+        mic_state["enabled"] = False
+        self.state["microphones"][mic_color] = mic_state
 
     def apply_effect_to_mixer(self, mic_color: str) -> None:
         """Send OSC commands for the given microphone if enabled."""
