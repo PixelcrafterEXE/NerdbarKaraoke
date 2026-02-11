@@ -1,5 +1,5 @@
 services:
-  nerdBar-Karaoke:
+  NBK:
     build:
       context: .
       dockerfile: build_scripts/docker/Dockerfile
@@ -17,5 +17,14 @@ services:
       - ./data:/home/pikaraoke/.pikaraoke
     ports:
       - "5555:5555"
-    restart: unless-stopped
-    network_mode: bridge
+    restart: always
+
+tunnel:
+    image: fatedier/frpc:latest
+    container_name: tunnel
+    restart: always
+    env_file: .env
+    volumes:
+      - ./tunnel.toml:/etc/frp/frpc.toml
+    depends_on:
+      - NBK

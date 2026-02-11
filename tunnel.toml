@@ -1,0 +1,10 @@
+serverAddr = "{{ .Envs.FRP_SERVER_IP }}"
+serverPort = 7000
+auth.token = "{{ .Envs.FRP_TOKEN }}"
+
+[[proxies]]
+name = "karaoke-tcp"
+type = "tcp"
+localIP = "nerdBarKaraoke"
+localPort = 5555
+remotePort = 5555

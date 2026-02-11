@@ -1,0 +1,12 @@
+services:
+  frps-tunnel-server:
+    image: fatedier/frps:latest
+    container_name: frps-tunnel-server
+    restart: always
+    volumes:
+      - ./frps.toml:/etc/frp/frps.toml
+    ports:
+      - "7000:7000"   # Tunnel connection
+    #  - "5555:5555"   # Handover port for SWAG
+    #networks:
+    #  - swag_network
