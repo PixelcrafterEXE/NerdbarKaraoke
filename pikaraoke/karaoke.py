@@ -30,6 +30,7 @@ from pikaraoke.lib.get_platform import (
     is_raspberry_pi,
 )
 from pikaraoke.lib.microphone_manager import MicrophoneManager
+from pikaraoke.lib.effects_manager import EffectsManager
 from pikaraoke.lib.network import get_ip
 from pikaraoke.lib.preference_manager import PreferenceManager
 from pikaraoke.lib.queue_manager import QueueManager
@@ -144,6 +145,8 @@ class Karaoke:
         screensaver_timeout: int | None = None,
         splash_delay: int | None = None,
         volume: float | None = None,
+        mixer_ip: str | None = None,
+        mixer_port: int | None = None,
     ) -> None:
         """Initialize the Karaoke instance.
 
@@ -185,6 +188,8 @@ class Karaoke:
             trim_silence: Trim leading/trailing silence in downloads.
             trim_silence_threshold_db: dB threshold for silence detection.
             trim_silence_min_duration: Minimum silence duration in seconds.
+            mixer_ip: OSC mixer IP address.
+            mixer_port: OSC mixer port.
         """
         logging.basicConfig(
             format="[%(asctime)s] %(levelname)s: %(message)s",
@@ -252,6 +257,9 @@ class Karaoke:
 
         # Initialize microphone manager
         self.microphone_manager = MicrophoneManager(socketio=socketio)
+
+        # Initialize effects manager
+        self.effects_manager = EffectsManager(self)
 
         # Initialize queue manager
         self.queue_manager = QueueManager(

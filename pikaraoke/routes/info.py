@@ -98,6 +98,17 @@ def info():
         wait_for_microphone=k.wait_for_microphone,
         microphone_wait_timeout=k.microphone_wait_timeout,
         microphone_timeout_action=k.microphone_timeout_action,
+        mixer_ip=k.mixer_ip,
+        mixer_port=k.mixer_port,
+        mic_channel_red=k.mic_channel_red,
+        mic_channel_blue=k.mic_channel_blue,
+        mic_channel_green=k.mic_channel_green,
+        mic_channel_yellow=k.mic_channel_yellow,
+        mic_fx_rack_red=k.mic_fx_rack_red,
+        mic_fx_rack_blue=k.mic_fx_rack_blue,
+        mic_fx_rack_green=k.mic_fx_rack_green,
+        mic_fx_rack_yellow=k.mic_fx_rack_yellow,
+        effects_enabled=k.effects_enabled,
     )
 
 

@@ -18,7 +18,7 @@ from pikaraoke import VERSION, karaoke
 from pikaraoke.constants import LANGUAGES
 from pikaraoke.lib.args import parse_pikaraoke_args
 from pikaraoke.lib.browser import Browser
-from pikaraoke.lib.current_app import get_karaoke_instance
+from pikaraoke.lib.current_app import get_karaoke_instance, is_admin
 from pikaraoke.lib.ffmpeg import is_ffmpeg_installed
 from pikaraoke.lib.file_resolver import delete_tmp_dir
 from pikaraoke.lib.get_platform import (
@@ -31,6 +31,7 @@ from pikaraoke.routes.admin import admin_bp
 from pikaraoke.routes.background_music import background_music_bp
 from pikaraoke.routes.batch_song_renamer import batch_song_renamer_bp
 from pikaraoke.routes.controller import controller_bp
+from pikaraoke.routes.effects import effects_bp
 from pikaraoke.routes.files import files_bp
 from pikaraoke.routes.home import home_bp
 from pikaraoke.routes.images import images_bp
@@ -90,6 +91,28 @@ app.register_blueprint(splash_bp)
 app.register_blueprint(controller_bp)
 app.register_blueprint(nowplaying_bp)
 app.register_blueprint(microphone_bp)
+app.register_blueprint(effects_bp)
+
+
+@app.context_processor
+def inject_effects_tab_visibility():
+    """Inject effects tab visibility and user microphone into templates."""
+    user_microphone = None
+    effects_tab_visible = False
+    try:
+        k = get_karaoke_instance()
+        if not getattr(k, "effects_enabled", True):
+            return {"effects_tab_visible": False, "user_microphone": user_microphone}
+        username = request.cookies.get("user", "").strip()
+        if username:
+            user_microphone = k.microphone_manager.get_user_microphone(username)
+        effects_tab_visible = is_admin() or user_microphone is not None
+    except Exception:
+        effects_tab_visible = False
+    return {
+        "effects_tab_visible": effects_tab_visible,
+        "user_microphone": user_microphone,
+    }
 
 
 def get_locale() -> str | None:
@@ -194,6 +217,8 @@ def main() -> None:
         preferred_language=args.preferred_language,
         song_add_cooldown_count=args.song_add_cooldown_count,
         song_add_cooldown_duration=args.song_add_cooldown_duration,
+        mixer_ip=args.mixer_ip,
+        mixer_port=args.mixer_port,
     )
 
     # expose karaoke object to the flask app

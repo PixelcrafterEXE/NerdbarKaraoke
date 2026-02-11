@@ -57,6 +57,17 @@ class PreferenceManager:
         "wait_for_microphone": True,
         "microphone_wait_timeout": 30,
         "microphone_timeout_action": "play",  # "play", "skip", or "keep_position"
+        "mixer_ip": "",
+        "mixer_port": 10023,
+        "mic_channel_red": 1,
+        "mic_channel_blue": 2,
+        "mic_channel_green": 3,
+        "mic_channel_yellow": 4,
+        "mic_fx_rack_red": 1,
+        "mic_fx_rack_blue": 2,
+        "mic_fx_rack_green": 3,
+        "mic_fx_rack_yellow": 4,
+        "effects_enabled": True,
     }
 
     def __init__(self, config_file_path: str = "config.ini", target: object | None = None) -> None:

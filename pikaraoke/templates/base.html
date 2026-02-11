@@ -18,6 +18,9 @@
   <link rel="icon" type="image/png" href="{{  url_for('static', filename='images/microphone.png') }}">
   <link rel="stylesheet" href="{{  url_for('static', filename='fontello/css/fontello.css') }}?v=2">
 
+  {% block styles %}
+  {% endblock %}
+
   <script>
     // Translations for spa-navigation.js (static JS cannot use Jinja2 directly)
     window.i18n = {
@@ -128,6 +131,9 @@
       if (currentPath == "/info") {
         $("#info").addClass("is-active")
       }
+      if (currentPath == "/effects") {
+        $("#effects").addClass("is-active")
+      }
 
       // handle auto-close flash notifications
       setTimeout(function() { $("#notification").fadeOut()}, 3000);
@@ -169,7 +175,7 @@
   tr:nth-child(even) {
     background-color: rgb(50, 55, 55);
   }
-  @media screen and (max-width: 1088px) {
+  @media screen and (max-width: 1024px) {
     .navbar-brand > .navbar-item > span {
       display: none;
     }
@@ -182,10 +188,6 @@
     }
     body {
       min-height: 120vh;
-    }
-    .navbar-menu.is-active {
-      position: absolute;
-      right: 0px;
     }
   }
 </style>
@@ -217,6 +219,13 @@
           {# MSG: Navigation link for the page where the user can add existing songs to the queue. #}
           <span>{% trans %}Browse{% endtrans %}</span>
         </a>
+        {% if effects_tab_visible %}
+        <a id="effects" class="navbar-item" href="{{ url_for('effects.effects') }}">
+          <i class="icon icon-mic-1" title="Effects"></i>
+          {# MSG: Navigation link for the effects page. #}
+          <span>{% trans %}Effects{% endtrans %}</span>
+        </a>
+        {% endif %}
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -254,11 +263,11 @@
       <div class="flash"></div>
     </div>
 
-    <div class="box" style="margin-top: 5px;">
+    <div class="box" style="margin-top: 5px; padding: 1.25rem 0.75rem;">
       <header class="title">
         {% block header %}{% endblock %}
       </header>
-      <div class="content">
+      <div class="content" style="padding: 0 0.5rem;">
         {% block content %}
         {% endblock %}
       </div>

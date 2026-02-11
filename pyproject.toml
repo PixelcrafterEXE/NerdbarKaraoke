@@ -25,6 +25,7 @@ dependencies = [
   "flask-socketio>=5.5.0",
   "gevent>=24.11.1",
   "flasgger>=0.9.5",
+  "python-osc==1.8.3",
 ]
 
 [project.optional-dependencies]

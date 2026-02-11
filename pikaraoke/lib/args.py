@@ -351,6 +351,19 @@ def parse_pikaraoke_args() -> argparse.Namespace:
         type=int,
         required=False,
     )
+    parser.add_argument(
+        "--mixer-ip",
+        help=f"OSC mixer IP address. (default: {_DEFAULTS['mixer_ip']})",
+        default=None,
+        required=False,
+    )
+    parser.add_argument(
+        "--mixer-port",
+        help=f"OSC mixer port. (default: {_DEFAULTS['mixer_port']})",
+        default=None,
+        type=int,
+        required=False,
+    )
 
     args = parser.parse_args()
 

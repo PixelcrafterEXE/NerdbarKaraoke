@@ -144,10 +144,15 @@ body.hide-cursor * {
 .navbar-menu {
   background-color: var(--menu-accent) !important;
 }
+.navbar {
+  border-radius: 6px;
+  overflow: visible;
+}
 
 .navbar-item,
 .navbar-link {
   color: var(--menu-accent-text) !important;
+  gap: 0rem;
 }
 
 .navbar-item:hover,

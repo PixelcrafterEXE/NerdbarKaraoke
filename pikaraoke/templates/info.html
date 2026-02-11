@@ -304,7 +304,94 @@
 				</div>
 			</div>
 
-			<hr class="my-0">
+				<hr class="my-0">
+
+				<header class="card-header py-3 px-5 collapsible-header is-collapsed">
+					<h3 class="m-0">{% trans %}Effects & Mixer{% endtrans %}</h3>
+				</header>
+				<div class="card-content collapsible-content">
+					<div class="content">
+						<div class="user-preference-container">
+							<input id="pref-effects-enabled" type="checkbox" class="user-preference-checkbox checkbox" data-pref="effects_enabled" {% if effects_enabled == True %}checked{% endif %}>
+							<label class="label" for="pref-effects-enabled">
+								{% trans %}Enable effects UI and OSC output{% endtrans %}
+							</label>
+						</div>
+
+						<div class="user-preference-container is-align-items-center">
+							<input id="pref-mixer-ip" class="user-preference-input input" type="text" data-pref="mixer_ip" data-start-value="{{ mixer_ip }}" value="{{ mixer_ip }}" />
+							<label class="label" for="pref-mixer-ip">
+								{% trans %}OSC mixer IP address{% endtrans %}
+							</label>
+						</div>
+
+						<div class="user-preference-container is-align-items-center">
+							<input id="pref-mixer-port" class="user-preference-input input" type="number" min="1" max="65535" data-pref="mixer_port" data-start-value="{{ mixer_port }}" value="{{ mixer_port }}" />
+							<label class="label" for="pref-mixer-port">
+								{% trans %}OSC mixer port{% endtrans %}
+							</label>
+						</div>
+
+						<hr>
+
+						<h4 class="title is-5">{% trans %}Microphone Channels & FX Racks{% endtrans %}</h4>
+						<p class="subtitle is-size-6 has-text-warning mt-1">
+							{% trans %}Channel values map to FX source (0 = INS, 1-16 = MIX1..MIX16, 17 = M/C). Racks must be 1-4.{% endtrans %}
+						</p>
+
+						<div class="columns is-multiline">
+							<div class="column is-half">
+								<h5 class="title is-6">{% trans %}Red microphone{% endtrans %}</h5>
+								<div class="user-preference-container is-align-items-center">
+									<input id="pref-mic-channel-red" class="user-preference-input input" type="number" min="0" max="17" data-pref="mic_channel_red" data-start-value="{{ mic_channel_red }}" value="{{ mic_channel_red }}" />
+									<label class="label" for="pref-mic-channel-red">{% trans %}Channel{% endtrans %}</label>
+								</div>
+								<div class="user-preference-container is-align-items-center">
+									<input id="pref-mic-fx-rack-red" class="user-preference-input input" type="number" min="1" max="4" data-pref="mic_fx_rack_red" data-start-value="{{ mic_fx_rack_red }}" value="{{ mic_fx_rack_red }}" />
+									<label class="label" for="pref-mic-fx-rack-red">{% trans %}FX rack{% endtrans %}</label>
+								</div>
+							</div>
+
+							<div class="column is-half">
+								<h5 class="title is-6">{% trans %}Blue microphone{% endtrans %}</h5>
+								<div class="user-preference-container is-align-items-center">
+									<input id="pref-mic-channel-blue" class="user-preference-input input" type="number" min="0" max="17" data-pref="mic_channel_blue" data-start-value="{{ mic_channel_blue }}" value="{{ mic_channel_blue }}" />
+									<label class="label" for="pref-mic-channel-blue">{% trans %}Channel{% endtrans %}</label>
+								</div>
+								<div class="user-preference-container is-align-items-center">
+									<input id="pref-mic-fx-rack-blue" class="user-preference-input input" type="number" min="1" max="4" data-pref="mic_fx_rack_blue" data-start-value="{{ mic_fx_rack_blue }}" value="{{ mic_fx_rack_blue }}" />
+									<label class="label" for="pref-mic-fx-rack-blue">{% trans %}FX rack{% endtrans %}</label>
+								</div>
+							</div>
+
+							<div class="column is-half">
+								<h5 class="title is-6">{% trans %}Green microphone{% endtrans %}</h5>
+								<div class="user-preference-container is-align-items-center">
+									<input id="pref-mic-channel-green" class="user-preference-input input" type="number" min="0" max="17" data-pref="mic_channel_green" data-start-value="{{ mic_channel_green }}" value="{{ mic_channel_green }}" />
+									<label class="label" for="pref-mic-channel-green">{% trans %}Channel{% endtrans %}</label>
+								</div>
+								<div class="user-preference-container is-align-items-center">
+									<input id="pref-mic-fx-rack-green" class="user-preference-input input" type="number" min="1" max="4" data-pref="mic_fx_rack_green" data-start-value="{{ mic_fx_rack_green }}" value="{{ mic_fx_rack_green }}" />
+									<label class="label" for="pref-mic-fx-rack-green">{% trans %}FX rack{% endtrans %}</label>
+								</div>
+							</div>
+
+							<div class="column is-half">
+								<h5 class="title is-6">{% trans %}Yellow microphone{% endtrans %}</h5>
+								<div class="user-preference-container is-align-items-center">
+									<input id="pref-mic-channel-yellow" class="user-preference-input input" type="number" min="0" max="17" data-pref="mic_channel_yellow" data-start-value="{{ mic_channel_yellow }}" value="{{ mic_channel_yellow }}" />
+									<label class="label" for="pref-mic-channel-yellow">{% trans %}Channel{% endtrans %}</label>
+								</div>
+								<div class="user-preference-container is-align-items-center">
+									<input id="pref-mic-fx-rack-yellow" class="user-preference-input input" type="number" min="1" max="4" data-pref="mic_fx_rack_yellow" data-start-value="{{ mic_fx_rack_yellow }}" value="{{ mic_fx_rack_yellow }}" />
+									<label class="label" for="pref-mic-fx-rack-yellow">{% trans %}FX rack{% endtrans %}</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<hr class="my-0">
 
 			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
 				<h3 class="m-0">{% trans %}Microphone Tracking{% endtrans %}</h3>

@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+<style>
+	/* Smaller effect card headers */
+	#effects-admin .card-header {
+		padding: 0.25rem 0.6rem !important;
+		min-height: auto !important;
+	}
+	#effects-admin .card-header-title {
+		padding: 0 !important;
+		font-size: 0.85rem !important;
+		font-weight: 600;
+		line-height: 1.3;
+	}
+	#effects-admin .card-header-icon.button {
+		padding: 0.2rem 0.5rem !important;
+		height: auto !important;
+		min-height: auto !important;
+		font-size: 0.8rem !important;
+		line-height: 1.2;
+		background-color: #3e8ed0 !important;
+		border-color: #3e8ed0 !important;
+		color: white !important;
+	}
+	#effects-admin .card-header-icon.button:hover {
+		background-color: #3082c5 !important;
+		border-color: #3082c5 !important;
+	}
+	/* Adjust table column widths to prevent clipping */
+	#effects-admin .table th:first-child,
+	#effects-admin .table td:first-child {
+		width: 25% !important;
+		min-width: 120px;
+	}
+	#effects-admin .table th:nth-child(2),
+	#effects-admin .table td:nth-child(2) {
+		width: 55% !important;
+	}
+	#effects-admin .table th:nth-child(3),
+	#effects-admin .table td:nth-child(3) {
+		width: 20% !important;
+		text-align: center !important;
+		vertical-align: middle !important;
+	}
+	/* Ensure value display tag doesn't get too wide */
+	#effects-admin .effect-value {
+		min-width: 60px;
+		flex-shrink: 0;
+	}
+	/* Reduce card spacing and content padding */
+	#effects-admin .card.mb-4 {
+		margin-bottom: 0.5rem !important;
+	}
+	#effects-admin .card-content {
+		padding: 0.75rem !important;
+	}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	(function() {
+		window.effectsPageState = {
+			isAdmin: {{ 'true' if admin else 'false' }},
+			userMicrophone: {{ user_microphone | tojson }},
+			effectsAdmin: [],
+			effectsUser: null
+		};
+
+		function formatValue(value, param) {
+			const numValue = Number.parseFloat(value);
+			// Boolean enum: min=0, max=1, step=1
+			if (param && param.min === 0 && param.max === 1 && param.step === 1) {
+				return numValue === 0 ? 'OFF' : 'ON';
+			}
+			// Integer values: step=1.0
+			if (param && param.step === 1) {
+				return Math.round(numValue).toString();
+			}
+			// Decimal values
+			return numValue.toFixed(2);
+		}
+
+		function renderAdmin() {
+			const container = $("#effects-admin");
+			if (!window.effectsPageState.isAdmin) {
+				container.hide();
+				return;
+			}
+			container.show();
+			if (!window.effectsPageState.effectsAdmin.length) {
+				container.html(`<p class="has-text-warning">{{ _('No effects data available.') }}</p>`);
+				return;
+			}
+
+			const html = window.effectsPageState.effectsAdmin.map(effect => {
+			const params = effect.parameters || [];
+			const state = effect.state || {};
+			const visibleChecked = state.visible ? "checked" : "";
+			return `
+			<div class="card mb-4">
+			<header class="card-header" style="padding: 0.5rem 0.75rem; min-height: auto;">
+				<p class="card-header-title" style="padding: 0; font-size: 0.9rem; line-height: 1.3;">${effect.name}</p>
+				<button class="card-header-icon button is-info effect-edit-toggle" data-effect="${effect.id}" style="padding: 0.4rem 0.7rem; height: auto; font-size: 0.85rem; background-color: #3e8ed0; border-color: #3e8ed0; color: white;">
+						<span>{{ _('Edit') }}</span>
+					</button>
+				</header>
+				<div class="card-content effect-editor" data-effect="${effect.id}" style="display: none;">
+					<div class="field">
+						<label class="checkbox">
+							<input type="checkbox" class="effect-visible" data-effect="${effect.id}" ${visibleChecked}> {{ _('Allow for users') }}
+						</label>
+					</div>
+					<div class="table-container">
+						<table class="table is-fullwidth is-striped">
+							<thead>
+								<tr>
+									<th>{{ _('Parameter') }}</th>
+									<th>{{ _('Value') }}</th>
+									<th>{{ _('Allow user') }}</th>
+								</tr>
+							</thead>
+							<tbody>
+								${params.map(param => {
+									const key = String(param.index);
+									const value = (state.parameters && state.parameters[key] !== undefined)
+										? state.parameters[key]
+										: param.default;
+									const userAllowed = (state.user_editable && state.user_editable[key]) ? "checked" : "";
+									return `
+									<tr>
+										<td>${param.name}</td>
+										<td>
+											<div class="is-flex is-align-items-center" style="gap: 8px;">
+												<button class="button is-small effect-step" data-effect="${effect.id}" data-param="${param.index}" data-step="-${param.step}">-</button>
+												<input type="range" class="effect-slider" data-effect="${effect.id}" data-param="${param.index}" min="${param.min}" max="${param.max}" step="${param.step}" value="${value}" style="flex: 1;">
+												<button class="button is-small effect-step" data-effect="${effect.id}" data-param="${param.index}" data-step="${param.step}">+</button>
+										<span class="tag is-dark effect-value" data-effect="${effect.id}" data-param="${param.index}" data-min="${param.min}" data-max="${param.max}" data-step="${param.step}">${formatValue(value, param)}</span>
+											</div>
+										</td>
+										<td>
+											<input type="checkbox" class="effect-param-toggle" data-effect="${effect.id}" data-param="${param.index}" ${userAllowed}>
+										</td>
+									</tr>`;
+								}).join("")}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>`;
+		}).join("");
+
+			container.html(html);
+		}
+
+		function renderUser() {
+			const container = $("#effects-user");
+			if (!window.effectsPageState.userMicrophone) {
+				container.hide();
+				return;
+			}
+			container.show();
+			if (!window.effectsPageState.effectsUser || !window.effectsPageState.effectsUser.effects || !window.effectsPageState.effectsUser.effects.length) {
+				container.html(`<p class="has-text-warning">{{ _('No effects are available for your microphone.') }}</p>`);
+				return;
+			}
+
+			const selectedEffectId = window.effectsPageState.effectsUser.effect_id;
+			const selectedEffect = selectedEffectId && selectedEffectId !== 'none' 
+				? window.effectsPageState.effectsUser.effects.find(effect => effect.id === selectedEffectId)
+				: null;
+		const params = selectedEffect ? (selectedEffect.parameters || []) : [];
+		const state = selectedEffect ? (selectedEffect.state || {}) : {};
+		const userParams = params.filter(param => state.user_editable && state.user_editable[String(param.index)]);
+
+			let html = `
+			<div class="card">
+				<header class="card-header">
+					<p class="card-header-title">{{ _('My Effects') }}</p>
+				</header>
+				<div class="card-content">
+					<div class="field">
+						<label class="label">{{ _('Effect') }}</label>
+						<div class="select is-fullwidth">
+							<select class="user-effect-select">
+								<option value="none" ${!selectedEffectId || selectedEffectId === 'none' ? 'selected' : ''}>{{ _('None') }}</option>
+								${window.effectsPageState.effectsUser.effects.map(effect => {
+									const selected = effect.id === selectedEffectId ? "selected" : "";
+									return `<option value="${effect.id}" ${selected}>${effect.name}</option>`;
+								}).join("")}
+							</select>
+						</div>
+					</div>
+					${userParams.length ? userParams.map(param => {
+						const key = String(param.index);
+						const defaultValue = (state.parameters && state.parameters[key] !== undefined)
+							? state.parameters[key]
+							: param.default;
+						const value = (window.effectsPageState.effectsUser.parameters && window.effectsPageState.effectsUser.parameters[key] !== undefined)
+							? window.effectsPageState.effectsUser.parameters[key]
+							: defaultValue;
+						return `
+						<div class="field">
+							<label class="label">${param.name}</label>
+							<div class="is-flex is-align-items-center" style="gap: 8px;">
+								<button class="button is-small user-step" data-param="${param.index}" data-step="-${param.step}">-</button>
+								<input type="range" class="user-slider" data-param="${param.index}" min="${param.min}" max="${param.max}" step="${param.step}" value="${value}" style="flex: 1;">
+								<button class="button is-small user-step" data-param="${param.index}" data-step="${param.step}">+</button>
+								<span class="tag is-dark user-value" data-param="${param.index}" data-min="${param.min}" data-max="${param.max}" data-step="${param.step}">${formatValue(value, param)}</span>
+							</div>
+						</div>`;
+					}).join("") : `<p class="has-text-warning">{{ _('No parameters are available for user control.') }}</p>`}
+				</div>
+			</div>`;
+
+			container.html(html);
+		}
+
+		function loadEffects() {
+			return $.when(
+				$.get("{{ url_for('effects.effects_state') }}")
+			).done(function(stateResp) {
+				if (window.effectsPageState.isAdmin) {
+					window.effectsPageState.effectsAdmin = stateResp.effects || [];
+					// Admin can also have user controls if they have a microphone
+					if (window.effectsPageState.userMicrophone && stateResp.user_effects) {
+						window.effectsPageState.effectsUser = {
+							microphone: stateResp.microphone,
+							effect_id: stateResp.effect_id,
+							parameters: stateResp.parameters,
+							effects: stateResp.user_effects
+						};
+					}
+				} else {
+					window.effectsPageState.effectsUser = stateResp;
+				}
+				renderAdmin();
+				renderUser();
+			}).fail(function() {
+				showNotification("{{ _('Failed to load effects data.') }}", "is-danger");
+			});
+		}
+
+		function sendAdminUpdate(effectId, payload) {
+			payload.effect_id = effectId;
+			return $.ajax({
+				url: "{{ url_for('effects.effects_admin_update') }}",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify(payload)
+			}).fail(function() {
+				showNotification("{{ _('Failed to update effects.') }}", "is-danger");
+			});
+		}
+
+		function sendUserUpdate(payload) {
+			return $.ajax({
+				url: "{{ url_for('effects.effects_user_update') }}",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify(payload)
+			}).fail(function() {
+				showNotification("{{ _('Failed to update effects.') }}", "is-danger");
+			});
+		}
+
+		function clampValue(value, min, max) {
+			const parsed = Number.parseFloat(value);
+			if (Number.isNaN(parsed)) return min;
+			return Math.min(max, Math.max(min, parsed));
+		}
+
+		function bindHandlers() {
+			$(document)
+				.off("click", ".effect-edit-toggle")
+				.on("click", ".effect-edit-toggle", function() {
+					const effect = $(this).data("effect");
+					$(`.effect-editor[data-effect='${effect}']`).slideToggle(150);
+				});
+
+			$(document)
+				.off("change", ".effect-visible")
+				.on("change", ".effect-visible", function() {
+					const effect = $(this).data("effect");
+					const visible = $(this).is(":checked");
+					sendAdminUpdate(effect, { visible });
+				});
+
+			$(document)
+				.off("input", ".effect-slider")
+				.on("input", ".effect-slider", debounce(function() {
+					const effect = $(this).data("effect");
+					const param = $(this).data("param");
+					const value = $(this).val();
+					const valueEl = $(`.effect-value[data-effect='${effect}'][data-param='${param}']`);
+					const paramInfo = {min: parseFloat(valueEl.data("min")), max: parseFloat(valueEl.data("max")), step: parseFloat(valueEl.data("step"))};
+					valueEl.text(formatValue(value, paramInfo));
+					const parameters = {};
+					parameters[param] = value;
+					sendAdminUpdate(effect, { parameters });
+				}, 200));
+
+			$(document)
+				.off("click", ".effect-step")
+				.on("click", ".effect-step", function() {
+					const effect = $(this).data("effect");
+					const param = $(this).data("param");
+					const step = Number.parseFloat($(this).data("step"));
+					const slider = $(`.effect-slider[data-effect='${effect}'][data-param='${param}']`);
+					const min = Number.parseFloat(slider.attr("min"));
+					const max = Number.parseFloat(slider.attr("max"));
+					const next = clampValue(Number.parseFloat(slider.val()) + step, min, max);
+					slider.val(next).trigger("input");
+				});
+
+			$(document)
+				.off("change", ".effect-param-toggle")
+				.on("change", ".effect-param-toggle", function() {
+					const effect = $(this).data("effect");
+					const param = $(this).data("param");
+					const enabled = $(this).is(":checked");
+					const user_editable = {};
+					user_editable[param] = enabled;
+					sendAdminUpdate(effect, { user_editable });
+				});
+
+			$(document)
+				.off("change", ".user-effect-select")
+				.on("change", ".user-effect-select", function() {
+					const effectId = $(this).val();
+					sendUserUpdate({ effect_id: effectId }).done(function() {
+						loadEffects();
+					});
+				});
+
+			$(document)
+				.off("input", ".user-slider")
+				.on("input", ".user-slider", debounce(function() {
+					const param = $(this).data("param");
+					const value = $(this).val();
+					const valueEl = $(`.user-value[data-param='${param}']`);
+					const paramInfo = {min: parseFloat(valueEl.data("min")), max: parseFloat(valueEl.data("max")), step: parseFloat(valueEl.data("step"))};
+					valueEl.text(formatValue(value, paramInfo));
+					const parameters = {};
+					parameters[param] = value;
+					sendUserUpdate({ parameters });
+				}, 200));
+
+			$(document)
+				.off("click", ".user-step")
+				.on("click", ".user-step", function() {
+					const param = $(this).data("param");
+					const step = Number.parseFloat($(this).data("step"));
+					const slider = $(`.user-slider[data-param='${param}']`);
+					const min = Number.parseFloat(slider.attr("min"));
+					const max = Number.parseFloat(slider.attr("max"));
+					const next = clampValue(Number.parseFloat(slider.val()) + step, min, max);
+					slider.val(next).trigger("input");
+				});
+		}
+
+		function initEffectsPage() {
+			bindHandlers();
+			loadEffects();
+		}
+
+		initEffectsPage();
+	})();
+</script>
+{% endblock %}
+
+{% block header %}
+<h1>{% trans %}Effects{% endtrans %}</h1>
+{% endblock %}
+
+{% block content %}
+<div id="effects-user" class="mb-5"></div>
+<div id="effects-admin"></div>
+{% endblock %}
