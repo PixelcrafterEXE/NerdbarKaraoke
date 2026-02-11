@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: build_scripts/docker/Dockerfile
-    image: pikaraoke:local
+    image: nerdbarkaraoke:local
     container_name: nerdBarKaraoke
     env_file:
       - .env
@@ -19,7 +19,7 @@ services:
       - "5555:5555"
     restart: always
 
-tunnel:
+  tunnel:
     image: fatedier/frpc:latest
     container_name: tunnel
     restart: always
