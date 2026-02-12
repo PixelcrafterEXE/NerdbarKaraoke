@@ -19,6 +19,7 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 - Message of the day (MOTD) 
 - Queue open/close system with optional closing time
 - NFC-based Microphone tracking (song will wait for you, show singers on display)
+- OSC-Controll to toggle mic-effects on an external mixer
 - Drag-n-drop Upload of local karaoke video-files 
 
 ## Roadmap
