@@ -17,10 +17,9 @@ from pikaraoke.lib.microphone_manager import MicrophoneManager
 class EffectsManager:
     """Manages effect configurations, state, and OSC messages to the mixer."""
 
-    def __init__(self, karaoke, config_dir: str | None = None, state_path: str | None = None) -> None:
+    def __init__(self, karaoke, config_dir: str | None = None) -> None:
         self.karaoke = karaoke
         self.config_dir = config_dir or os.path.join(get_data_directory(), "effects")
-        self.state_path = state_path or os.path.join(get_data_directory(), "effects_mic_state.json")
         self.effects: dict[str, dict[str, Any]] = {}
         self.state: dict[str, Any] = {"microphones": {}}
 
@@ -91,21 +90,10 @@ class EffectsManager:
             }
 
     def load_state(self) -> None:
-        """Initialize effect state in memory only (do not persist user selections)."""
-        # Do not load persisted microphone state from disk; user selections are memory-only
+        """Initialize effect state."""
         self.state = {"microphones": {}}
         # Ensure state matches current configs/microphones
         self._sync_state()
-
-    def save_state(self) -> None:
-        """Persist in-memory state to disk (best-effort)."""
-        try:
-            tmp_path = self.state_path + ".tmp"
-            with open(tmp_path, "w", encoding="utf-8") as f:
-                json.dump(self.state, f, indent=2)
-            os.replace(tmp_path, self.state_path)
-        except OSError as exc:
-            logging.warning("Failed to persist effects state %s: %s", self.state_path, exc)
 
     def _sync_state(self) -> None:
         """Ensure state matches current microphone list and effect configs."""
@@ -285,7 +273,7 @@ class EffectsManager:
         mic_state["enabled"] = True
 
         self.state["microphones"][mic_color] = mic_state
-        self.save_state()
+        # Do NOT persist microphone/user parameter changes to disk — keep in-memory only.
 
     def update_user_editable(self, effect_id: str, user_editable: dict[str, Any]) -> None:
         effect = self.effects.get(effect_id)
