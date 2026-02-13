@@ -412,7 +412,7 @@
 						<p class="subtitle is-size-6 has-text-warning mt-1">
 						{% trans %}Channel values map to FX source (0 = INS, 1-16 = MIX1..MIX16, 17 = M/C). Use 0 for "no rack"; valid rack indexes are 1–4.{% endtrans %}
 
-						<div class="columns is-multiline">					{%- for i in range(1, (microphone_count or 4) + 1) -%}							<div class="column is-fourth">
+						<div class="columns is-multiline">					{%- for i in range(1, (microphone_count or 4) + 1) -%}							<div class="column is-one-quarter">
 								<h5 class="title is-6">{% trans %}Microphone #{{ i }}{% endtrans %}</h5>
 								<div class="user-preference-container is-align-items-center">
 									<input id="pref-mic-channel-{{ i }}" class="user-preference-input input" type="number" min="0" max="17" data-pref="mic_channel_{{ i }}" data-start-value="{{ microphone_channels[i] }}" value="{{ microphone_channels[i] }}" />
@@ -886,14 +886,17 @@
 	.user-preference-container {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
+		gap: 0rem;
 		flex-wrap: wrap;
-		margin-bottom: 8px;
+		margin-bottom: 15px;
 	}
 	/* keep labels a fixed column so controls align vertically */
 	.user-preference-container > label {
-		flex: 0 0 220px;
+		flex: 1 1 210px;
 		margin-bottom: 0;
+		display: flex;
+		align-items: center;
+		align-self: center;
 	}
 	/* make the middle/content area (e.g. columns) expand to fill available space */
 	.user-preference-container .columns {
@@ -906,10 +909,55 @@
 		margin: 0;
 		white-space: normal;
 	}
+
+	/* Microphone color picker column — center label and control */
+	.mic-color-column {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+	.mic-color-column .label {
+		text-align: center;
+		width: 100%;
+		margin: 0 0 0.25rem 0;
+	}
 	.user-preference-input {
 		min-width: 80px;
 		margin-right: 8px;
 	}
+
+	/* Allow inputs/selects/textarea inside the preference row to grow
+	   so the control area fills the available card width (previously
+	   only `.columns` rows expanded, causing the rest of the card to
+	   appear squished to the left). */
+	.user-preference-container .user-preference-input,
+	.user-preference-container > .select,
+	.user-preference-container textarea {
+		flex: 1 1;
+		min-width: 120px;
+		width: auto; /* override the generic .input width below */
+	}
+
+	/* Ensure the Bulma `.select` wrapper is a flex item and the
+	   native `<select>` inside expands to fill it. Some browsers
+	   mark `flex` as inactive on the inner `<select>` because it's
+	   not a direct flex child — so target both the wrapper and the
+	   inner element. */
+	.user-preference-container > .select {
+		flex: 1 1 400px;
+		min-width: 120px;
+		display: flex;
+		align-items: center;
+	}
+	.user-preference-container > .select select,
+	.user-preference-container select.user-preference-input {
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	/* Keep the generic `.input` small elsewhere, but inputs inside
+	   preference rows above are set to `width: auto` so they can grow. */
 	.input {
 		width: 80px;
 	}
