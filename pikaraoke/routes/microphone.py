@@ -11,24 +11,24 @@ microphone_bp = Blueprint("microphone", __name__)
 _ = flask_babel.gettext
 
 
-@microphone_bp.route("/nfc/<color>")
-def nfc_scan(color):
+@microphone_bp.route("/nfc/<id>")
+def nfc_scan(id):
     """Handle NFC tag scan for microphone assignment.
     
     This route is opened when scanning an NFC tag on a microphone.
     It assigns the user's username (from cookies) to the microphone.
     
     Args:
-        color: The microphone color (Red, Blue, Green, Yellow).
+        id: The microphone id ("1","2",...) identifying which microphone.
     ---
     tags:
       - Microphone
     parameters:
-      - name: color
+      - name: id
         in: path
         type: string
         required: true
-        description: Microphone color (Red, Blue, Green, Yellow)
+        description: Microphone id (1, 2, 3, ...)
     responses:
       200:
         description: HTML page for microphone assignment
@@ -37,11 +37,17 @@ def nfc_scan(color):
     """
     k = get_karaoke_instance()
     
-    # Validate microphone color
-    if color not in k.microphone_manager.MICROPHONE_COLORS:
-        flash(f"Invalid microphone color: {color}", "is-danger")
+# Validate & convert microphone id
+    try:
+        mid = int(id)
+    except Exception:
+        flash(f"Invalid microphone id: {id}", "is-danger")
         return redirect(url_for("home.home"))
-    
+
+    if mid not in k.microphone_manager.get_all_assignments():
+        flash(f"Invalid microphone id: {id}", "is-danger")
+        return redirect(url_for("home.home"))
+
     # Get username from cookies
     username = request.cookies.get("user", "").strip()
     
@@ -50,18 +56,19 @@ def nfc_scan(color):
         return render_template(
             "microphone_assign.html",
             site_title="Microphone Assignment",
-            title=f"Assign {color} Microphone",
-            microphone_color=color,
+            title=f"Assign #{mid} Microphone",
+            microphone_color=mid,
+            microphone_color_hex=k.microphone_manager.color_map.get(mid),
         )
     
-    # Assign the microphone
-    success, message = k.microphone_manager.assign_microphone(color, username)
-    
+    # Assign the microphone (accept numeric id from form)
+    success, message = k.microphone_manager.assign_microphone(mid, username)
+
     if success:
         flash(message, "is-success")
     else:
         flash(message, "is-danger")
-    
+
     return redirect(url_for("home.home"))
 
 
@@ -72,11 +79,11 @@ def assign_microphone():
     tags:
       - Microphone
     parameters:
-      - name: color
+      - name: id
         in: formData
         type: string
         required: true
-        description: Microphone color
+        description: Microphone id
       - name: username
         in: formData
         type: string
@@ -88,20 +95,26 @@ def assign_microphone():
     """
     k = get_karaoke_instance()
     
-    color = request.form.get("color", "").strip()
+    mic_id = request.form.get("id", "").strip()
     username = request.form.get("username", "").strip()
     
     if not username:
         flash("Please enter a username", "is-danger")
-        return redirect(url_for("microphone.nfc_scan", color=color))
-    
-    success, message = k.microphone_manager.assign_microphone(color, username)
-    
+        return redirect(url_for("microphone.nfc_scan", id=mic_id))
+
+    try:
+        mid = int(mic_id)
+    except Exception:
+        flash(f"Invalid microphone id: {mic_id}", "is-danger")
+        return redirect(url_for("home.home"))
+
+    success, message = k.microphone_manager.assign_microphone(mid, username)
+
     if success:
         flash(message, "is-success")
     else:
         flash(message, "is-danger")
-    
+
     # Create response with username cookie
     response = redirect(url_for("home.home"))
     response.set_cookie("user", username, max_age=60 * 60 * 24 * 365)  # 1 year
@@ -130,16 +143,16 @@ def release_microphone():
         return redirect(url_for("home.home"))
     
 # Determine which mic is being released so we can disable its effect
-    color = k.microphone_manager.get_user_microphone(username)
+    mic_id = k.microphone_manager.get_user_microphone(username)
     success, message = k.microphone_manager.release_microphone_by_user(username)
 
     # Disable OSC for the released mic (in memory only)
-    if success and color:
+    if success and mic_id:
         try:
-            k.effects_manager.disable_microphone_input(color)
+            k.effects_manager.disable_microphone_input(mic_id)
         except Exception:
             # best-effort; don't break release flow
-            logging.exception("Failed to disable effects for released microphone %s", color)
+            logging.exception("Failed to disable effects for released microphone %s", mic_id)
     
     if request.method == "POST" or request.args.get("ajax"):
         return jsonify({"success": success, "message": message})
@@ -166,19 +179,19 @@ def microphone_status():
     return jsonify(k.microphone_manager.to_dict())
 
 
-@microphone_bp.route("/admin/unassign_microphone/<color>", methods=["POST"])
-def admin_unassign_microphone(color):
+@microphone_bp.route("/admin/unassign_microphone/<id>", methods=["POST"])
+def admin_unassign_microphone(id):
     """Unassign a specific microphone (admin only).
     ---
     tags:
       - Microphone
       - Admin
     parameters:
-      - name: color
+      - name: id
         in: path
         type: string
         required: true
-        description: Microphone color to unassign
+        description: Microphone id to unassign
     responses:
       200:
         description: JSON response with success status
@@ -190,12 +203,17 @@ def admin_unassign_microphone(color):
     if not is_admin():
         return jsonify({"success": False, "message": "You don't have permission to unassign microphones"}), 403
     
-    success, message = k.microphone_manager.release_microphone(color)
+    try:
+        mid = int(id)
+    except Exception:
+        return jsonify({"success": False, "message": "Invalid microphone id"})
+
+    success, message = k.microphone_manager.release_microphone(mid)
     if success:
         try:
-            k.effects_manager.disable_microphone_input(color)
+            k.effects_manager.disable_microphone_input(mid)
         except Exception:
-            logging.exception("Failed to disable effects for unassigned microphone %s", color)
+            logging.exception("Failed to disable effects for unassigned microphone %s", mid)
     return jsonify({"success": success, "message": message})
 
 
@@ -218,11 +236,11 @@ def reset_microphones():
     
     k.microphone_manager.reset_all_microphones()
     # Disable effects for all microphones (best-effort, in memory only)
-    for color in k.microphone_manager.MICROPHONE_COLORS:
+    for mic_id in k.microphone_manager.get_ids():
         try:
-            k.effects_manager.disable_microphone_input(color)
+            k.effects_manager.disable_microphone_input(mic_id)
         except Exception:
-            logging.exception("Failed to disable effects for microphone %s during reset", color)
+            logging.exception("Failed to disable effects for microphone %s during reset", mic_id)
     flash("All microphones have been reset", "is-success")
     
     return redirect(url_for("home.home"))

@@ -24,6 +24,34 @@
 				let startVal = $(this).attr("data-start-value");
 				let $this = $(this);
 
+				// Client-side validation for mic/channel/rack/count inputs
+				if (pref && pref.startsWith("mic_fx_rack_")) {
+					const n = parseInt(val, 10);
+					if (Number.isNaN(n) || n < 0 || n > 4) {
+						showNotification("FX rack must be an integer between 0 and 4", "is-danger");
+						$this.val(startVal);
+						return;
+					}
+				}
+
+				if (pref && pref.startsWith("mic_channel_")) {
+					const n = parseInt(val, 10);
+					if (Number.isNaN(n) || n < 0 || n > 17) {
+						showNotification("Channel must be an integer between 0 and 17", "is-danger");
+						$this.val(startVal);
+						return;
+					}
+				}
+
+				if (pref === "microphone_count") {
+					const n = parseInt(val, 10);
+					if (Number.isNaN(n) || n < 1 || n > 16) {
+						showNotification("Number of microphones must be between 1 and 16", "is-danger");
+						$this.val(startVal);
+						return;
+					}
+				}
+
 				if (pref == "queue_closing_time") {
 					const normalized = normalizeQueueClosingTime(val);
 					if (normalized === null) {
@@ -64,7 +92,7 @@
 			})
 
 			function changePreferences(pref, val) {
-				$.get("{{ url_for('preferences.change_preferences') }}", {
+				return $.get("{{ url_for('preferences.change_preferences') }}", {
 					"pref": pref,
 					"val": val
 				})
@@ -73,6 +101,52 @@
 					else showNotification(data[1], "is-danger")
 				});
 			}
+
+			// Build color pickers from current preference string / count
+			function buildMicColorPickers(count, colorString) {
+				const container = $("#mic-color-pickers");
+				container.empty();
+				const colors = (colorString || "").split(',').map(s => s.trim()).filter(Boolean);
+				const serverColorsRaw = container.data('server-colors') || '';
+				const serverColors = serverColorsRaw.split(',').map(s => s.trim()).filter(Boolean);
+				for (let i = 1; i <= count; ++i) {
+					// priority: explicit colorString -> server-stored color -> default
+					const hex = colors[i-1] || serverColors[i-1] || '#cccccc';
+					const col = $(`<div class="column is-one-quarter mic-color-column" style="align-items: center;"></div>`);
+					col.append(`<label class="label">#${i}</label>`);
+					col.append(`<input type="color" class="mic-color-input" data-mic-index="${i}" value="${hex}" />`);
+					container.append(col);
+				}
+				attachMicColorHandlers();
+			}
+
+			function readMicColorsAsPref() {
+				const colors = [];
+				$(".mic-color-input").each(function() { colors.push($(this).val()); });
+				return colors.join(',');
+			}
+
+			function attachMicColorHandlers() {
+				$(".mic-color-input").off('input').on('input', function() {
+					const prefVal = readMicColorsAsPref();
+					changePreferences('microphone_colors', prefVal).done(function() {
+						// keep the DOM-stored server-colors in sync so rebuilds pick up the new values
+						$("#mic-color-pickers").data('server-colors', prefVal);
+					});
+				});
+			}
+			// Rebuild pickers when microphone_count changes (after pref saved)
+			$(document).on('change', '#pref-microphone-count', function() {
+				const val = parseInt($(this).val(), 10) || 4;
+				changePreferences('microphone_count', val).done(function() {
+					// rebuild using existing colors if present
+					const existing = $('#mic-color-pickers .mic-color-input').map(function(){return $(this).val();}).get().join(',');
+					buildMicColorPickers(val, existing);
+				});
+			});
+
+			// Initialize (in case the server-rendered pickers need JS handlers)
+			buildMicColorPickers({{ microphone_count|default(4) }}, {{ (microphone_colors|tojson) if microphone_colors is not none else '""' }});
 
 			function normalizeQueueClosingTime(value) {
 				if (!value) return "";
@@ -336,58 +410,22 @@
 
 						<h4 class="title is-5">{% trans %}Microphone Channels & FX Racks{% endtrans %}</h4>
 						<p class="subtitle is-size-6 has-text-warning mt-1">
-							{% trans %}Channel values map to FX source (0 = INS, 1-16 = MIX1..MIX16, 17 = M/C). Racks must be 1-4.{% endtrans %}
-						</p>
+						{% trans %}Channel values map to FX source (0 = INS, 1-16 = MIX1..MIX16, 17 = M/C). Use 0 for "no rack"; valid rack indexes are 1–4.{% endtrans %}
 
-						<div class="columns is-multiline">
-							<div class="column is-half">
-								<h5 class="title is-6">{% trans %}Red microphone{% endtrans %}</h5>
+						<div class="columns is-multiline">					{%- for i in range(1, (microphone_count or 4) + 1) -%}							<div class="column is-fourth">
+								<h5 class="title is-6">{% trans %}Microphone #{{ i }}{% endtrans %}</h5>
 								<div class="user-preference-container is-align-items-center">
-									<input id="pref-mic-channel-red" class="user-preference-input input" type="number" min="0" max="17" data-pref="mic_channel_red" data-start-value="{{ mic_channel_red }}" value="{{ mic_channel_red }}" />
-									<label class="label" for="pref-mic-channel-red">{% trans %}Channel{% endtrans %}</label>
+									<input id="pref-mic-channel-{{ i }}" class="user-preference-input input" type="number" min="0" max="17" data-pref="mic_channel_{{ i }}" data-start-value="{{ microphone_channels[i] }}" value="{{ microphone_channels[i] }}" />
+									<label class="label" for="pref-mic-channel-{{ i }}">{% trans %}Channel{% endtrans %}</label>
 								</div>
 								<div class="user-preference-container is-align-items-center">
-									<input id="pref-mic-fx-rack-red" class="user-preference-input input" type="number" min="1" max="4" data-pref="mic_fx_rack_red" data-start-value="{{ mic_fx_rack_red }}" value="{{ mic_fx_rack_red }}" />
-									<label class="label" for="pref-mic-fx-rack-red">{% trans %}FX rack{% endtrans %}</label>
+									<input id="pref-mic-fx-rack-{{ i }}" class="user-preference-input input" type="number" min="0" max="4" data-pref="mic_fx_rack_{{ i }}" data-start-value="{{ microphone_fx_racks[i] }}" value="{{ microphone_fx_racks[i] }}" />
+									<label class="label" for="pref-mic-fx-rack-{{ i }}">{% trans %}FX rack{% endtrans %}</label>
 								</div>
 							</div>
 
-							<div class="column is-half">
-								<h5 class="title is-6">{% trans %}Blue microphone{% endtrans %}</h5>
-								<div class="user-preference-container is-align-items-center">
-									<input id="pref-mic-channel-blue" class="user-preference-input input" type="number" min="0" max="17" data-pref="mic_channel_blue" data-start-value="{{ mic_channel_blue }}" value="{{ mic_channel_blue }}" />
-									<label class="label" for="pref-mic-channel-blue">{% trans %}Channel{% endtrans %}</label>
-								</div>
-								<div class="user-preference-container is-align-items-center">
-									<input id="pref-mic-fx-rack-blue" class="user-preference-input input" type="number" min="1" max="4" data-pref="mic_fx_rack_blue" data-start-value="{{ mic_fx_rack_blue }}" value="{{ mic_fx_rack_blue }}" />
-									<label class="label" for="pref-mic-fx-rack-blue">{% trans %}FX rack{% endtrans %}</label>
-								</div>
-							</div>
-
-							<div class="column is-half">
-								<h5 class="title is-6">{% trans %}Green microphone{% endtrans %}</h5>
-								<div class="user-preference-container is-align-items-center">
-									<input id="pref-mic-channel-green" class="user-preference-input input" type="number" min="0" max="17" data-pref="mic_channel_green" data-start-value="{{ mic_channel_green }}" value="{{ mic_channel_green }}" />
-									<label class="label" for="pref-mic-channel-green">{% trans %}Channel{% endtrans %}</label>
-								</div>
-								<div class="user-preference-container is-align-items-center">
-									<input id="pref-mic-fx-rack-green" class="user-preference-input input" type="number" min="1" max="4" data-pref="mic_fx_rack_green" data-start-value="{{ mic_fx_rack_green }}" value="{{ mic_fx_rack_green }}" />
-									<label class="label" for="pref-mic-fx-rack-green">{% trans %}FX rack{% endtrans %}</label>
-								</div>
-							</div>
-
-							<div class="column is-half">
-								<h5 class="title is-6">{% trans %}Yellow microphone{% endtrans %}</h5>
-								<div class="user-preference-container is-align-items-center">
-									<input id="pref-mic-channel-yellow" class="user-preference-input input" type="number" min="0" max="17" data-pref="mic_channel_yellow" data-start-value="{{ mic_channel_yellow }}" value="{{ mic_channel_yellow }}" />
-									<label class="label" for="pref-mic-channel-yellow">{% trans %}Channel{% endtrans %}</label>
-								</div>
-								<div class="user-preference-container is-align-items-center">
-									<input id="pref-mic-fx-rack-yellow" class="user-preference-input input" type="number" min="1" max="4" data-pref="mic_fx_rack_yellow" data-start-value="{{ mic_fx_rack_yellow }}" value="{{ mic_fx_rack_yellow }}" />
-									<label class="label" for="pref-mic-fx-rack-yellow">{% trans %}FX rack{% endtrans %}</label>
-								</div>
-							</div>
-						</div>
+						{%- endfor -%}
+					</div>
 					</div>
 				</div>
 
@@ -440,29 +478,37 @@
 						</div>
 					</div>
 
+			<div class="user-preference-container is-align-items-center">
+				<input id="pref-microphone-count" class="user-preference-input input" type="number" min="1" max="16" data-pref="microphone_count" data-start-value="{{ microphone_count }}" value="{{ microphone_count }}" />
+				<label class="label" for="pref-microphone-count">{% trans %}Number of microphones{% endtrans %}</label>
+			</div>
+
+			<div class="user-preference-container">
+				<label class="label">{% trans %}Microphone colors (pick per microphone){% endtrans %}</label>
+				<div id="mic-color-pickers" class="columns is-multiline" data-server-colors="{{ (microphone_colors|default('')) }}">
+					{%- set _colors = (microphone_colors or "").split(',') if microphone_colors else [] -%}
+					{%- for i in range(1, (microphone_count or 4) + 1) -%}
+						{%- set hex = (_colors[i-1] if _colors|length >= i else '#cccccc') -%}
+						<div class="column is-one-eighth mic-color-column" style="align-items: center;">
+							<label class="label">#{{ i }}</label>
+							<input type="color" class="mic-color-input" data-mic-index="{{ i }}" value="{{ hex }}" />
+						</div>
+					{%- endfor -%}
 				</div>
+				<p class="subtitle has-text-warning mt-1 is-size-6">{% trans %}Colors are saved automatically and apply to microphone icons in the UI.{% endtrans %}</p>
+			</div>
+
+			</div>
 			</div>
 
 			<hr class="my-0">
-
 			<header class="card-header py-3 px-5 collapsible-header is-collapsed">
 				<h3 class="m-0">{# MSG: Title text for the interface settings section of preferences #}{% trans %}Interface settings{% endtrans %}</h3>
 			</header>
 			<div class="card-content collapsible-content">
 				<div class="content">
-					{# MSG: Help text explaining the the need to restart after changing splash screen preferences #}
-					<p class="subtitle has-text-warning mt-1 is-size-6">{% trans %}*You may need to refresh the splash screen for these changes to take effect.{% endtrans %}</p>
 
-					<div class="user-preference-container">
-						<label class="label" for="pref-motd">{# MSG: Label for the message of the day setting #} {% trans %}Message of the day (MOTD){% endtrans %}</label>
-						<textarea id="pref-motd" class="user-preference-input textarea" rows="2" data-pref="motd" data-start-value="{{ motd }}">{{ motd }}</textarea>
-					</div>
 
-					<div class="user-preference-container">
-						<input id="pref-notifications" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_notifications" {% if hide_notifications == True %}checked{% endif %}>
-						<label class="label" for="pref-notifications">{# MSG: Checkbox label which enable/disables notifications on the splash screen #} {% trans %}Hide notifications{% endtrans %}
-						</label>
-					</div>
 
 					<div class="user-preference-container">
 						<input id="pref-qr-code" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_url" {% if hide_url == True %}checked{% endif %}>
@@ -839,7 +885,26 @@
 	<style>
 	.user-preference-container {
 		display: flex;
+		align-items: center;
+		gap: 1rem;
+		flex-wrap: wrap;
 		margin-bottom: 8px;
+	}
+	/* keep labels a fixed column so controls align vertically */
+	.user-preference-container > label {
+		flex: 0 0 220px;
+		margin-bottom: 0;
+	}
+	/* make the middle/content area (e.g. columns) expand to fill available space */
+	.user-preference-container .columns {
+		flex: 1 1 400px;
+		min-width: 200px;
+	}
+	/* right-side helper text should not force the center to shrink */
+	.user-preference-container p.help {
+		flex: 0 0 320px;
+		margin: 0;
+		white-space: normal;
 	}
 	.user-preference-input {
 		min-width: 80px;

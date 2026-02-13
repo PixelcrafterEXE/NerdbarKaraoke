@@ -255,8 +255,14 @@ class Karaoke:
         # Initialize stream manager for transcoding and playback
         self.stream_manager = StreamManager(self)
 
-        # Initialize microphone manager
-        self.microphone_manager = MicrophoneManager(socketio=socketio)
+        # Initialize microphone manager (use admin preferences for count/colors)
+        # preference value `microphone_colors` is stored as a comma-separated string
+        colors_pref = getattr(self, "microphone_colors", None)
+        if isinstance(colors_pref, str):
+            colors_list = [c.strip() for c in colors_pref.split(",") if c.strip()]
+        else:
+            colors_list = None
+        self.microphone_manager = MicrophoneManager(socketio=socketio, microphone_count=getattr(self, "microphone_count", 4), microphone_colors=colors_list)
 
         # Initialize effects manager
         self.effects_manager = EffectsManager(self)
@@ -335,6 +341,47 @@ class Karaoke:
         for key, value in sorted(vars(self).items()):
             output += f"  {key}: {value}\n"
         logging.debug("\n\n" + output)
+
+    def reload_microphones(self) -> None:
+        """Reinitialize MicrophoneManager after a preference change.
+
+        Preserves assignments for microphone IDs that still exist; otherwise clears.
+        Also re-syncs the EffectsManager state and notifies clients.
+        """
+        try:
+            colors_pref = getattr(self, "microphone_colors", None)
+            if isinstance(colors_pref, str):
+                colors_list = [c.strip() for c in colors_pref.split(",") if c.strip()]
+            else:
+                colors_list = None
+            new_count = getattr(self, "microphone_count", 4)
+
+            old_assignments = {} if not hasattr(self, "microphone_manager") else self.microphone_manager.get_all_assignments()
+
+            # Create new manager and preserve overlapping assignments
+            new_manager = MicrophoneManager(socketio=self.socketio, microphone_count=new_count, microphone_colors=colors_list)
+            for mic_id, user in old_assignments.items():
+                if mic_id in new_manager.microphones and user:
+                    new_manager.microphones[mic_id] = user
+
+            self.microphone_manager = new_manager
+
+            # Re-sync effects state to match new microphone list
+            try:
+                self.effects_manager._sync_state()
+            except Exception:
+                logging.exception("Failed to resync effects manager after microphone reload")
+
+            # Broadcast updated microphone assignments
+            try:
+                if self.socketio:
+                    self.socketio.emit("microphone_update", self.microphone_manager.to_dict())
+            except Exception:
+                logging.exception("Failed to emit microphone_update after reload")
+
+            logging.info("Reloaded microphones: count=%s colors=%s", new_count, colors_list)
+        except Exception:
+            logging.exception("Unexpected error while reloading microphones")
 
     def upgrade_youtubedl(self) -> None:
         """Upgrade yt-dlp to the latest version."""

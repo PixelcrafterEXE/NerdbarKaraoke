@@ -37,8 +37,35 @@ def change_preferences():
     if is_admin():
         preference = request.args["pref"]
         val = request.args["val"]
+
+        # Server-side validation for known numeric preference ranges
+        if preference.startswith("mic_fx_rack_"):
+            try:
+                n = int(val)
+            except Exception:
+                return jsonify([False, _("FX rack must be an integer between 0 and 4")])
+            if n < 0 or n > 4:
+                return jsonify([False, _("FX rack must be between 0 and 4")])
+
+        if preference.startswith("mic_channel_"):
+            try:
+                n = int(val)
+            except Exception:
+                return jsonify([False, _("Channel must be an integer between 0 and 17")])
+            if n < 0 or n > 17:
+                return jsonify([False, _("Channel must be between 0 and 17")])
+
+        if preference == "microphone_count":
+            try:
+                n = int(val)
+            except Exception:
+                return jsonify([False, _("Number of microphones must be an integer between 1 and 16")])
+            if n < 1 or n > 16:
+                return jsonify([False, _("Number of microphones must be between 1 and 16")])
+
         if preference == "queue_closing_time":
-          val = val.strip()
+            val = val.strip()
+
         success, message = k.preferences.set(preference, val)
         return jsonify([success, message])
     else:

@@ -23,6 +23,7 @@
     screensaverTimeout: parseInt('{{ screensaver_timeout }}') || 0,
     hideOverlay: "{{ hide_overlay }}" == 'True',
     showMicrophoneStatus: "{{ show_microphone_status }}" == 'True',
+    microphoneColors: {{ microphone_colors | tojson }},
     translations: {
       socketConnectionLost: "{{ _('Connection lost. Is the server still running?') }}",
       unsupportedBrowser: "{{ _('This browser is not fully supported. You may experience streaming issues. Please use Chrome/Safari/Firefox/Edge for best results.') }}",

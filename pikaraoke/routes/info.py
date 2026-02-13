@@ -98,16 +98,13 @@ def info():
         wait_for_microphone=k.wait_for_microphone,
         microphone_wait_timeout=k.microphone_wait_timeout,
         microphone_timeout_action=k.microphone_timeout_action,
+        microphone_count=getattr(k, 'microphone_count', 4),
+        microphone_colors=getattr(k, 'microphone_colors', "#cc0000,#0047ab,#009900,#b8860b"),
+        # per-index channel/fx maps
+        microphone_channels={i: getattr(k, f"mic_channel_{i}", 0) for i in range(1, (getattr(k,'microphone_count',4) or 4) + 1)},
+        microphone_fx_racks={i: getattr(k, f"mic_fx_rack_{i}", 0) for i in range(1, (getattr(k,'microphone_count',4) or 4) + 1)},
         mixer_ip=k.mixer_ip,
         mixer_port=k.mixer_port,
-        mic_channel_red=k.mic_channel_red,
-        mic_channel_blue=k.mic_channel_blue,
-        mic_channel_green=k.mic_channel_green,
-        mic_channel_yellow=k.mic_channel_yellow,
-        mic_fx_rack_red=k.mic_fx_rack_red,
-        mic_fx_rack_blue=k.mic_fx_rack_blue,
-        mic_fx_rack_green=k.mic_fx_rack_green,
-        mic_fx_rack_yellow=k.mic_fx_rack_yellow,
         effects_enabled=k.effects_enabled,
     )
 

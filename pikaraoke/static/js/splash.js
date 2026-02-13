@@ -292,18 +292,11 @@ const handleNowPlayingUpdate = (np) => {
     
     // Update microphone holders display with dark saturated colors
     if (np.microphone_assignments && PikaraokeConfig.showMicrophoneStatus) {
-      const colorMap = {
-        'Red': '#cc0000',
-        'Blue': '#0047ab',
-        'Green': '#009900',
-        'Yellow': '#b8860b'
-      };
+      const colorMap = PikaraokeConfig.microphoneColors || {};
       let micHtml = '';
-      const colors = ['Red', 'Blue', 'Green', 'Yellow'];
-      for (const color of colors) {
-        const user = np.microphone_assignments[color];
+      for (const [micId, user] of Object.entries(np.microphone_assignments)) {
         if (user) {
-          const colorHex = colorMap[color];
+          const colorHex = colorMap[micId] || '#999';
           micHtml += `<i class="icon icon-mic-1" style="color: ${colorHex}; font-size: 1.2em; margin-right: 5px;" title="${user}"></i><span style="color: ${colorHex}; margin-right: 10px;">${user}</span> `;
         }
       }

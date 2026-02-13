@@ -57,16 +57,11 @@ class PreferenceManager:
         "wait_for_microphone": True,
         "microphone_wait_timeout": 30,
         "microphone_timeout_action": "play",  # "play", "skip", or "keep_position"
+        # Microphone tracking: count and comma-separated hex colors (index order)
+        "microphone_count": 4,
+        "microphone_colors": "#cc0000,#0047ab,#009900,#b8860b",
         "mixer_ip": "",
         "mixer_port": 10023,
-        "mic_channel_red": 1,
-        "mic_channel_blue": 2,
-        "mic_channel_green": 3,
-        "mic_channel_yellow": 4,
-        "mic_fx_rack_red": 1,
-        "mic_fx_rack_blue": 2,
-        "mic_fx_rack_green": 3,
-        "mic_fx_rack_yellow": 4,
         "effects_enabled": True,
     }
 
@@ -147,6 +142,14 @@ class PreferenceManager:
             if self._target is not None:
                 typed_val = self._convert_value(val)
                 setattr(self._target, preference, typed_val)
+                # If microphone topology changed, allow the target to reinitialize
+                if preference in ("microphone_count", "microphone_colors"):
+                    try:
+                        reload_fn = getattr(self._target, "reload_microphones", None)
+                        if callable(reload_fn):
+                            reload_fn()
+                    except Exception:
+                        logging.exception("Failed to reload microphones after preference change")
 
             return (True, _("Your preferences were changed successfully"))
         except Exception as e:

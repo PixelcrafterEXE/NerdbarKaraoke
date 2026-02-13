@@ -6,11 +6,11 @@
         <h1 class="title has-text-centered">{{ title }}</h1>
         
         <p class="has-text-centered mb-5">
-            Please enter your name to assign the <strong class="has-text-{{ microphone_color|lower }}">{{ microphone_color }}</strong> microphone to yourself.
+            Please enter your name to assign the <strong style="color: {{ (microphone_color_hex or '#999') }}">#{{ microphone_color }}</strong> microphone to yourself.
         </p>
         
         <form method="POST" action="{{ url_for('microphone.assign_microphone') }}">
-            <input type="hidden" name="color" value="{{ microphone_color }}">
+            <input type="hidden" name="id" value="{{ microphone_color }}">
             
             <div class="field">
                 <label class="label">Your Name</label>

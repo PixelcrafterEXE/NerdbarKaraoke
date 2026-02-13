@@ -32,6 +32,7 @@ def home():
     
     # Get all microphone assignments
     microphone_assignments = k.microphone_manager.get_all_assignments()
+    microphone_colors = k.microphone_manager.color_map
     
     return render_template(
         "home.html",
@@ -44,5 +45,6 @@ def home():
         username=username,
         user_microphone=user_microphone,
         microphone_assignments=microphone_assignments,
+        microphone_colors=microphone_colors,
         show_microphone_status=k.show_microphone_status or is_admin(),
     )

@@ -57,6 +57,7 @@ def splash():
         bg_music_volume=k.bg_music_volume,
         has_bg_video=k.bg_video_path is not None,
         show_microphone_status=k.show_microphone_status,
+        microphone_colors=k.microphone_manager.color_map,
         score_phrases={
             "low": [phrase.strip() for phrase in k.low_score_phrases.split("\n") if phrase.strip()],
             "mid": [phrase.strip() for phrase in k.mid_score_phrases.split("\n") if phrase.strip()],
