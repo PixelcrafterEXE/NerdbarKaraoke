@@ -19,3 +19,6 @@ qrcode.png
 
 # Briefcase build artifacts
 *.briefcase.toml
+
+# Compiled translation files
+*.mo

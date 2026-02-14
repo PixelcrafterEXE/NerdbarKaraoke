@@ -23,6 +23,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 COPY docs ./docs
 COPY pikaraoke ./pikaraoke
 
+# Compile translation files
+RUN pybabel compile -d pikaraoke/translations
+
 # Final install of the package itself (fast)
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv pip install --system --no-cache-dir --no-deps .
