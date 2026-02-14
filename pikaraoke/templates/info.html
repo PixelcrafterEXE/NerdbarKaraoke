@@ -508,7 +508,10 @@
 			<div class="card-content collapsible-content">
 				<div class="content">
 
-
+					<h5>{% trans %}Message of the day (MOTD){% endtrans %}</h5>
+					{# MSG: Label for the message of the day setting #} 
+					<textarea id="pref-motd" class="textarea user-preference-input" data-pref="motd" data-start-value="{{ motd }}">{{ motd }}</textarea>
+					<hr>
 
 					<div class="user-preference-container">
 						<input id="pref-qr-code" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_url" {% if hide_url == True %}checked{% endif %}>
@@ -517,12 +520,19 @@
 					</div>
 
 					<div class="user-preference-container">
-							<input id="pref-notifications" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_notifications" {% if hide_notifications == True %}checked{% endif %}>
-							<label class="label" for="pref-notifications">{# MSG: Checkbox label which enable/disables notifications on the splash screen #} {% trans %}Hide notifications{% endtrans %}
-							</label>
-						</div>
+						<input id="pref-overlay" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_overlay" {% if hide_overlay == True %}checked{% endif %}>
+						<label class="label" for="pref-overlay">{# MSG: Checkbox label which enable/disables showing overlay data on the splash screen #} {% trans %}Hide all overlays, including now playing, up next, and QR code{% endtrans %}
+						</label>
+					</div>
 
-						<div class="user-preference-container">
+					<div class="user-preference-container">
+						<input id="pref-notifications" type="checkbox" class="user-preference-checkbox checkbox" data-pref="hide_notifications" {% if hide_notifications == True %}checked{% endif %}>
+						<label class="label" for="pref-notifications">{# MSG: Checkbox label which enable/disables notifications on the splash screen #} {% trans %}Hide notifications{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-score" type="checkbox" class="user-preference-checkbox checkbox" data-pref="disable_score" {% if disable_score == True %}checked{% endif %}>
 						<label class="label" for="pref-score">{# MSG: Checkbox label which enable/disables the Score Screen #} {% trans %}Disable the score screen after each song{% endtrans %}
 						</label>
 					</div>
@@ -541,10 +551,11 @@
 						</label>
 					</div>
 
-						<div class="user-preference-container">
-							<label class="label" for="pref-motd">{# MSG: Label for the message of the day setting #} {% trans %}Message of the day (MOTD){% endtrans %}</label>
-							<textarea id="pref-motd" class="user-preference-input textarea" rows="2" data-pref="motd" data-start-value="{{ motd }}">{{ motd }}</textarea>
-						</div>
+					<hr>
+
+					{# MSG: Title text for the Score Phrases section of preferences #}
+					<h4 class="title is-5">{% trans %}Score phrases{% endtrans %}</h4>
+					{# MSG: Help text explaining how to add phrases #}
 					<p class="subtitle has-text-warning mt-1 is-size-6">{% trans %}Add one phrase per line in each box and hit save.{% endtrans %}</p>
 					{# MSG: Title for LOW Score Phrases #}
 					<h5>{% trans %}LOW Score Phrases (score < 30){% endtrans %}</h5>
