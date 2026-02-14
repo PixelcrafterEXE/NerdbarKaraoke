@@ -172,12 +172,6 @@ def parse_pikaraoke_args() -> argparse.Namespace:
         required=False,
     )
     parser.add_argument(
-        "--preferred-language",
-        help="Set the preferred language for the web interface. This will persist across restarts. Available codes: en, de_DE",
-        default=None,
-        required=False,
-    )
-    parser.add_argument(
         "--enable-swagger",
         action="store_true",
         help="Enable Swagger API documentation at /apidocs.",

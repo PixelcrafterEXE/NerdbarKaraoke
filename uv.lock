@@ -862,7 +862,7 @@ wheels = [
 
 [[package]]
 name = "pikaraoke"
-version = "1.18.2"
+version = "1.18.3"
 source = { editable = "." }
 dependencies = [
     { name = "babel" },
@@ -875,6 +875,7 @@ dependencies = [
     { name = "gevent" },
     { name = "jinja2" },
     { name = "psutil" },
+    { name = "python-osc" },
     { name = "qrcode", extra = ["png"] },
     { name = "requests" },
     { name = "yt-dlp", extra = ["default"] },
@@ -909,6 +910,7 @@ requires-dist = [
     { name = "psutil", specifier = "==7.2.1" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.2" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=7.0.0" },
+    { name = "python-osc", specifier = "==1.8.3" },
     { name = "qrcode", extras = ["png"], specifier = "==8.2" },
     { name = "requests", specifier = "==2.32.5" },
     { name = "yt-dlp", extras = ["default"], specifier = ">=2026.1.31" },
@@ -1088,6 +1090,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c9/d8/63e5535ab21dc4998ba1cfe13690ccf122883a38f025dca24d6e56c05eba/python_engineio-4.12.3.tar.gz", hash = "sha256:35633e55ec30915e7fc8f7e34ca8d73ee0c080cec8a8cd04faf2d7396f0a7a7a", size = 91910, upload-time = "2025-09-28T06:31:36.765Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d8/f0/c5aa0a69fd9326f013110653543f36ece4913c17921f3e1dbd78e1b423ee/python_engineio-4.12.3-py3-none-any.whl", hash = "sha256:7c099abb2a27ea7ab429c04da86ab2d82698cdd6c52406cb73766fe454feb7e1", size = 59637, upload-time = "2025-09-28T06:31:35.354Z" },
+]
+
+[[package]]
+name = "python-osc"
+version = "1.8.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2b/23/2dba900b73bae16117c9d69b44774865392dc30bbc80faa7b5b5fc524fc9/python-osc-1.8.3.tar.gz", hash = "sha256:a5ce1ba56c8d82df51cb3f2946b5dd33a70522791acc4b8564e62d2b20ad9caa", size = 25137, upload-time = "2023-08-05T18:19:45.403Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e4/d6/bff3a75ab880aded4ced078e391265c17fc220fc11cc535de1975513b230/python_osc-1.8.3-py3-none-any.whl", hash = "sha256:6fa7e5cf7690057712c26e5f67a747126e6a5f481a40792aad0f25ac3edee815", size = 33208, upload-time = "2023-08-05T18:19:44.02Z" },
 ]
 
 [[package]]

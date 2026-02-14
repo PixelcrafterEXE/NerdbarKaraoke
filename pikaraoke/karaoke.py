@@ -115,7 +115,6 @@ class Karaoke:
         logo_path: str | None = None,
         port: int = 5555,
         prefer_hostname: bool | None = None,
-        preferred_language: str | None = None,
         socketio=None,
         streaming_format: str = "hls",
         url: str | None = None,
@@ -184,7 +183,6 @@ class Karaoke:
             browse_results_per_page: Number of search results per page.
             additional_ytdl_args: Additional yt-dlp command arguments.
             socketio: SocketIO instance for real-time event emission.
-            preferred_language: Language code for UI (e.g., 'en', 'de_DE').
             trim_silence: Trim leading/trailing silence in downloads.
             trim_silence_threshold_db: dB threshold for silence detection.
             trim_silence_min_duration: Minimum silence duration in seconds.
@@ -242,11 +240,6 @@ class Karaoke:
         self.get_available_songs()
 
         self.generate_qr_code()
-
-        # Set preferred language from command line if provided (persists to config)
-        if preferred_language:
-            self.preferences.set("preferred_language", preferred_language)
-            logging.info(f"Setting preferred language to: {preferred_language}")
 
         # Initialize and start download manager
         self.download_manager = DownloadManager(self)

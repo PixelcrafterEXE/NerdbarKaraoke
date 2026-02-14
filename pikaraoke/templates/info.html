@@ -102,6 +102,13 @@
 				});
 			}
 
+			// Handle language selection
+			$("#pref-language").change(function () {
+				const selectedLang = $(this).val();
+				document.cookie = `preferred_language=${selectedLang}; path=/; max-age=31536000`; // 1 year
+				location.reload(); // Reload to apply the new language
+			});
+
 			// Build color pickers from current preference string / count
 			function buildMicColorPickers(count, colorString) {
 				const container = $("#mic-color-pickers");
@@ -302,6 +309,19 @@
 				<p>{% trans %}Handy URL QR code to share with a pal:{% endtrans %}</p>
 				<img id="qr-img" width="200px" src="{{ url_for('images.qrcode') }}" style="image-rendering: pixelated" />
 			</div>
+		</div>
+	</div>
+
+	<div class="user-preference-container is-align-items-center mb-5">
+		<label class="label" for="pref-language">{# MSG: Label for language selection dropdown #} {% trans %}Preferred language{% endtrans %}
+		</label>
+		<div class="select">
+			<select id="pref-language">
+				{% for lang_code, lang_name in languages.items() %}
+				<option value="{{ lang_code }}" {% if request.cookies.get('preferred_language', 'en' )==lang_code
+					%}selected{% endif %}>{{ lang_name }}</option>
+				{% endfor %}
+			</select>
 		</div>
 	</div>
 
@@ -574,18 +594,6 @@
 					<a id="save-phrases" class="button is-fullwidth is-primary mt-5">Save phrases</a>
 
 					<hr>
-
-					<div class="user-preference-container is-align-items-center">
-						<div class="select">
-							<select id="pref-language" class="user-preference-input" data-pref="preferred_language" data-start-value="{{ preferred_language }}">
-								{% for lang_code, lang_name in languages.items() %}
-								<option value="{{ lang_code }}" {% if preferred_language == lang_code %}selected{% endif %}>{{ lang_name }}</option>
-								{% endfor %}
-							</select>
-						</div>
-						<label class="label" for="pref-language">{# MSG: Label for language selection dropdown #} {% trans %}Preferred language (requires restart){% endtrans %}
-						</label>
-					</div>
 
 					<div class="user-preference-container is-align-items-center">
 						<input id="pref-browse-per-page" class="user-preference-input input" type="number" min="10" max="1000" step="10" data-pref="browse_results_per_page" data-start-value="{{ browse_results_per_page }}" value="{{ browse_results_per_page }}" />

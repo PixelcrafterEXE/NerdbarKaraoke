@@ -123,15 +123,10 @@ def get_locale() -> str | None:
     Returns:
         Language code string (e.g., 'en', 'fr') or None.
     """
-    # Check config.ini lang settings (if karaoke instance is initialized)
-    try:
-        k = get_karaoke_instance()
-        preferred_lang = k.preferences.get("preferred_language")
-        if preferred_lang and preferred_lang in LANGUAGES.keys():
-            return preferred_lang
-    except (RuntimeError, AttributeError):
-        # App context not available or karaoke instance not initialized yet
-        pass
+    # Check user language cookie
+    user_lang = request.cookies.get("preferred_language")
+    if user_lang and user_lang in LANGUAGES.keys():
+        return user_lang
 
     # Check URL arguments
     if request.args.get("lang"):
@@ -216,7 +211,6 @@ def main() -> None:
         streaming_format=args.streaming_format,
         additional_ytdl_args=getattr(args, "ytdl_args", None),
         socketio=socketio,
-        preferred_language=args.preferred_language,
         song_add_cooldown_count=args.song_add_cooldown_count,
         song_add_cooldown_duration=args.song_add_cooldown_duration,
         mixer_ip=args.mixer_ip,
