@@ -24,19 +24,31 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 
 ## Roadmap
 - [ ] Implement non-Username-based user identification (via individualized access link; Autorefreshed QR code).
+
 - [ ] Give pitch control to users when adding song
 - [ ] change pitch without song restart
 - [ ] implement tempo display/control
-- [ ] implement tags (ideally autotaged) for genres, moods, languages, artits, duet
+
+- [ ] implement tags (ideally autotaged) for genres, moods, languages, artits, duet (stored in file metadata)
 - [ ] implement grouping by tags
+- [ ] store artist in metadata not in title
+- [ ] autoadd tags from last.fm to metadata
 - [ ] Genre-Mode: Only songs of a certain genre are shown and can be added
+
 - [ ] Push-Notification to requester when their song is up next / playing
-- [ ] display on bar to display queue in LUK
+
+- [ ] queue-view to display in bar 
+
 - [ ] Anonymus queue mode (only admins see names)
+
 - (?) Song rating system (star rating or similar) to reflect quality of caraoke track; Maybe difficulty rating?
+
 - (?) UI Themes
+
 - (?) User Metrics (most requested songs, most active users, etc.)
+
 - (?) Button to open original song on spotify; Option to export queue as spotify playlist
+
 - (???) integrate lighting to sync to music / title change
 
 ## Installation
