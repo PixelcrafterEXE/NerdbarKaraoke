@@ -338,8 +338,8 @@ msgid "Microphone Channels & FX Racks"
 msgstr "Mikrofonkanäle & FX-Racks"
 
 #: templates/info.html:304
-msgid "Channel values map to FX source (0 = INS, 1-16 = MIX1..MIX16, 17 = M/C). Racks must be 1-4."
-msgstr "Kanalwerte entsprechen der FX-Quelle (0 = INS, 1–16 = MIX1..MIX16, 17 = M/C). Racks müssen 1–4 sein."
+msgid "Channel values map to FX source (0 = INS, 1-16 = MIX1..MIX16, 17 = M/C). Use 0 for \"no rack\"; valid rack indexes are 1–4."
+msgstr "Kanalwerte entsprechen der FX-Quelle (0 = INS, 1–16 = MIX1..MIX16, 17 = M/C). Verwenden Sie 0 für \"kein Rack\"; gültige Rack-Indizes sind 1–4."
 
 #: templates/info.html:304
 msgid "Red microphone"
@@ -755,7 +755,7 @@ msgstr "URL von %(site_title)s:"
 #. scanned, so they can also add songs. QR code follows this text.
 #: templates/info.html:173
 msgid "Handy URL QR code to share with a pal:"
-msgstr "Praktischer URL-QR-Code, um ihn mit einem Freund zu teilen:"
+msgstr "URL-QR-Code zum weitergeben"
 
 #. Title of the system data section.
 #: templates/info.html:182
@@ -1636,4 +1636,76 @@ msgstr "Lieder werden nach Stimmen sortiert (höchste zuerst)."
 #: templates/queue.html
 msgid "Songs are ordered to rotate users; new users are prioritized, then the user who has waited the longest."
 msgstr "Lieder werden so sortiert, dass Nutzer rotieren; neue Nutzer haben Vorrang, danach derjenige mit der längsten Wartezeit."
+
+#: templates/home.html
+msgid "Microphone Status"
+msgstr "Mikrofon-Status"
+
+#: templates/edit.html
+msgid "Suggest from Last.fm"
+msgstr "Von Last.fm vorschlagen"
+
+#: templates/search.html
+msgid "Search for songs"
+msgstr "Nach Liedern suchen"
+
+#: templates/search.html
+msgid "Type a song title or artist name to search the available local library, or use 'Search' to find songs on YouTube."
+msgstr "Geben Sie einen Liedtitel oder Künstlernamen ein, um die verfügbare lokale Bibliothek zu durchsuchen, oder verwenden Sie 'Suchen', um Lieder auf YouTube zu finden."
+
+#: templates/info.html
+msgid "Number of microphones"
+msgstr "Anzahl der Mikrofone"
+
+#: templates/info.html
+msgid "Show microphone status on home page (non-admins)"
+msgstr "Mikrofonstatus auf der Startseite anzeigen (Nicht-Admins)"
+
+#: templates/info.html
+msgid "Reset microphone assignments after each song"
+msgstr "Mikrofonzuweisungen nach jedem Lied zurücksetzen"
+
+#: templates/info.html
+msgid "Wait for singer to get a microphone before playing their song"
+msgstr "Warten bis der Sänger ein Mikrofon hat, bevor sein Lied gespielt wird"
+
+#: templates/info.html
+msgid "Microphone wait timeout in seconds"
+msgstr "Mikrofon-Wartezeit in Sekunden"
+
+#: templates/info.html
+msgid "Action when microphone wait timeout expires:"
+msgstr "Aktion wenn Mikrofon-Wartezeit abläuft:"
+
+#: templates/info.html
+msgid "Microphone colors (pick per microphone)"
+msgstr "Mikrofonfarben (pro Mikrofon auswählen)"
+
+#: templates/info.html
+msgid "Colors are saved automatically and apply to microphone icons in the UI."
+msgstr "Farben werden automatisch gespeichert und gelten für Mikrofonsymbole in der Benutzeroberfläche."
+
+#: templates/info.html
+msgid "Trim silence at the start/end of downloads"
+msgstr "Stille am Anfang/Ende von Downloads abschneiden"
+
+#: templates/info.html
+msgid "Silence threshold for trimming (dB)"
+msgstr "Stilleschwellenwert für das Abschneiden (dB)"
+
+#: templates/info.html
+msgid "Minimum silence duration for trimming (seconds)"
+msgstr "Mindestdauer der Stille für das Abschneiden (Sekunden)"
+
+#: templates/info.html
+msgid "Play song anyway"
+msgstr "Lied trotzdem abspielen"
+
+#: templates/info.html
+msgid "Skip song"
+msgstr "Lied überspringen"
+
+#: templates/info.html
+msgid "Keep queue position"
+msgstr "Position beibehalten"
 
