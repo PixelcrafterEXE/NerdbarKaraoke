@@ -368,10 +368,8 @@
 						<input
 							id="pref-queue-closing-time"
 							class="user-preference-input input"
-							type="text"
-							inputmode="numeric"
+							type="time" step="60"
 							pattern="^((?:[01]\d|2[0-3]):[0-5]\d|24:00)$"
-							placeholder="HH:MM"
 							data-pref="queue_closing_time"
 							data-start-value=""
 							value=""
@@ -413,7 +411,7 @@
 						</div>
 
 						<div class="user-preference-container is-align-items-center">
-							<input id="pref-mixer-ip" class="user-preference-input input" type="text" data-pref="mixer_ip" data-start-value="{{ mixer_ip }}" value="{{ mixer_ip }}" />
+							<input id="pref-mixer-ip" class="user-preference-input input" type="time" step="60" data-pref="mixer_ip" data-start-value="{{ mixer_ip }}" value="{{ mixer_ip }}" />
 							<label class="label" for="pref-mixer-ip">
 								{% trans %}OSC mixer IP address{% endtrans %}
 							</label>
