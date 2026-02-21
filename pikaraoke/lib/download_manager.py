@@ -388,8 +388,14 @@ class DownloadManager:
 
             if enqueue:
                 if song_is_valid:
+                    bypass = False
+                    if k.queue_manager._is_admin and k.queue_manager._is_admin():
+                        bypass = True
                     k.queue_manager.enqueue(
-                        song_path, user, log_action=False, bypass_queue_restrictions=True
+                        song_path,
+                        user,
+                        log_action=False,
+                        bypass_queue_restrictions=bypass,
                     )
                 else:
                     # MSG: Message shown after the download is completed but the adding to queue fails
@@ -702,8 +708,14 @@ class DownloadManager:
                             # Don't trim silence on transcoded files - they're already the right length
                             # (trim_silence would corrupt files with generated audio like silent tracks)
                             if enqueue:
+                                bypass = False
+                                if k.queue_manager._is_admin and k.queue_manager._is_admin():
+                                    bypass = True
                                 k.queue_manager.enqueue(
-                                    output_path, user, log_action=False, bypass_queue_restrictions=True
+                                    output_path,
+                                    user,
+                                    log_action=False,
+                                    bypass_queue_restrictions=bypass,
                                 )
                         else:
                             # MSG: Message shown after transcoding is completed but the adding to available songs fails
