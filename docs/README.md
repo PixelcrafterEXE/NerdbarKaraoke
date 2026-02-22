@@ -35,6 +35,13 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 - [ ] autoadd tags from last.fm to metadata
 - [ ] Genre-Mode: Only songs of a certain genre are shown and can be added
 
+- [ ] Rendering for mp3+cdg (cherrypick from xuancong84/OpenHomeKaraoke)
+- [ ] DNN Vocal seperation (cherrypick from xuancong84/OpenHomeKaraoke)
+- [ ] Lyrics from API, Syncronize and generate cdg
+- [ ] multitrack volume control (vocals, music), ideally with option for secondary output for iem
+- [ ] generate click track
+- [ ] non-karaoke search mode, generation of karaoke track
+
 - [ ] Push-Notification to requester when their song is up next / playing
 
 - [ ] queue-view to display in bar 
