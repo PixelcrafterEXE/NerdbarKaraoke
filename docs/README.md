@@ -26,7 +26,8 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 - [ ] Implement non-Username-based user identification (via individualized access link; Autorefreshed QR code).
 
 - [ ] Give pitch control to users when adding song
-- [ ] change pitch without song restart
+- [ ] change pitch without song restart (requires switch to Web Audio API for Streaming)
+- [ ] implement multi chanel playback (seperate backing, vocal and clicker tracks)
 - [ ] implement tempo display/control
 
 - [ ] implement tags (ideally autotaged) for genres, moods, languages, artits, duet (stored in file metadata)
