@@ -490,6 +490,12 @@ class Karaoke:
         Args:
             song_path: Full path to the song file.
         """
+        # Validate the path is within the designated download directory
+        abs_song = os.path.realpath(song_path)
+        abs_download = os.path.realpath(self.download_path)
+        if not abs_song.startswith(abs_download + os.sep) and abs_song != abs_download:
+            logging.warning("Rejected delete outside download directory: " + song_path)
+            return
         logging.info("Deleting song: " + song_path)
         with contextlib.suppress(FileNotFoundError):
             os.remove(song_path)
@@ -508,6 +514,14 @@ class Karaoke:
             song_path: Full path to the current song file.
             new_name: New filename (without extension).
         """
+        # Validate the source path is within the designated download directory
+        abs_song = os.path.realpath(song_path)
+        abs_download = os.path.realpath(self.download_path)
+        if not abs_song.startswith(abs_download + os.sep) and abs_song != abs_download:
+            logging.warning("Rejected rename outside download directory: " + song_path)
+            return
+        # Sanitize new_name: strip path separators to prevent directory traversal
+        new_name = os.path.basename(new_name)
         logging.info("Renaming song: '" + song_path + "' to: " + new_name)
         ext = os.path.splitext(song_path)
         if len(ext) == 2:

@@ -123,7 +123,22 @@ def clean_search_query(song_name):
         "\U0001FA00-\U0001FA6F"  # Chess Symbols
         "\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A
         "\U00002702-\U000027B0"  # Dingbats
-        "\U000024C2-\U0001F251"
+        # Specific emoji/symbol code points below U+2702 and between common blocks
+        # (replaces the former overly-broad \U000024C2-\U0001F251 range)
+        "\U000024C2"             # Ⓜ (enclosed M)
+        "\U000025AA-\U000025FE"  # Geometric shapes (misc)
+        "\U00002600-\U000026FF"  # Miscellaneous Symbols
+        "\U0001F004"             # Mahjong red dragon
+        "\U0001F0CF"             # Playing card black joker
+        "\U0001F170-\U0001F171"  # Blood type A/B
+        "\U0001F17E-\U0001F17F"  # Blood type O / parking
+        "\U0001F18E"             # Blood type AB
+        "\U0001F191-\U0001F19A"  # Enclosed alphanumeric supplement
+        "\U0001F201-\U0001F202"  # Japanese "here"/"service" buttons
+        "\U0001F21A"             # Japanese "free" button
+        "\U0001F22F"             # Japanese "reserved" button
+        "\U0001F232-\U0001F23A"  # Japanese squared CJK
+        "\U0001F250-\U0001F251"  # Japanese "advantage"/"acceptable" buttons
         "]+"
     )
     song_name = emoji_pattern.sub("", song_name)

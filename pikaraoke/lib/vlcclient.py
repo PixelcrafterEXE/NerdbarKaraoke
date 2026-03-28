@@ -91,7 +91,10 @@ class VLCClient:
         if self.qrcode and self.url:
             self.cmd_base += self.get_marquee_cmd()
 
-        logging.info("VLC command base: " + " ".join(self.cmd_base))
+        logging.info("VLC command base: " + " ".join(
+            "[REDACTED]" if prev == "--http-password" else arg
+            for prev, arg in zip([""] + self.cmd_base, self.cmd_base)
+        ))
 
         self.volume_offset = 10
         self.process = None

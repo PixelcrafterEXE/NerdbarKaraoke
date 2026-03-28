@@ -194,7 +194,10 @@ def get_search_results(textToSearch: str) -> list[list[str]]:
     """
     logging.info("Searching YouTube for: " + textToSearch)
     num_results = 10
-    yt_search = 'ytsearch%d:"%s"' % (num_results, textToSearch)
+    # Sanitize the search query: strip characters that could be misinterpreted
+    # by yt-dlp's argument parsing (double-quotes, backslashes, null bytes).
+    sanitized_search = textToSearch.replace("\\", "").replace('"', "").replace("\x00", "")
+    yt_search = 'ytsearch%d:"%s"' % (num_results, sanitized_search)
     cmd = yt_dlp_cmd + ["-j", "--no-playlist", "--flat-playlist", yt_search]
     logging.debug("Youtube-dl search command: " + " ".join(cmd))
     try:

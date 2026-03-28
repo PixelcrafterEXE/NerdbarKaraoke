@@ -23,10 +23,20 @@ _ = flask_babel.gettext
 
 stream_bp = Blueprint("stream", __name__)
 
+# Only allow alphanumeric characters, hyphens and underscores in stream IDs
+_SAFE_ID_RE = re.compile(r"^[a-zA-Z0-9_\-]+$")
+
+
+def _is_safe_id(value: str) -> bool:
+    """Return True iff value is a safe, non-traversal stream identifier."""
+    return bool(_SAFE_ID_RE.match(value))
+
 
 # Serves HLS playlist file - explicit .m3u8 extension
 @stream_bp.route("/stream/<id>.m3u8")
 def stream_playlist(id):
+    if not _is_safe_id(id):
+        return Response("Invalid stream ID", status=400, mimetype="text/plain")
     file_path = os.path.join(get_tmp_dir(), f"{id}.m3u8")
     k = get_karaoke_instance()
 
@@ -49,51 +59,51 @@ def stream_playlist(id):
         response.headers["Expires"] = "0"
         return response
     else:
-        return Response("Playlist not found", status=404)
+        return Response("Playlist not found", status=404, mimetype="text/plain")
 
 
 # Serves HLS segment files - .m4s (fragmented MP4) extension
 @stream_bp.route("/stream/<filename>.m4s")
 def stream_segment_m4s(filename):
     # Security: prevent directory traversal
-    if ".." in filename or "/" in filename:
-        return Response("Invalid segment", status=400)
+    if not _is_safe_id(filename):
+        return Response("Invalid segment", status=400, mimetype="text/plain")
 
     segment_path = os.path.join(get_tmp_dir(), f"{filename}.m4s")
 
     if os.path.exists(segment_path):
         return send_file(segment_path, mimetype="video/mp4")
     else:
-        return Response(f"Segment not found: {filename}.m4s", status=404)
+        return Response("Segment not found", status=404, mimetype="text/plain")
 
 
 # Serves init.mp4 header file for fMP4 (with unique filenames per stream)
 @stream_bp.route("/stream/<filename>_init.mp4")
 def stream_init(filename):
     # Security: prevent directory traversal
-    if ".." in filename or "/" in filename:
-        return Response("Invalid init file", status=400)
+    if not _is_safe_id(filename):
+        return Response("Invalid init file", status=400, mimetype="text/plain")
 
     init_path = os.path.join(get_tmp_dir(), f"{filename}_init.mp4")
     if os.path.exists(init_path):
         return send_file(init_path, mimetype="video/mp4")
     else:
-        return Response("Init file not found", status=404)
+        return Response("Init file not found", status=404, mimetype="text/plain")
 
 
 # Legacy .ts support for backward compatibility
 @stream_bp.route("/stream/<filename>.ts")
 def stream_segment(filename):
     # Security: prevent directory traversal
-    if ".." in filename or "/" in filename:
-        return Response("Invalid segment", status=400)
+    if not _is_safe_id(filename):
+        return Response("Invalid segment", status=400, mimetype="text/plain")
 
     segment_path = os.path.join(get_tmp_dir(), f"{filename}.ts")
 
     if os.path.exists(segment_path):
         return send_file(segment_path, mimetype="video/mp2t")
     else:
-        return Response(f"Segment not found: {filename}.ts", status=404)
+        return Response("Segment not found", status=404, mimetype="text/plain")
 
 
 # Main streaming route - serves HLS or progressive MP4 based on file extension
@@ -114,6 +124,8 @@ def stream_main(id):
 # Compatible with Chrome, Firefox and RPi with hardware acceleration
 @stream_bp.route("/stream/<id>.mp4")
 def stream_progressive_mp4(id):
+    if not _is_safe_id(id):
+        return Response("Invalid stream ID", status=400, mimetype="text/plain")
     file_path = os.path.join(get_tmp_dir(), f"{id}.mp4")
     k = get_karaoke_instance()
 
@@ -189,6 +201,8 @@ def stream_full(id):
       206:
         description: Partial video content (range request)
     """
+    if not _is_safe_id(id):
+        return Response("Invalid stream ID", status=400, mimetype="text/plain")
     file_path = os.path.join(get_tmp_dir(), f"{id}.mp4")
     return stream_file_path_full(file_path)
 

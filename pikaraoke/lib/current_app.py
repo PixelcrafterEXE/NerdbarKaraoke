@@ -1,5 +1,7 @@
 """Flask application context utilities for PiKaraoke."""
 
+import hashlib
+import hmac
 import logging
 import os
 import subprocess
@@ -18,14 +20,24 @@ def is_admin() -> bool:
     This function checks if the provided password is `None` or if it matches
     the value of the "admin" cookie in the current Flask request. If the password
     is `None`, the function assumes the user is an admin. If the "admin" cookie
-    is present and its value matches the provided password, the function returns `True`.
-    Otherwise, it returns `False`.
+    is present and its value matches the HMAC token derived from the password,
+    the function returns `True`. Otherwise, it returns `False`.
     Returns:
         bool: `True` if the password matches the admin cookie or if the password is `None`,
               `False` otherwise.
     """
     password = get_admin_password()
-    return password is None or request.cookies.get("admin") == password
+    if password is None:
+        return True
+    cookie_val = request.cookies.get("admin")
+    if not cookie_val:
+        return False
+    expected_token = hmac.new(
+        password.encode("utf-8"),
+        b"pikaraoke-admin-session",
+        hashlib.sha256,
+    ).hexdigest()
+    return hmac.compare_digest(cookie_val, expected_token)
 
 
 def get_karaoke_instance() -> Karaoke:

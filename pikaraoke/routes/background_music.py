@@ -5,7 +5,7 @@ import random
 import urllib
 
 import flask_babel
-from flask import Blueprint, jsonify, send_file
+from flask import Blueprint, Response, jsonify, send_file
 
 from pikaraoke.lib.current_app import get_karaoke_instance
 
@@ -56,7 +56,12 @@ def bg_music(file):
     """
     k = get_karaoke_instance()
     mp3_path = os.path.join(k.bg_music_path, file)
-    return send_file(os.path.abspath(mp3_path), mimetype="audio/mpeg")
+    # Validate the resolved path is within the background music directory
+    abs_mp3_path = os.path.realpath(mp3_path)
+    abs_music_path = os.path.realpath(k.bg_music_path)
+    if not abs_mp3_path.startswith(abs_music_path + os.sep) and abs_mp3_path != abs_music_path:
+        return Response("Invalid file path", status=400, mimetype="text/plain")
+    return send_file(abs_mp3_path, mimetype="audio/mpeg")
 
 
 @background_music_bp.route("/bg_playlist", methods=["GET"])

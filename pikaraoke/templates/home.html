@@ -78,10 +78,10 @@
 		var slider = document.getElementById("transpose");
 		var output = document.getElementById("semitones-label");
 		if (slider && output) {
-			output.innerHTML = getSemitonesLabel(slider.value);
+			output.textContent = getSemitonesLabel(slider.value);
 			// Update the current slider value (each time you drag the slider handle)
 			slider.oninput = function () {
-				output.innerHTML = getSemitonesLabel(slider.value);
+				output.textContent = getSemitonesLabel(slider.value);
 			};
 		}
 
@@ -105,7 +105,7 @@
 				$.get("/transpose/" + value);
 			}
 			slider.value = 0;
-			output.innerHTML = getSemitonesLabel(slider.value);
+			output.textContent = getSemitonesLabel(slider.value);
 		});
 
 		$("#pause-resume").click(function () {

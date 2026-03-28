@@ -1,6 +1,8 @@
 """Admin routes for system control and authentication."""
 
 import datetime
+import hashlib
+import hmac
 import os
 import subprocess
 import sys
@@ -225,7 +227,13 @@ def auth():
         resp = make_response(redirect(next_url))
         expire_date = datetime.datetime.now()
         expire_date = expire_date + datetime.timedelta(days=90)
-        resp.set_cookie("admin", admin_password, expires=expire_date)
+        # Store a HMAC hash of the password, not the plaintext, in the cookie
+        cookie_token = hmac.new(
+            admin_password.encode("utf-8"),
+            b"pikaraoke-admin-session",
+            hashlib.sha256,
+        ).hexdigest()
+        resp.set_cookie("admin", cookie_token, expires=expire_date, httponly=True, samesite="Lax")
         # MSG: Message shown after logging in as admin successfully
         flash(_("Admin mode granted!"), "is-success")
     else:

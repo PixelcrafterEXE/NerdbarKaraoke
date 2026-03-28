@@ -1,5 +1,6 @@
 """Song queue management routes."""
 
+import html
 import json
 import logging
 
@@ -298,12 +299,12 @@ def queue_edit():
               k.queue_manager._reorder_queue_by_votes()
             message = (
               _("Shadowbanned") if now_shadowbanned else _("Unshadowbanned")
-            ) + ": " + k.filename_from_path(matched_file)
+            ) + ": " + html.escape(k.filename_from_path(matched_file))
             if not is_ajax:
               flash(message, "is-warning")
             success = True
           else:
-            message = _("Song not found in queue") + ": " + k.filename_from_path(song)
+            message = _("Song not found in queue") + ": " + html.escape(k.filename_from_path(song))
             if not is_ajax:
               flash(message, "is-danger")
 
@@ -366,7 +367,7 @@ def enqueue():
         user = d["song-added-by"]
     rc = k.queue_manager.enqueue(song, user)
     broadcast_event("queue_update")
-    song_title = k.filename_from_path(song)
+    song_title = html.escape(k.filename_from_path(song))
 
     response_data = {"song": song_title, "success": True, "message": _("Song added to the queue: %s") % song_title}
     
@@ -536,7 +537,7 @@ def vote_on_song():
     except Exception as e:
         logging.error(f"Error processing vote: {e}")
         return (
-            json.dumps({"success": False, "error": str(e)}),
+            json.dumps({"success": False, "error": "An internal error occurred processing your vote."}),
             500,
         )
 
