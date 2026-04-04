@@ -12,6 +12,7 @@
   href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
 />
 <script src="{{ url_for('static', filename='js/subtitles-octopus.js') }}"></script>
+<script src="{{ url_for('static', filename='js/audio-engine.js') }}"></script>
 <script>
   // Use this config object to pass data from the jinja2 template to the splash.js code
   const PikaraokeConfig = {
@@ -24,6 +25,10 @@
     hideOverlay: "{{ hide_overlay }}" == 'True',
     showMicrophoneStatus: "{{ show_microphone_status }}" == 'True',
     microphoneColors: {{ microphone_colors | tojson }},
+    trimSilenceStart: "{{ trim_silence_start }}" == 'True',
+    trimSilenceEnd: "{{ trim_silence_end }}" == 'True',
+    silenceThresholdDb: parseFloat('{{ trim_silence_threshold_db }}') || -50,
+    silenceMinDuration: parseFloat('{{ trim_silence_min_duration }}') || 0.5,
     translations: {
       socketConnectionLost: "{{ _('Connection lost. Is the server still running?') }}",
       unsupportedBrowser: "{{ _('This browser is not fully supported. You may experience streaming issues. Please use Chrome/Safari/Firefox/Edge for best results.') }}",

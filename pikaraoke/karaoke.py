@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import logging
 import os
+import re
 import socket
 import subprocess
 import time
@@ -16,6 +17,7 @@ from flask_babel import _
 from qrcode.image.pure import PyPNGImage
 
 from pikaraoke.lib.download_manager import DownloadManager
+from pikaraoke.lib.effects_manager import EffectsManager
 from pikaraoke.lib.events import EventSystem
 from pikaraoke.lib.ffmpeg import (
     get_ffmpeg_version,
@@ -30,7 +32,6 @@ from pikaraoke.lib.get_platform import (
     is_raspberry_pi,
 )
 from pikaraoke.lib.microphone_manager import MicrophoneManager
-from pikaraoke.lib.effects_manager import EffectsManager
 from pikaraoke.lib.network import get_ip
 from pikaraoke.lib.preference_manager import PreferenceManager
 from pikaraoke.lib.queue_manager import QueueManager
@@ -75,11 +76,14 @@ class Karaoke:
     now_playing_filename: str | None = None
     now_playing_user: str | None = None
     now_playing_transpose: int = 0
+    now_playing_tempo: float = 1.0
     now_playing_duration: int | None = None
     now_playing_url: str | None = None
     now_playing_subtitle_url: str | None = None
     now_playing_notification: str | None = None
     now_playing_position: float | None = None
+    now_playing_leading_silence_end: float | None = None
+    now_playing_trailing_silence_start: float | None = None
     is_paused: bool = True
     volume: float
 
@@ -138,9 +142,6 @@ class Karaoke:
         limit_user_songs_by: int | None = None,
         motd: str | None = None,
         normalize_audio: bool | None = None,
-        trim_silence: bool | None = None,
-        trim_silence_threshold_db: float | None = None,
-        trim_silence_min_duration: float | None = None,
         screensaver_timeout: int | None = None,
         splash_delay: int | None = None,
         volume: float | None = None,
@@ -183,9 +184,6 @@ class Karaoke:
             browse_results_per_page: Number of search results per page.
             additional_ytdl_args: Additional yt-dlp command arguments.
             socketio: SocketIO instance for real-time event emission.
-            trim_silence: Trim leading/trailing silence in downloads.
-            trim_silence_threshold_db: dB threshold for silence detection.
-            trim_silence_min_duration: Minimum silence duration in seconds.
             mixer_ip: OSC mixer IP address.
             mixer_port: OSC mixer port.
         """
@@ -616,7 +614,10 @@ class Karaoke:
         logging.debug("Cleanup complete")
 
     def transpose_current(self, semitones: int) -> None:
-        """Restart the current song with a new transpose value.
+        """Apply real-time pitch shift to the current song via Web Audio API.
+
+        Instead of re-encoding with FFmpeg, this broadcasts a socket event
+        that tells all splash screens to adjust pitch client-side.
 
         Args:
             semitones: Number of semitones to transpose.
@@ -624,13 +625,28 @@ class Karaoke:
         if self.now_playing_filename is None or self.now_playing_user is None:
             logging.warning("Cannot transpose: no song currently playing")
             return
+        self.now_playing_transpose = semitones
         # MSG: Message shown after the song is transposed, first is the semitones and then the song name
         self.log_and_send(_("Transposing by %s semitones: %s") % (semitones, self.now_playing))
-        # Insert the same song at the top of the queue with transposition
-        self.queue_manager.enqueue(
-            self.now_playing_filename, self.now_playing_user, semitones, True
-        )
-        self.skip(log_action=False)
+        # Broadcast to all splash screens for real-time Web Audio pitch shift
+        if self.socketio:
+            self.socketio.emit("set_pitch", semitones, namespace="/")
+        self.update_now_playing_socket()
+
+    def set_tempo(self, tempo: float) -> None:
+        """Apply real-time tempo change to the current song via Web Audio API.
+
+        Args:
+            tempo: Tempo multiplier (e.g. 0.8 = slower, 1.2 = faster).
+        """
+        if self.now_playing_filename is None:
+            logging.warning("Cannot change tempo: no song currently playing")
+            return
+        self.now_playing_tempo = tempo
+        self.log_and_send(_("Tempo: %.1fx") % tempo)
+        if self.socketio:
+            self.socketio.emit("set_tempo", tempo, namespace="/")
+        self.update_now_playing_socket()
 
     def is_file_playing(self) -> bool:
         """Check if a file is currently playing.
@@ -781,8 +797,11 @@ class Karaoke:
         self.is_paused = True
         self.is_playing = False
         self.now_playing_transpose = 0
+        self.now_playing_tempo = 1.0
         self.now_playing_duration = None
         self.now_playing_position = None
+        self.now_playing_leading_silence_end = None
+        self.now_playing_trailing_silence_start = None
         self.volume = self.preferences.get_or_default("volume")
         self.update_now_playing_socket()
 
@@ -810,9 +829,12 @@ class Karaoke:
             "now_playing_user": self.now_playing_user,
             "now_playing_duration": self.now_playing_duration,
             "now_playing_transpose": self.now_playing_transpose,
+            "now_playing_tempo": self.now_playing_tempo,
             "now_playing_url": self.now_playing_url,
             "now_playing_subtitle_url": self.now_playing_subtitle_url,
             "now_playing_position": self.now_playing_position,
+            "now_playing_leading_silence_end": self.now_playing_leading_silence_end,
+            "now_playing_trailing_silence_start": self.now_playing_trailing_silence_start,
             "motd": self.motd,
             "up_next": next_song["title"] if next_song else None,
             "next_user": next_song["user"] if next_song else None,
@@ -822,6 +844,84 @@ class Karaoke:
             "waiting_for_microphone": waiting_info,
             "microphone_assignments": self.microphone_manager.get_all_assignments(),
         }
+
+    def get_silence_boundaries(self, file_path: str) -> tuple[float | None, float | None]:
+        """Detect leading and trailing silence boundaries using ffprobe.
+
+        Runs ffmpeg's silencedetect filter on the audio track and parses the output
+        to find where the leading silence ends and where the trailing silence begins.
+
+        Args:
+            file_path: Absolute path to the media file.
+
+        Returns:
+            Tuple of (leading_silence_end, trailing_silence_start).
+            Either value is None if no silence was found at that end.
+        """
+        threshold_db = getattr(self, "trim_silence_threshold_db", -50)
+        min_duration = getattr(self, "trim_silence_min_duration", 0.5)
+
+        try:
+            cmd = [
+                "ffmpeg",
+                "-i", file_path,
+                "-vn",                          # audio only
+                "-af", f"silencedetect=noise={threshold_db}dB:d={min_duration}",
+                "-f", "null",
+                "-",
+            ]
+            result = subprocess.run(
+                cmd,
+                stderr=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
+                timeout=30,
+            )
+            output = result.stderr.decode("utf-8", errors="ignore")
+            logging.debug(f"[silence] ffmpeg output for {file_path}:\n{output}")
+        except Exception as e:
+            logging.warning(f"[silence] ffprobe failed for {file_path}: {e}")
+            return None, None
+
+        silence_starts = [float(m) for m in re.findall(r"silence_start:\s*([\d.]+)", output)]
+        silence_ends   = [float(m) for m in re.findall(r"silence_end:\s*([\d.]+)", output)]
+
+        if not silence_starts and not silence_ends:
+            logging.debug(f"[silence] no silence detected in {file_path}")
+            return None, None
+
+        # Leading silence: file starts with silence when first silence_end exists and
+        # the corresponding silence_start is at (or very close to) 0.
+        leading_silence_end = None
+        if silence_ends and (not silence_starts or silence_starts[0] < 0.5):
+            leading_silence_end = silence_ends[0]
+            logging.info(f"[silence] leading silence ends at {leading_silence_end:.2f}s")
+
+        # Trailing silence: the last silence region that runs to (or very close to)
+        # the end of the file.  ffmpeg may report a silence_end equal to EOF, so we
+        # check both the no-silence_end case AND the case where the last silence_end
+        # is within 2 seconds of the file's total duration.
+        trailing_silence_start = None
+        if silence_starts:
+            if len(silence_starts) > len(silence_ends):
+                # silence was still ongoing at EOF — no silence_end emitted
+                trailing_silence_start = silence_starts[-1]
+            elif silence_ends:
+                # Get total duration via ffprobe to detect end-of-file silence
+                try:
+                    dur_result = subprocess.run(
+                        ["ffprobe", "-v", "quiet", "-show_entries", "format=duration",
+                         "-of", "csv=p=0", file_path],
+                        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=10,
+                    )
+                    total_duration = float(dur_result.stdout.decode().strip())
+                    if abs(silence_ends[-1] - total_duration) < 2.0:
+                        trailing_silence_start = silence_starts[-1]
+                except Exception:
+                    pass
+        if trailing_silence_start is not None:
+            logging.info(f"[silence] trailing silence starts at {trailing_silence_start:.2f}s")
+
+        return leading_silence_end, trailing_silence_start
 
     def update_now_playing_socket(self) -> None:
         """Emit now_playing state change via SocketIO."""

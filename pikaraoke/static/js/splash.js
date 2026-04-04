@@ -22,6 +22,13 @@ const scoreReviews = PikaraokeConfig.scorePhrases;
 var isMaster = false;
 var uiScale = null;
 var motdResizeListenerAttached = false;
+var audioEngine = null;
+
+// Server-side silence boundary state (set per-song from now_playing data)
+var _silenceLeadingEnd = null;      // seconds — seek past this on song start
+var _silenceTrailingStart = null;   // seconds — end song when currentTime reaches this
+var _leadingSeekDone = false;
+var _trailingSilenceHandler = null; // bound timeupdate listener (removed on song end)
 
 // Browser detection
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -111,6 +118,11 @@ const endSong = async (reason = null, showScore = false) => {
   if (hlsInstance) {
     hlsInstance.destroy();
     hlsInstance = null;
+  }
+  // Dispose audio engine (releases Web Audio resources)
+  if (audioEngine) {
+    audioEngine.dispose();
+    audioEngine = null;
   }
   const video = getVideoPlayer();
   video.pause();
@@ -288,6 +300,9 @@ const handleNowPlayingUpdate = (np) => {
     if (np.now_playing_transpose !== 0) {
       nowPlayingHtml += `<span class='is-size-6 has-text-success'><b>Key</b>: ${getSemitonesLabel(np.now_playing_transpose)} </span>`;
     }
+    if (np.now_playing_tempo != null && np.now_playing_tempo !== 1.0) {
+      nowPlayingHtml += `<span class='is-size-6 has-text-info'><b>Tempo</b>: ${parseFloat(np.now_playing_tempo).toFixed(1)}x </span>`;
+    }
     $("#now-playing-song").html(nowPlayingHtml);
     
     // Update microphone holders display with dark saturated colors
@@ -372,6 +387,36 @@ const handleNowPlayingUpdate = (np) => {
   if (np.now_playing_url && np.now_playing_url !== currentVideoUrl) {
     currentVideoUrl = np.now_playing_url;
     const streamUrl = np.now_playing_url;
+
+    // Reset audio engine for new song (will be re-initialized on play event)
+    if (audioEngine) {
+      audioEngine.dispose();
+      audioEngine = null;
+    }
+
+    // --- Server-side silence boundaries ---
+    // Store the ffprobe-detected boundaries for this song.  The actual seek
+    // (leading) and end-song trigger (trailing) are applied once the video is
+    // playing, because we cannot seek before media is loaded.
+    _silenceLeadingEnd = (np.now_playing_leading_silence_end > 0.5)
+      ? np.now_playing_leading_silence_end : null;
+    _silenceTrailingStart = (np.now_playing_trailing_silence_start > 0)
+      ? np.now_playing_trailing_silence_start : null;
+    _leadingSeekDone = false;
+
+    // Remove any trailing-silence handler left from previous song
+    if (_trailingSilenceHandler) {
+      video.removeEventListener('timeupdate', _trailingSilenceHandler);
+      _trailingSilenceHandler = null;
+    }
+
+    if (_silenceLeadingEnd) {
+      console.log('[silence] leading silence ends at', _silenceLeadingEnd.toFixed(2) + 's — will seek on canplay');
+    }
+    if (_silenceTrailingStart) {
+      console.log('[silence] trailing silence starts at', _silenceTrailingStart.toFixed(2) + 's — will end song');
+    }
+
     $("#video-source").attr("src", "");
     video.load();
     $("#video-source").attr("src", streamUrl);
@@ -409,6 +454,37 @@ const handleNowPlayingUpdate = (np) => {
       // Retry once if it was an autoplay block
       setTimeout(() => video.play(), 1000);
     });
+
+    // Leading silence seek: once the video can play (metadata + data available),
+    // seek past the silent intro detected by ffprobe.
+    if (_silenceLeadingEnd !== null) {
+      const leadingSeekHandler = () => {
+        video.removeEventListener('canplay', leadingSeekHandler);
+        if (!_leadingSeekDone && _silenceLeadingEnd !== null) {
+          _leadingSeekDone = true;
+          console.log('[silence] seeking past leading silence to', _silenceLeadingEnd.toFixed(2) + 's');
+          video.currentTime = _silenceLeadingEnd;
+        }
+      };
+      video.addEventListener('canplay', leadingSeekHandler);
+    }
+
+    // Trailing silence: register a timeupdate handler that ends the song
+    // when playback reaches the trailing silence boundary.
+    if (_silenceTrailingStart !== null) {
+      _trailingSilenceHandler = () => {
+        if (_silenceTrailingStart !== null && video.currentTime >= _silenceTrailingStart) {
+          console.log('[silence] trailing silence reached at', video.currentTime.toFixed(2) + 's — ending song');
+          video.removeEventListener('timeupdate', _trailingSilenceHandler);
+          _trailingSilenceHandler = null;
+          _silenceTrailingStart = null;
+          if (isMaster) {
+            endSong("complete", true);
+          }
+        }
+      };
+      video.addEventListener('timeupdate', _trailingSilenceHandler);
+    }
 
     if (np.now_playing_position && isMediaPlaying(video)) {
       if (Math.abs(video.currentTime - np.now_playing_position) > 2) {
@@ -478,11 +554,32 @@ const setupOverlayMenus = () => {
   });
 }
 
+const initAudioEngine = async () => {
+  const video = getVideoPlayer();
+  if (audioEngine) {
+    audioEngine.dispose();
+  }
+  audioEngine = new KaraokeAudioEngine(video, {
+    semitones: nowPlaying.now_playing_transpose || 0,
+    tempo: nowPlaying.now_playing_tempo || 1.0,
+    // Silence detection is handled server-side (ffprobe); the Web Audio
+    // analyser cannot see HLS/MSE audio, so we disable it here.
+  });
+  await audioEngine.init();
+  await audioEngine.resume();
+};
+
 const setupVideoPlayer = () => {
   $('#video-container').hide();
   const video = getVideoPlayer();
-  video.addEventListener("play", () => {
+  video.addEventListener("play", async () => {
     $("#video-container").show();
+    // Initialize Web Audio engine on first play (requires user gesture)
+    if (!audioEngine) {
+      await initAudioEngine();
+    } else {
+      await audioEngine.resume();
+    }
     if (isMaster) {
       setTimeout(() => { socket.emit("start_song") }, 1200);
     }
@@ -611,6 +708,20 @@ const setupSocketEvents = () => {
     }
   });
   socket.on("now_playing", handleNowPlayingUpdate);
+
+  socket.on("set_pitch", (semitones) => {
+    console.log("set_pitch received:", semitones);
+    if (audioEngine) {
+      audioEngine.setPitch(semitones);
+    }
+  });
+
+  socket.on("set_tempo", (tempo) => {
+    console.log("set_tempo received:", tempo);
+    if (audioEngine) {
+      audioEngine.setTempo(tempo);
+    }
+  });
 
   socket.on("playback_position", (position) => {
     if (!isMaster) {

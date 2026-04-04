@@ -71,6 +71,32 @@ def setup_socket_events(socketio):
             # Broadcast position to all other splash screens (slaves)
             socketio.emit("playback_position", position, include_self=False)
 
+    @socketio.on("set_pitch")
+    def handle_set_pitch(semitones: int) -> None:
+        """Handle set_pitch WebSocket event for real-time pitch shifting.
+
+        Broadcasts to all splash screens so they update their Web Audio engine.
+
+        Args:
+            semitones: Number of semitones to shift.
+        """
+        k = get_karaoke_instance()
+        k.now_playing_transpose = int(semitones)
+        socketio.emit("set_pitch", int(semitones))
+
+    @socketio.on("set_tempo")
+    def handle_set_tempo(tempo: float) -> None:
+        """Handle set_tempo WebSocket event for real-time tempo change.
+
+        Broadcasts to all splash screens so they update their Web Audio engine.
+
+        Args:
+            tempo: Tempo multiplier (e.g. 0.8, 1.0, 1.2).
+        """
+        k = get_karaoke_instance()
+        k.now_playing_tempo = float(tempo)
+        socketio.emit("set_tempo", float(tempo))
+
     @socketio.on("disconnect")
     def handle_disconnect() -> None:
         """Handle Socket.IO client disconnection and manage splash role handover."""

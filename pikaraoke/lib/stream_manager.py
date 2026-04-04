@@ -77,8 +77,7 @@ class StreamManager:
         is_hls = k.streaming_format == "hls"
 
         requires_transcoding = (
-            semitones != 0
-            or k.normalize_audio
+            k.normalize_audio
             or is_transcoding_required(file_path)
             or k.avsync != 0
             or is_hls
@@ -332,6 +331,18 @@ class StreamManager:
         k.now_playing_duration = fr.duration
         k.now_playing_url = stream_url_path
         k.now_playing_subtitle_url = subtitle_url
+
+        # Detect silence boundaries server-side (avoids HLS/MSE Web Audio limitation)
+        trim_start = getattr(k, "trim_silence_start", False)
+        trim_end = getattr(k, "trim_silence_end", False)
+        if trim_start or trim_end:
+            leading_end, trailing_start = k.get_silence_boundaries(file_path)
+            k.now_playing_leading_silence_end = leading_end if trim_start else None
+            k.now_playing_trailing_silence_start = trailing_start if trim_end else None
+            logging.info(f"[silence] boundaries: leading_end={leading_end} trailing_start={trailing_start}")
+        else:
+            k.now_playing_leading_silence_end = None
+            k.now_playing_trailing_silence_start = None
         entry = queue_entry
         if entry is None:
             if not k.queue_manager.queue:

@@ -58,6 +58,10 @@ def splash():
         has_bg_video=k.bg_video_path is not None,
         show_microphone_status=k.show_microphone_status,
         microphone_colors=k.microphone_manager.color_map,
+        trim_silence_start=getattr(k, "trim_silence_start", False),
+        trim_silence_end=getattr(k, "trim_silence_end", False),
+        trim_silence_threshold_db=getattr(k, "trim_silence_threshold_db", -50),
+        trim_silence_min_duration=getattr(k, "trim_silence_min_duration", 0.5),
         score_phrases={
             "low": [phrase.strip() for phrase in k.low_score_phrases.split("\n") if phrase.strip()],
             "mid": [phrase.strip() for phrase in k.mid_score_phrases.split("\n") if phrase.strip()],
