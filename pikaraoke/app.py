@@ -27,6 +27,7 @@ from pikaraoke.lib.get_platform import (
     has_js_runtime,
     is_windows,
 )
+from pikaraoke.lib.log_buffer import LogBufferHandler
 from pikaraoke.routes.admin import admin_bp
 from pikaraoke.routes.background_music import background_music_bp
 from pikaraoke.routes.batch_song_renamer import batch_song_renamer_bp
@@ -36,6 +37,7 @@ from pikaraoke.routes.files import files_bp
 from pikaraoke.routes.home import home_bp
 from pikaraoke.routes.images import images_bp
 from pikaraoke.routes.info import info_bp
+from pikaraoke.routes.logs import logs_bp, set_log_handler
 from pikaraoke.routes.microphone import microphone_bp
 from pikaraoke.routes.now_playing import nowplaying_bp
 from pikaraoke.routes.preferences import preferences_bp
@@ -86,6 +88,12 @@ args = parse_pikaraoke_args()
 socketio = SocketIO(async_mode="gevent", cors_allowed_origins=args.url)
 babel = Babel()
 
+# Install in-memory log handler for the admin /logs dashboard
+log_buffer_handler = LogBufferHandler(capacity=500, socketio=socketio)
+log_buffer_handler.setLevel(logging.DEBUG)
+logging.getLogger().addHandler(log_buffer_handler)
+set_log_handler(log_buffer_handler)
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -122,6 +130,7 @@ app.register_blueprint(images_bp)
 app.register_blueprint(files_bp)
 app.register_blueprint(search_bp)
 app.register_blueprint(info_bp)
+app.register_blueprint(logs_bp)
 app.register_blueprint(splash_bp)
 app.register_blueprint(controller_bp)
 app.register_blueprint(nowplaying_bp)
