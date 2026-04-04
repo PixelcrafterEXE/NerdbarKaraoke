@@ -1,14 +1,64 @@
 import json
 import logging
 import shlex
+import socket
 import subprocess
 import sys
+import time
 from urllib.parse import parse_qs, urlparse
 
 from pikaraoke.lib.get_platform import get_installed_js_runtime
 
 # yt-dlp command, gets the yt-dlp module from the current python environment
 yt_dlp_cmd = [sys.executable, "-m", "yt_dlp"]
+
+# Maximum number of retries for DNS-related failures
+_DNS_RETRY_COUNT = 3
+_DNS_RETRY_DELAY = 2  # seconds between retries
+
+
+def _flush_dns_cache() -> None:
+    """Flush Python's internal DNS cache and force fresh lookups.
+
+    In long-running containers, cached DNS entries can become stale and
+    cause resolution failures. This clears socket's internal getaddrinfo
+    cache (if available) to force fresh DNS queries.
+    """
+    # Clear Python's cached DNS info (not all implementations have this)
+    try:
+        socket.getaddrinfo.cache_clear()  # type: ignore[attr-defined]
+    except AttributeError:
+        pass
+
+    # Verify connectivity by resolving youtube.com
+    try:
+        socket.getaddrinfo("www.youtube.com", 443, proto=socket.IPPROTO_TCP)
+        logging.debug("DNS flush: www.youtube.com resolved successfully")
+    except socket.gaierror as e:
+        logging.warning(f"DNS flush: www.youtube.com resolution still failing: {e}")
+
+
+def _is_dns_error(error_output: str) -> bool:
+    """Check if an error is DNS-related.
+
+    Args:
+        error_output: stderr/stdout text from a failed subprocess.
+
+    Returns:
+        True if the error appears to be DNS resolution related.
+    """
+    dns_indicators = (
+        "Failed to resolve",
+        "Name or service not known",
+        "Temporary failure in name resolution",
+        "Try again",
+        "getaddrinfo",
+        "NXDOMAIN",
+        "Errno -3",
+        "Errno -2",
+        "Errno 11001",  # Windows DNS failure
+    )
+    return any(indicator in error_output for indicator in dns_indicators)
 
 
 def get_youtubedl_version() -> str:
@@ -183,6 +233,9 @@ def build_ytdl_download_command(
 def get_search_results(textToSearch: str) -> list[list[str]]:
     """Search YouTube for videos matching the query.
 
+    Includes retry logic for DNS resolution failures that can occur
+    in long-running Docker containers (see issue #7).
+
     Args:
         textToSearch: Search query string.
 
@@ -190,7 +243,7 @@ def get_search_results(textToSearch: str) -> list[list[str]]:
         List of [title, url, video_id] for each result.
 
     Raises:
-        Exception: If the search fails.
+        Exception: If the search fails after all retries.
     """
     logging.info("Searching YouTube for: " + textToSearch)
     num_results = 10
@@ -200,17 +253,43 @@ def get_search_results(textToSearch: str) -> list[list[str]]:
     yt_search = 'ytsearch%d:"%s"' % (num_results, sanitized_search)
     cmd = yt_dlp_cmd + ["-j", "--no-playlist", "--flat-playlist", yt_search]
     logging.debug("Youtube-dl search command: " + " ".join(cmd))
-    try:
-        output = subprocess.check_output(cmd).decode("utf-8", "ignore")
-        logging.debug("Search results: " + output)
-        rc = []
-        for each in output.split("\n"):
-            if len(each) > 2:
-                j = json.loads(each)
-                if (not "title" in j) or (not "url" in j):
-                    continue
-                rc.append([j["title"], j["url"], j["id"]])
-        return rc
-    except Exception as e:
-        logging.debug("Error while executing search: " + str(e))
-        raise e
+
+    last_error = None
+    for attempt in range(_DNS_RETRY_COUNT):
+        try:
+            output = subprocess.check_output(
+                cmd, stderr=subprocess.PIPE
+            ).decode("utf-8", "ignore")
+            logging.debug("Search results: " + output)
+            rc = []
+            for each in output.split("\n"):
+                if len(each) > 2:
+                    j = json.loads(each)
+                    if (not "title" in j) or (not "url" in j):
+                        continue
+                    rc.append([j["title"], j["url"], j["id"]])
+            return rc
+        except subprocess.CalledProcessError as e:
+            stderr_text = e.stderr.decode("utf-8", "ignore") if e.stderr else ""
+            stdout_text = e.output.decode("utf-8", "ignore") if e.output else ""
+            error_text = stderr_text + stdout_text
+
+            if _is_dns_error(error_text) and attempt < _DNS_RETRY_COUNT - 1:
+                logging.warning(
+                    f"DNS resolution failed (attempt {attempt + 1}/{_DNS_RETRY_COUNT}), "
+                    f"flushing DNS cache and retrying in {_DNS_RETRY_DELAY}s..."
+                )
+                _flush_dns_cache()
+                time.sleep(_DNS_RETRY_DELAY)
+                last_error = e
+                continue
+            logging.debug("Error while executing search: " + str(e))
+            raise e
+        except Exception as e:
+            logging.debug("Error while executing search: " + str(e))
+            raise e
+
+    # All retries exhausted
+    if last_error:
+        raise last_error
+    raise Exception("Search failed after all retries")

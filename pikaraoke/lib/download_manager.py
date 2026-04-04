@@ -12,6 +12,10 @@ from threading import Thread
 from typing import TYPE_CHECKING
 
 from pikaraoke.lib.youtube_dl import (
+    _DNS_RETRY_COUNT,
+    _DNS_RETRY_DELAY,
+    _flush_dns_cache,
+    _is_dns_error,
     build_ytdl_download_command,
     get_youtube_id_from_url,
 )
@@ -283,18 +287,21 @@ class DownloadManager:
         env = os.environ.copy()
         env.setdefault("PYTHONUNBUFFERED", "1")
 
-        process = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            bufsize=1,  # Line buffered
-            universal_newlines=True,
-            env=env,
-        )
+        # Retry loop for DNS failures (issue #7): stale DNS cache in
+        # long-running Docker containers can cause resolution errors.
+        for dns_attempt in range(_DNS_RETRY_COUNT):
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1,  # Line buffered
+                universal_newlines=True,
+                env=env,
+            )
 
-        output_buffer = []
-        video_id = get_youtube_id_from_url(video_url)
+            output_buffer = []
+            video_id = get_youtube_id_from_url(video_url)
 
         # Parse pipe-delimited progress format from yt-dlp: downloaded|total|total_est|speed|eta|percent
         # Example: 1024|791367|NA|345393.43|0|NA
@@ -336,10 +343,22 @@ class DownloadManager:
         output = "".join(output_buffer)
 
         if rc != 0:
-            # Logic removed: We no longer retry synchronously as it blocks the queue.
-            # Failed downloads are now failed fast and logged.
+            # Check for DNS errors and retry (issue #7)
+            if _is_dns_error(output) and dns_attempt < _DNS_RETRY_COUNT - 1:
+                import time
+                logging.warning(
+                    f"DNS resolution failed during download (attempt {dns_attempt + 1}/"
+                    f"{_DNS_RETRY_COUNT}), flushing DNS cache and retrying in "
+                    f"{_DNS_RETRY_DELAY}s..."
+                )
+                _flush_dns_cache()
+                time.sleep(_DNS_RETRY_DELAY)
+                if self.active_download:
+                    self.active_download["status"] = "retrying"
+                    self.active_download["progress"] = 0
+                continue  # Retry the download
 
-            # MSG: Message shown after the download process is completed but the song is not found
+            # Non-DNS error or final retry exhausted
             k.log_and_send(_("Error downloading song: ") + displayed_title, "danger")
             logging.error(f"yt-dlp stderr: {output}")
             self.download_errors.append(
@@ -393,6 +412,9 @@ class DownloadManager:
                 else:
                     # MSG: Message shown after the download is completed but the adding to queue fails
                     k.log_and_send(_("Error queueing song: ") + displayed_title, "danger")
+
+            # Download succeeded, break out of retry loop
+            break
 
         return rc
 
