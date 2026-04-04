@@ -49,6 +49,39 @@ _ = flask_babel.gettext
 
 from gevent.pywsgi import WSGIServer
 
+
+class WebSocketNoiseFilter(logging.Filter):
+    """Downgrade WebSocket close-frame and EOF errors from ERROR to DEBUG.
+
+    gevent's WSGIServer logs WebSocket close frames (opcode 0x88) and
+    unexpected EOF on POST bodies as ERROR, but these are benign
+    client disconnections.  See issue #17.
+    """
+
+    # Byte patterns that indicate a WebSocket close frame (opcode 0x88)
+    _WS_CLOSE_MARKERS = (
+        "\\x88\\x82",
+        "\\x88\\x80",
+        "Invalid HTTP method",
+        "Expected GET method",
+    )
+
+    _EOF_MARKERS = (
+        "unexpected end of file while reading request",
+    )
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        msg = record.getMessage()
+        if record.levelno >= logging.ERROR:
+            for marker in self._WS_CLOSE_MARKERS + self._EOF_MARKERS:
+                if marker in msg:
+                    # Downgrade to DEBUG instead of suppressing entirely
+                    record.levelno = logging.DEBUG
+                    record.levelname = "DEBUG"
+                    return True
+        return True
+
+
 args = parse_pikaraoke_args()
 socketio = SocketIO(async_mode="gevent", cors_allowed_origins=args.url)
 babel = Babel()
@@ -231,6 +264,8 @@ def main() -> None:
     spawn(k.upgrade_youtubedl)
 
     server = WSGIServer(("0.0.0.0", int(args.port)), app, log=None, error_log=logging.getLogger())
+    # Filter noisy WebSocket close-frame errors (issue #17)
+    server.error_log.addFilter(WebSocketNoiseFilter())
     server.start()
 
     # Handle sigterm, apparently cherrypy won't shut down without explicit handling
