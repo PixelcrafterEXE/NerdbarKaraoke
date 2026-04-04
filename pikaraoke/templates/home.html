@@ -27,6 +27,12 @@
 					getSemitonesLabel(np.now_playing_transpose) +
 					"<span>";
 			}
+			if (np.now_playing_tempo != null && np.now_playing_tempo != 1.0) {
+				nowPlayingHtml +=
+					" <span class='is-size-6 has-text-info'><b>Tempo</b>: " +
+					parseFloat(np.now_playing_tempo).toFixed(1) + "x" +
+					"</span>";
+			}
 
 			$("#now-playing").html(nowPlayingHtml);
 			$(".control-box").show();
@@ -52,6 +58,15 @@
 		} else {
 			$("#transpose").val(0);
 			$("#semitones-label").html(getSemitonesLabel(np.now_playing_transpose));
+		}
+
+		// Sync tempo slider
+		if (np.now_playing_tempo != null && np.now_playing_tempo != 1.0) {
+			$("#tempo").val(np.now_playing_tempo);
+			$("#tempo-label").html(parseFloat(np.now_playing_tempo).toFixed(1) + "x");
+		} else {
+			$("#tempo").val(1.0);
+			$("#tempo-label").html("1.0x");
 		}
 
 		// set the volume slider to the current volume
@@ -100,12 +115,34 @@
 			} else {
 				value = 0;
 			}
-			r = confirm("Transpose this song: " + getSemitonesLabel(value) + "?");
-			if (r) {
-				$.get("/transpose/" + value);
+			$.get("/transpose/" + value);
+		});
+
+		// Real-time transpose: apply on slider change with debounce
+		if (slider) {
+			$(slider).on("input", debounce(function () {
+				$.get("/transpose/" + slider.value);
+			}, 300));
+		}
+
+		// Tempo slider
+		var tempoSlider = document.getElementById("tempo");
+		var tempoOutput = document.getElementById("tempo-label");
+		if (tempoSlider && tempoOutput) {
+			tempoOutput.textContent = parseFloat(tempoSlider.value).toFixed(1) + "x";
+			tempoSlider.oninput = function () {
+				tempoOutput.textContent = parseFloat(tempoSlider.value).toFixed(1) + "x";
+			};
+			$(tempoSlider).on("input", debounce(function () {
+				$.get("/tempo/" + tempoSlider.value);
+			}, 300));
+		}
+		$("#reset-tempo").click(function () {
+			if (tempoSlider) {
+				tempoSlider.value = 1.0;
+				tempoOutput.textContent = "1.0x";
+				$.get("/tempo/1.0");
 			}
-			slider.value = 0;
-			output.textContent = getSemitonesLabel(slider.value);
 		});
 
 		$("#pause-resume").click(function () {
@@ -330,6 +367,30 @@
 			<button id="submit-transpose" class="button is-rounded is-small" style="margin-left: 10px">
 				{# MSG: Label on the button to confirm the change in key/pitch of the playing song. #} {% trans %}Change{%
 				endtrans %}
+			</button>
+		</div>
+	</div>
+	<div class="is-flex" style="justify-content: space-between; margin-top: 15px">
+		<div>
+			<h4>{% trans %}Tempo{% endtrans %}</h4>
+		</div>
+		<div class="is-flex">
+			<h4 id="tempo-label">1.0x</h4>
+		</div>
+	</div>
+	<div style="width: 100%">
+		<div class="is-flex">
+			<input
+				type="range"
+				min="0.5"
+				max="2.0"
+				value="1.0"
+				step="0.05"
+				id="tempo"
+				style="width: 100%"
+			/>
+			<button id="reset-tempo" class="button is-rounded is-small" style="margin-left: 10px">
+				{% trans %}Reset{% endtrans %}
 			</button>
 		</div>
 	</div>

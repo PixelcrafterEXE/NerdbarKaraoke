@@ -202,26 +202,6 @@ def parse_pikaraoke_args() -> argparse.Namespace:
         required=False,
     )
     parser.add_argument(
-        "--trim-silence",
-        help="Trim leading/trailing silence from downloaded videos (uses FFmpeg silencedetect)",
-        action="store_true",
-        required=False,
-    )
-    parser.add_argument(
-        "--trim-silence-threshold-db",
-        help=f"Silence threshold in dB for trimming (default: {_DEFAULTS['trim_silence_threshold_db']})",
-        default=None,
-        type=float,
-        required=False,
-    )
-    parser.add_argument(
-        "--trim-silence-min-duration",
-        help=f"Minimum silence duration in seconds for trimming (default: {_DEFAULTS['trim_silence_min_duration']})",
-        default=None,
-        type=float,
-        required=False,
-    )
-    parser.add_argument(
         "-s",
         "--splash-delay",
         help=f"Delay during splash screen between songs (in secs). (default: {_DEFAULTS['splash_delay']})",

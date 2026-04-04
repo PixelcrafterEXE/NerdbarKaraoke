@@ -48,7 +48,9 @@ def pause():
 
 @controller_bp.route("/transpose/<semitones>", methods=["GET"])
 def transpose(semitones):
-    """Transpose (pitch shift) the current song.
+    """Transpose (pitch shift) the current song in real-time.
+
+    Uses Web Audio API on the client side — no re-encoding needed.
     ---
     tags:
       - Playback
@@ -63,8 +65,30 @@ def transpose(semitones):
         description: Redirects to home page
     """
     k = get_karaoke_instance()
-    broadcast_event("skip", "transpose current")
     k.transpose_current(int(semitones))
+    return redirect(url_for("home.home"))
+
+
+@controller_bp.route("/tempo/<rate>", methods=["GET"])
+def tempo(rate):
+    """Change playback tempo in real-time.
+
+    Uses Web Audio API on the client side — no re-encoding needed.
+    ---
+    tags:
+      - Playback
+    parameters:
+      - name: rate
+        in: path
+        type: number
+        required: true
+        description: Tempo multiplier (0.5 to 2.0)
+    responses:
+      302:
+        description: Redirects to home page
+    """
+    k = get_karaoke_instance()
+    k.set_tempo(float(rate))
     return redirect(url_for("home.home"))
 
 

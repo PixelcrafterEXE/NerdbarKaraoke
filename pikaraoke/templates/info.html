@@ -641,22 +641,28 @@
 					</div>
 
 					<div class="user-preference-container">
-						<input id="pref-trim-silence" type="checkbox" class="user-preference-checkbox checkbox" data-pref="trim_silence" {% if trim_silence == True %}checked{% endif %}>
-						<label class="label" for="pref-trim-silence">{# MSG: Checkbox label which enables/disables trimming silence on downloads #} {% trans %}Trim silence at the start/end of downloads{% endtrans %}
+						<input id="pref-trim-silence-start" type="checkbox" class="user-preference-checkbox checkbox" data-pref="trim_silence_start" {% if trim_silence_start == True %}checked{% endif %}>
+						<label class="label" for="pref-trim-silence-start">{# MSG: Checkbox label which enables/disables skipping leading silence during playback #} {% trans %}Skip leading silence during playback{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-trim-silence-end" type="checkbox" class="user-preference-checkbox checkbox" data-pref="trim_silence_end" {% if trim_silence_end == True %}checked{% endif %}>
+						<label class="label" for="pref-trim-silence-end">{# MSG: Checkbox label which enables/disables skipping trailing silence during playback #} {% trans %}Skip trailing silence during playback (auto-ends song){% endtrans %}
 						</label>
 					</div>
 
 					<div class="user-preference-container is-align-items-center">
 						<input id="pref-trim-silence-threshold" class="user-preference-input input" type="number" step="1" min="-90" max="-10" data-pref="trim_silence_threshold_db" data-start-value="{{ trim_silence_threshold_db }}" value="{{ trim_silence_threshold_db }}" />
 						<label class="label" for="pref-trim-silence-threshold">
-							{# MSG: Numberbox label for trimming silence threshold #} {% trans %}Silence threshold for trimming (dB){% endtrans %}
+							{# MSG: Numberbox label for silence detection threshold #} {% trans %}Silence detection threshold (dB, default -50){% endtrans %}
 						</label>
 					</div>
 
 					<div class="user-preference-container is-align-items-center">
 						<input id="pref-trim-silence-duration" class="user-preference-input input" type="number" step="0.1" min="0.1" max="5" data-pref="trim_silence_min_duration" data-start-value="{{ trim_silence_min_duration }}" value="{{ trim_silence_min_duration }}" />
 						<label class="label" for="pref-trim-silence-duration">
-							{# MSG: Numberbox label for trimming silence minimum duration #} {% trans %}Minimum silence duration for trimming (seconds){% endtrans %}
+							{# MSG: Numberbox label for silence detection minimum duration #} {% trans %}Minimum silence duration (seconds, default 0.5){% endtrans %}
 						</label>
 					</div>
 
