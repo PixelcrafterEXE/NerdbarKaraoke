@@ -219,6 +219,10 @@
 			Alphabetical{% endtrans %}
 		</a>
 		{% endif %}
+		|
+		<a href="{{ url_for('files.browse', liked='1') }}">
+			&#9829; {% trans %}Liked{% endtrans %}
+		</a>
 	</span>
 	{% if admin %}
 	<a class="batch-edit-btn" href="{{ url_for('batch_song_renamer.browse')}}" title="Edit all songs"
