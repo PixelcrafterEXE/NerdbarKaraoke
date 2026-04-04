@@ -168,6 +168,7 @@ def reorder():
             k.queue_manager.queue
         ):
             item = k.queue_manager.queue.pop(old_index)
+            item["pinned"] = True
             k.queue_manager.queue.insert(new_index, item)
             broadcast_event("queue_update")
             k.update_now_playing_socket()

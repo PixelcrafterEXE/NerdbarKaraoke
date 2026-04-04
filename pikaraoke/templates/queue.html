@@ -428,6 +428,9 @@
     html += '<td style="padding: 8px 10px; vertical-align: middle;">';
     html += '<div class="is-flex is-flex-wrap-wrap is-align-items-baseline">';
     html += '<span class="has-text-success">' + displayUser + '</span>';
+    if (isAdmin && e.pinned) {
+      html += '<span class="has-text-warning ml-1" title="{{ _("Pinned by admin") }}">&#128204;</span>';
+    }
     html += '<span class="is-hidden-mobile has-text-grey mx-2">&bull;</span>';
     var shadowbanTitleClass = (isAdmin && e.shadowbanned) ? ' has-text-danger' : '';
     html += '<span class="has-text-weight-bold is-hidden-mobile' + shadowbanTitleClass + '">' + e.title + '</span>';

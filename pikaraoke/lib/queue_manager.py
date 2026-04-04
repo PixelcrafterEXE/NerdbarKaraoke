@@ -613,6 +613,7 @@ class QueueManager:
             else:
                 logging.info("Moving song to top of queue: " + song["file"])
                 del self.queue[index]
+                song["pinned"] = True
                 self.queue.insert(0, song)
                 rc = True
         elif action == "up":
@@ -621,6 +622,7 @@ class QueueManager:
             else:
                 logging.info("Bumping song up in queue: " + song["file"])
                 del self.queue[index]
+                song["pinned"] = True
                 self.queue.insert(index - 1, song)
                 rc = True
         elif action == "down":
@@ -629,6 +631,7 @@ class QueueManager:
             else:
                 logging.info("Bumping song down in queue: " + song["file"])
                 del self.queue[index]
+                song["pinned"] = True
                 self.queue.insert(index + 1, song)
                 rc = True
         elif action == "delete":
@@ -772,7 +775,11 @@ class QueueManager:
         return non_shadowbanned if non_shadowbanned else list(self.queue)
 
     def _reorder_queue_fair(self) -> None:
-        """Reorder queue according to fair-queue playback history rules."""
+        """Reorder queue according to fair-queue playback history rules.
+
+        Songs with ``"pinned": True`` (admin-moved) keep their current
+        relative positions and are not subject to reordering.
+        """
         if not self.queue:
             return
 
@@ -780,12 +787,22 @@ class QueueManager:
         shadowbanned = [item for item in self.queue if self.is_shadowbanned(item["file"])]
         candidates = non_shadowbanned if non_shadowbanned else list(self.queue)
 
+        # Separate pinned and unpinned entries, preserving relative order
+        pinned_with_pos: list[tuple[int, dict[str, Any]]] = []
+        unpinned: list[dict[str, Any]] = []
+        for idx, item in enumerate(candidates):
+            if item.get("pinned"):
+                pinned_with_pos.append((idx, item))
+            else:
+                unpinned.append(item)
+
+        # Reorder only unpinned songs using fair-queue logic
         temp_played_users = set(self.played_users)
         temp_last_played = dict(self.last_played_order)
         temp_sequence = self.play_sequence
 
         ordered: list[dict[str, Any]] = []
-        remaining = list(candidates)
+        remaining = list(unpinned)
 
         while remaining:
             chosen_index = None
@@ -818,6 +835,11 @@ class QueueManager:
                     temp_sequence += 1
                     temp_played_users.add(user)
                     temp_last_played[user] = temp_sequence
+
+        # Re-insert pinned songs at their original positions (clamped to bounds)
+        for orig_idx, item in pinned_with_pos:
+            insert_at = min(orig_idx, len(ordered))
+            ordered.insert(insert_at, item)
 
         if non_shadowbanned:
             self.queue = ordered + shadowbanned
