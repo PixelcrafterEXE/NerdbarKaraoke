@@ -289,6 +289,10 @@ class Karaoke:
         # Initialize likes manager
         self.likes_manager = LikesManager(data_directory=get_data_directory())
 
+        # Wire likes into queue manager for weighted randomizer
+        self.queue_manager._get_all_like_counts = self.likes_manager.get_all_like_counts
+        self.queue_manager._get_liked_song_weight = lambda: getattr(self, "liked_song_weight", 0)
+
     def _load_preferences(self, **cli_overrides: Any) -> None:
         """Load preference-driven attributes from config file.
 

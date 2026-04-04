@@ -54,6 +54,8 @@ class QueueManager:
         queue_closing_time: str | int | None = None,
         is_admin: Callable[[], bool] | None = None,
         data_directory: str | None = None,
+        get_all_like_counts: Callable[[], dict[str, int]] | None = None,
+        get_liked_song_weight: Callable[[], int] | None = None,
     ) -> None:
         """Initialize the QueueManager.
 
@@ -100,6 +102,8 @@ class QueueManager:
         self._get_now_playing_position = get_now_playing_position
         self._get_splash_delay = get_splash_delay
         self._is_admin = is_admin
+        self._get_all_like_counts = get_all_like_counts
+        self._get_liked_song_weight = get_liked_song_weight
         self.song_add_cooldown_count = song_add_cooldown_count
         self.song_add_cooldown_duration = song_add_cooldown_duration
         self.queue_add_open = queue_add_open
@@ -561,7 +565,36 @@ class QueueManager:
         sample_size = min(amount, len(eligible_songs))
         # Explicitly seed with current time to ensure true randomness across restarts
         random.seed()
-        selected = random.sample(eligible_songs, sample_size)
+
+        # Weighted selection: liked songs get extra weight if configured
+        weight_pct = 0
+        if self._get_liked_song_weight:
+            weight_pct = max(0, min(100, self._get_liked_song_weight()))
+        like_counts: dict[str, int] = {}
+        if weight_pct > 0 and self._get_all_like_counts:
+            like_counts = self._get_all_like_counts()
+
+        if weight_pct > 0 and like_counts:
+            max_likes = max(like_counts.values()) if like_counts else 1
+            weights = []
+            for song in eligible_songs:
+                likes = like_counts.get(song, 0)
+                # Base weight = 1.0; liked songs get up to (1 + weight_pct/100 * likes/max_likes)
+                w = 1.0 + (weight_pct / 100.0) * (likes / max(max_likes, 1))
+                weights.append(w)
+            selected = []
+            remaining = list(eligible_songs)
+            remaining_weights = list(weights)
+            for _ in range(sample_size):
+                if not remaining:
+                    break
+                chosen = random.choices(remaining, weights=remaining_weights, k=1)[0]
+                idx = remaining.index(chosen)
+                selected.append(chosen)
+                remaining.pop(idx)
+                remaining_weights.pop(idx)
+        else:
+            selected = random.sample(eligible_songs, sample_size)
 
         for song in selected:
             self.enqueue(song, "Randomizer")

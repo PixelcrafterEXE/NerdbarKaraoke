@@ -405,6 +405,16 @@
 						</div>
 					</div>
 
+					<div class="user-preference-container mt-4">
+						<label class="label" for="pref-liked-song-weight">
+							{% trans %}Randomizer liked-song weight (0-100%){% endtrans %}
+						</label>
+						<input id="pref-liked-song-weight" type="number" min="0" max="100"
+							class="input user-preference-input" data-pref="liked_song_weight"
+							data-start-value="{{ liked_song_weight }}"
+							value="{{ liked_song_weight }}" style="width: 6em;">
+					</div>
+
 				</div>
 			</div>
 

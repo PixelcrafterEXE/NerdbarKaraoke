@@ -106,6 +106,7 @@ def info():
         mixer_ip=k.mixer_ip,
         mixer_port=k.mixer_port,
         effects_enabled=k.effects_enabled,
+        liked_song_weight=getattr(k, "liked_song_weight", 0),
     )
 
 
