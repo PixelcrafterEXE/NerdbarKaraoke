@@ -6,6 +6,7 @@ import subprocess
 import sys
 import time
 from urllib.parse import parse_qs, urlparse
+import re
 
 from pikaraoke.lib.get_platform import get_installed_js_runtime
 
@@ -230,6 +231,22 @@ def build_ytdl_download_command(
     return cmd
 
 
+def _sanitize_search_query(text: str) -> str:
+    """Sanitize a user-provided search query for use with yt-dlp.
+
+    This removes characters that could affect yt-dlp's argument parsing
+    while preserving typical search text.
+    """
+    # Remove NUL bytes
+    text = text.replace("\x00", "")
+    # Allow only a conservative set of characters: letters, digits, whitespace,
+    # and common punctuation used in search queries.
+    text = re.sub(r"[^A-Za-z0-9\s\-\_\.\,\!\?\(\)'/]", "", text)
+    # Normalize whitespace
+    text = " ".join(text.split())
+    return text
+
+
 def get_search_results(textToSearch: str) -> list[list[str]]:
     """Search YouTube for videos matching the query.
 
@@ -247,9 +264,8 @@ def get_search_results(textToSearch: str) -> list[list[str]]:
     """
     logging.info("Searching YouTube for: " + textToSearch)
     num_results = 10
-    # Sanitize the search query: strip characters that could be misinterpreted
-    # by yt-dlp's argument parsing (double-quotes, backslashes, null bytes).
-    sanitized_search = textToSearch.replace("\\", "").replace('"', "").replace("\x00", "")
+    # Sanitize the search query to avoid unintended yt-dlp argument/option injection.
+    sanitized_search = _sanitize_search_query(textToSearch)
     yt_search = 'ytsearch%d:"%s"' % (num_results, sanitized_search)
     cmd = yt_dlp_cmd + ["-j", "--no-playlist", "--flat-playlist", yt_search]
     logging.debug("Youtube-dl search command: " + " ".join(cmd))
