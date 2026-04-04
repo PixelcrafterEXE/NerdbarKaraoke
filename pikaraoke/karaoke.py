@@ -31,6 +31,7 @@ from pikaraoke.lib.get_platform import (
     get_platform,
     is_raspberry_pi,
 )
+from pikaraoke.lib.likes_manager import LikesManager
 from pikaraoke.lib.microphone_manager import MicrophoneManager
 from pikaraoke.lib.network import get_ip
 from pikaraoke.lib.preference_manager import PreferenceManager
@@ -284,6 +285,9 @@ class Karaoke:
             is_admin=self._get_is_admin_callback(),
             data_directory=get_data_directory(),
         )
+
+        # Initialize likes manager
+        self.likes_manager = LikesManager(data_directory=get_data_directory())
 
     def _load_preferences(self, **cli_overrides: Any) -> None:
         """Load preference-driven attributes from config file.
