@@ -123,6 +123,19 @@ class QueueManager:
             self._persist_path = os.path.join(data_directory, "queue.json")
             self._load_queue()
 
+    @staticmethod
+    def get_entry_users(item: dict[str, Any]) -> list[str]:
+        """Return all users associated with a queue entry.
+
+        Supports both the legacy ``"user"`` string field and the newer
+        ``"users"`` list field.  Always returns a non-empty list.
+        """
+        users = item.get("users")
+        if users and isinstance(users, list):
+            return users
+        user = item.get("user", "Pikaraoke")
+        return [user] if user else ["Pikaraoke"]
+
     def is_song_in_queue(self, song_path: str) -> bool:
         """Check if a song is already in the queue.
 
@@ -150,7 +163,7 @@ class QueueManager:
             return False
 
         now_playing_user = self._get_now_playing_user() if self._get_now_playing_user else None
-        cont = len([i for i in self.queue if i["user"] == user]) + (
+        cont = len([i for i in self.queue if user in self.get_entry_users(i)]) + (
             1 if now_playing_user == user else 0
         )
         return cont >= int(limit_user_songs_by)
@@ -390,7 +403,7 @@ class QueueManager:
             Queue index where the song should be inserted.
         """
         # Count how many songs this user already has in queue
-        user_song_count = sum(1 for item in self.queue if item["user"] == user)
+        user_song_count = sum(1 for item in self.queue if user in self.get_entry_users(item))
 
         # Find position after the last song in "round N" where N = user_song_count
         # Round 0 = first song from each user, Round 1 = second song, etc.
@@ -421,6 +434,7 @@ class QueueManager:
         add_to_front: bool = False,
         log_action: bool = True,
         bypass_queue_restrictions: bool = False,
+        additional_users: list[str] | None = None,
     ) -> bool | list[bool | str]:
         """Add a song to the queue.
 
@@ -469,8 +483,17 @@ class QueueManager:
                 self.user_add_times[user] = []
             self.user_add_times[user].append(time.time())
 
+            # Build the list of all requestees for this song
+            all_users = [user]
+            if additional_users:
+                for u in additional_users:
+                    u = u.strip()
+                    if u and u not in all_users:
+                        all_users.append(u)
+
             queue_item = {
                 "user": user,
+                "users": all_users,
                 "file": song_path,
                 "title": title,
                 "semitones": semitones,
@@ -724,18 +747,18 @@ class QueueManager:
         if not candidates:
             return None
 
-        # Prefer the first song whose user has never played before
+        # Prefer the first song where ANY user has never played before
         for item in candidates:
-            user = (item.get("user") or "").strip()
-            if not user or user not in self.played_users:
+            entry_users = self.get_entry_users(item)
+            if any(u not in self.played_users for u in entry_users):
                 return item
 
-        # Otherwise, pick the user whose last play was the longest ago
+        # Otherwise, pick the entry whose most-recent user play was longest ago
         oldest_item = None
         oldest_order = None
         for item in candidates:
-            user = (item.get("user") or "").strip()
-            order = self.last_played_order.get(user, 0)
+            entry_users = self.get_entry_users(item)
+            order = max(self.last_played_order.get(u, 0) for u in entry_users)
             if oldest_order is None or order < oldest_order:
                 oldest_item = item
                 oldest_order = order
@@ -767,16 +790,18 @@ class QueueManager:
         while remaining:
             chosen_index = None
             for idx, item in enumerate(remaining):
-                user = (item.get("user") or "").strip()
-                if not user or user not in temp_played_users:
+                entry_users = self.get_entry_users(item)
+                # Pick the first entry where ANY user has not played yet
+                if any(u not in temp_played_users for u in entry_users):
                     chosen_index = idx
                     break
 
             if chosen_index is None:
                 oldest_order = None
                 for idx, item in enumerate(remaining):
-                    user = (item.get("user") or "").strip()
-                    order = temp_last_played.get(user, 0)
+                    entry_users = self.get_entry_users(item)
+                    # Use the most-recent play order among the entry's users
+                    order = max(temp_last_played.get(u, 0) for u in entry_users)
                     if oldest_order is None or order < oldest_order:
                         oldest_order = order
                         chosen_index = idx
@@ -787,11 +812,12 @@ class QueueManager:
             chosen = remaining.pop(chosen_index)
             ordered.append(chosen)
 
-            user = (chosen.get("user") or "").strip()
-            if user:
-                temp_sequence += 1
-                temp_played_users.add(user)
-                temp_last_played[user] = temp_sequence
+            for user in self.get_entry_users(chosen):
+                user = user.strip()
+                if user:
+                    temp_sequence += 1
+                    temp_played_users.add(user)
+                    temp_last_played[user] = temp_sequence
 
         if non_shadowbanned:
             self.queue = ordered + shadowbanned
@@ -802,13 +828,21 @@ class QueueManager:
         if self._update_now_playing_socket:
             self._update_now_playing_socket()
 
-    def record_play(self, user: str | None) -> None:
-        """Record that a user's song has been played for fair-queue selection."""
-        if not user:
-            return
-        self.play_sequence += 1
-        self.played_users.add(user)
-        self.last_played_order[user] = self.play_sequence
+    def record_play(self, user: str | None, entry: dict[str, Any] | None = None) -> None:
+        """Record that a song's users have played for fair-queue selection.
+
+        Args:
+            user: Primary user (legacy, used if entry is None).
+            entry: Queue entry dict; if provided, all users are recorded.
+        """
+        users = self.get_entry_users(entry) if entry else ([user] if user else [])
+        for u in users:
+            u = u.strip() if u else ""
+            if not u:
+                continue
+            self.play_sequence += 1
+            self.played_users.add(u)
+            self.last_played_order[u] = self.play_sequence
         if self._get_queue_mode() == "fair":
             self._reorder_queue_fair()
 

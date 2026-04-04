@@ -408,9 +408,14 @@
   // Generate queue row HTML
     function generateQueueRow(e, index) {
         var rowClass = "";
-        if (currentQueueUser && e.user && e.user.toLowerCase() === currentQueueUser.toLowerCase()) {
+        var entryUsers = e.users || [e.user];
+        var isOwnSong = currentQueueUser && entryUsers.some(function(u) {
+            return u && u.toLowerCase() === currentQueueUser.toLowerCase();
+        });
+        if (isOwnSong) {
             rowClass = "queue-own-song";
         }
+        var displayUser = entryUsers.join(", ");
         var html = '<tr class="' + rowClass + '" data-index="' + index + '" data-file="' + escape(e.file) + '">';
     html += '<td style="width: ' + COL_WIDTH.number + '; padding: 8px 8px; vertical-align: middle; text-align: center;">' + (index + 1) + '</td>';
 
@@ -422,7 +427,7 @@
 
     html += '<td style="padding: 8px 10px; vertical-align: middle;">';
     html += '<div class="is-flex is-flex-wrap-wrap is-align-items-baseline">';
-    html += '<span class="has-text-success">' + e.user + '</span>';
+    html += '<span class="has-text-success">' + displayUser + '</span>';
     html += '<span class="is-hidden-mobile has-text-grey mx-2">&bull;</span>';
     var shadowbanTitleClass = (isAdmin && e.shadowbanned) ? ' has-text-danger' : '';
     html += '<span class="has-text-weight-bold is-hidden-mobile' + shadowbanTitleClass + '">' + e.title + '</span>';
