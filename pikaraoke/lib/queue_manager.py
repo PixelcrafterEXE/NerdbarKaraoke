@@ -6,7 +6,9 @@ and fair queue algorithm.
 
 from __future__ import annotations
 
+import json
 import logging
+import os
 import random
 import time
 from typing import Any, Callable
@@ -50,6 +52,7 @@ class QueueManager:
         queue_add_open: bool = True,
         queue_closing_time: str | int | None = None,
         is_admin: Callable[[], bool] | None = None,
+        data_directory: str | None = None,
     ) -> None:
         """Initialize the QueueManager.
 
@@ -75,6 +78,7 @@ class QueueManager:
             queue_add_open: Whether the queue is open for adding songs.
             queue_closing_time: Unix timestamp (seconds) for queue closing time.
             is_admin: Callback to check if the current user is an admin.
+            data_directory: Path to the data directory for queue persistence.
         """
         self.queue: list[dict[str, Any]] = []
         self.socketio = socketio
@@ -112,6 +116,12 @@ class QueueManager:
         self.played_users: set[str] = set()
         self.last_played_order: dict[str, int] = {}
         self.play_sequence = 0
+
+        # Queue persistence
+        self._persist_path: str | None = None
+        if data_directory:
+            self._persist_path = os.path.join(data_directory, "queue.json")
+            self._load_queue()
 
     def is_song_in_queue(self, song_path: str) -> bool:
         """Check if a song is already in the queue.
@@ -613,8 +623,32 @@ class QueueManager:
 
     def update_queue_socket(self) -> None:
         """Emit queue_update state change via SocketIO."""
+        self._save_queue()
         if self.socketio:
             self.socketio.emit("queue_update", namespace="/")
+
+    def _save_queue(self) -> None:
+        """Persist the current queue to disk as JSON."""
+        if not self._persist_path:
+            return
+        try:
+            with open(self._persist_path, "w") as f:
+                json.dump(self.queue, f)
+        except Exception as e:
+            logging.warning(f"Failed to save queue to {self._persist_path}: {e}")
+
+    def _load_queue(self) -> None:
+        """Restore the queue from disk if a persisted file exists."""
+        if not self._persist_path or not os.path.exists(self._persist_path):
+            return
+        try:
+            with open(self._persist_path) as f:
+                data = json.load(f)
+            if isinstance(data, list):
+                self.queue = data
+                logging.info(f"Restored {len(data)} song(s) from persisted queue")
+        except Exception as e:
+            logging.warning(f"Failed to load persisted queue: {e}")
 
     def is_shadowbanned(self, song_file: str) -> bool:
         """Check if a song is shadowbanned."""
@@ -782,7 +816,9 @@ class QueueManager:
         """Remove and return a song entry by file path."""
         for idx, item in enumerate(self.queue):
             if item["file"] == song_file:
-                return self.queue.pop(idx)
+                entry = self.queue.pop(idx)
+                self._save_queue()
+                return entry
         return None
 
     def vote_song(self, song_file: str, user: str, vote_type: str) -> dict[str, Any]:

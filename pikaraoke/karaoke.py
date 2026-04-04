@@ -281,6 +281,7 @@ class Karaoke:
             queue_add_open=self.queue_add_open,
             queue_closing_time=self.queue_closing_time,
             is_admin=self._get_is_admin_callback(),
+            data_directory=get_data_directory(),
         )
 
     def _load_preferences(self, **cli_overrides: Any) -> None:
