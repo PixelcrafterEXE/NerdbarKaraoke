@@ -303,118 +303,118 @@ class DownloadManager:
             output_buffer = []
             video_id = get_youtube_id_from_url(video_url)
 
-        # Parse pipe-delimited progress format from yt-dlp: downloaded|total|total_est|speed|eta|percent
-        # Example: 1024|791367|NA|345393.43|0|NA
-        # Note: percent field is typically "NA", so we calculate it from downloaded/total
-        progress_regex = re.compile(r"^(\d+)\|(\d+)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)$")
+            # Parse pipe-delimited progress format from yt-dlp: downloaded|total|total_est|speed|eta|percent
+            # Example: 1024|791367|NA|345393.43|0|NA
+            # Note: percent field is typically "NA", so we calculate it from downloaded/total
+            progress_regex = re.compile(r"^(\d+)\|(\d+)\|([^|]*)\|([^|]*)\|([^|]*)\|([^|]*)$")
 
-        while True:
-            line = process.stdout.readline()
-            if not line and process.poll() is not None:
-                break
-            if line:
-                output_buffer.append(line)
-                line_stripped = line.strip()
-                if self.active_download and "|" in line_stripped:
-                    match = progress_regex.match(line_stripped)
-                    if match:
-                        try:
-                            downloaded = int(match.group(1))
-                            total = int(match.group(2))
-                            total_est = match.group(3)  # Can be "NA" or numeric
-                            speed_raw = match.group(4)
-                            eta_raw = match.group(5)
-                            percent_str = match.group(6)
+            while True:
+                line = process.stdout.readline()
+                if not line and process.poll() is not None:
+                    break
+                if line:
+                    output_buffer.append(line)
+                    line_stripped = line.strip()
+                    if self.active_download and "|" in line_stripped:
+                        match = progress_regex.match(line_stripped)
+                        if match:
+                            try:
+                                downloaded = int(match.group(1))
+                                total = int(match.group(2))
+                                total_est = match.group(3)  # Can be "NA" or numeric
+                                speed_raw = match.group(4)
+                                eta_raw = match.group(5)
+                                percent_str = match.group(6)
 
-                            # Calculate percent from downloaded/total
-                            percent = 0.0
-                            if total > 0:
-                                percent = (downloaded / total) * 100.0
-                            percent = min(100.0, max(0.0, percent))
+                                # Calculate percent from downloaded/total
+                                percent = 0.0
+                                if total > 0:
+                                    percent = (downloaded / total) * 100.0
+                                percent = min(100.0, max(0.0, percent))
 
-                            self.active_download["progress"] = percent
-                            self.active_download["status"] = "downloading"
-                            self.active_download["speed"] = self._format_speed(speed_raw)
-                            self.active_download["eta"] = self._format_eta(eta_raw)
-                        except (ValueError, AttributeError) as e:
-                            logging.warning(f"Progress parsing error: {e}, line: {line_stripped}")
+                                self.active_download["progress"] = percent
+                                self.active_download["status"] = "downloading"
+                                self.active_download["speed"] = self._format_speed(speed_raw)
+                                self.active_download["eta"] = self._format_eta(eta_raw)
+                            except (ValueError, AttributeError) as e:
+                                logging.warning(f"Progress parsing error: {e}, line: {line_stripped}")
 
-        rc = process.poll()
-        output = "".join(output_buffer)
+            rc = process.poll()
+            output = "".join(output_buffer)
 
-        if rc != 0:
-            # Check for DNS errors and retry (issue #7)
-            if _is_dns_error(output) and dns_attempt < _DNS_RETRY_COUNT - 1:
-                import time
-                logging.warning(
-                    f"DNS resolution failed during download (attempt {dns_attempt + 1}/"
-                    f"{_DNS_RETRY_COUNT}), flushing DNS cache and retrying in "
-                    f"{_DNS_RETRY_DELAY}s..."
-                )
-                _flush_dns_cache()
-                time.sleep(_DNS_RETRY_DELAY)
-                if self.active_download:
-                    self.active_download["status"] = "retrying"
-                    self.active_download["progress"] = 0
-                continue  # Retry the download
-
-            # Non-DNS error or final retry exhausted
-            k.log_and_send(_("Error downloading song: ") + displayed_title, "danger")
-            logging.error(f"yt-dlp stderr: {output}")
-            self.download_errors.append(
-                {
-                    "id": str(uuid.uuid4()),
-                    "title": displayed_title,
-                    "url": video_url,
-                    "user": user,
-                    "error": output or "Unknown error",
-                }
-            )
-        else:
-            if self.active_download:
-                self.active_download["progress"] = 100
-                self.active_download["status"] = "complete"
-
-            if enqueue:
-                # MSG: Message shown after the download is completed and queued
-                k.log_and_send(_("Downloaded and queued: %s") % displayed_title, "success")
-            else:
-                # MSG: Message shown after the download is completed but not queued
-                k.log_and_send(_("Downloaded: %s") % displayed_title, "success")
-
-            # After download, find the file path by ID
-            song_path = None
-            if video_id:
-                logging.debug(f"Searching for downloaded file by ID: {video_id}")
-                song_path = k.available_songs.find_by_id(k.download_path, video_id)
-            else:
-                logging.warning("No video ID available to find downloaded song")
-
-            song_is_valid = False
-            if song_path:
-                song_is_valid = k.available_songs.add_if_valid(song_path)
-            else:
-                logging.warning(
-                    f"Could not find downloaded song in {k.download_path} matching ID: {video_id}"
-                )
-
-            if enqueue:
-                if song_is_valid:
-                    bypass = False
-                    if k.queue_manager._is_admin and k.queue_manager._is_admin():
-                        bypass = True
-                    k.queue_manager.enqueue(
-                        song_path,
-                        user,
-                        log_action=False,
-                        bypass_queue_restrictions=bypass,
+            if rc != 0:
+                # Check for DNS errors and retry (issue #7)
+                if _is_dns_error(output) and dns_attempt < _DNS_RETRY_COUNT - 1:
+                    import time
+                    logging.warning(
+                        f"DNS resolution failed during download (attempt {dns_attempt + 1}/"
+                        f"{_DNS_RETRY_COUNT}), flushing DNS cache and retrying in "
+                        f"{_DNS_RETRY_DELAY}s..."
                     )
-                else:
-                    # MSG: Message shown after the download is completed but the adding to queue fails
-                    k.log_and_send(_("Error queueing song: ") + displayed_title, "danger")
+                    _flush_dns_cache()
+                    time.sleep(_DNS_RETRY_DELAY)
+                    if self.active_download:
+                        self.active_download["status"] = "retrying"
+                        self.active_download["progress"] = 0
+                    continue  # Retry the download
 
-            # Download succeeded, break out of retry loop
-            break
+                # Non-DNS error or final retry exhausted
+                k.log_and_send(_("Error downloading song: ") + displayed_title, "danger")
+                logging.error(f"yt-dlp stderr: {output}")
+                self.download_errors.append(
+                    {
+                        "id": str(uuid.uuid4()),
+                        "title": displayed_title,
+                        "url": video_url,
+                        "user": user,
+                        "error": output or "Unknown error",
+                    }
+                )
+            else:
+                if self.active_download:
+                    self.active_download["progress"] = 100
+                    self.active_download["status"] = "complete"
+
+                if enqueue:
+                    # MSG: Message shown after the download is completed and queued
+                    k.log_and_send(_("Downloaded and queued: %s") % displayed_title, "success")
+                else:
+                    # MSG: Message shown after the download is completed but not queued
+                    k.log_and_send(_("Downloaded: %s") % displayed_title, "success")
+
+                # After download, find the file path by ID
+                song_path = None
+                if video_id:
+                    logging.debug(f"Searching for downloaded file by ID: {video_id}")
+                    song_path = k.available_songs.find_by_id(k.download_path, video_id)
+                else:
+                    logging.warning("No video ID available to find downloaded song")
+
+                song_is_valid = False
+                if song_path:
+                    song_is_valid = k.available_songs.add_if_valid(song_path)
+                else:
+                    logging.warning(
+                        f"Could not find downloaded song in {k.download_path} matching ID: {video_id}"
+                    )
+
+                if enqueue:
+                    if song_is_valid:
+                        bypass = False
+                        if k.queue_manager._is_admin and k.queue_manager._is_admin():
+                            bypass = True
+                        k.queue_manager.enqueue(
+                            song_path,
+                            user,
+                            log_action=False,
+                            bypass_queue_restrictions=bypass,
+                        )
+                    else:
+                        # MSG: Message shown after the download is completed but the adding to queue fails
+                        k.log_and_send(_("Error queueing song: ") + displayed_title, "danger")
+
+                # Download succeeded, break out of retry loop
+                break
 
         return rc
 
