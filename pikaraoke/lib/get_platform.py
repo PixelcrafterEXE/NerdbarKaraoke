@@ -59,24 +59,38 @@ def is_linux() -> bool:
 
 
 def get_installed_js_runtime() -> str | None:
-    """Get the name of an installed JavaScript runtime.
+    """Get the name of the preferred installed JavaScript runtime.
 
-    Checks for deno, node, bun, and quickjs in order of preference.
-    A JS runtime is required by yt-dlp for some downloads.
+    Checks for node, bun, deno, and quickjs in order of preference.
+    Node is preferred over deno because deno has known issues with
+    yt-dlp's n-challenge solver (TypeError on 'origin' property).
 
     Returns:
-        Name of the installed runtime ('deno', 'node', 'bun', 'quickjs'),
+        Name of the installed runtime ('node', 'bun', 'deno', 'quickjs'),
         or None if none is installed.
     """
-    if shutil.which("deno") is not None:
-        return "deno"
     if shutil.which("node") is not None:
         return "node"
     if shutil.which("bun") is not None:
         return "bun"
+    if shutil.which("deno") is not None:
+        return "deno"
     if shutil.which("quickjs") is not None:
         return "quickjs"
     return None
+
+
+def get_all_js_runtimes() -> list[str]:
+    """Get all installed JavaScript runtimes in preference order.
+
+    Returns:
+        List of installed runtime names, ordered by preference.
+    """
+    runtimes = []
+    for rt in ("node", "bun", "deno", "quickjs"):
+        if shutil.which(rt) is not None:
+            runtimes.append(rt)
+    return runtimes
 
 
 def has_js_runtime() -> bool:

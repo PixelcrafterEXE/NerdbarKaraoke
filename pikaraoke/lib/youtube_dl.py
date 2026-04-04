@@ -8,7 +8,7 @@ import time
 from urllib.parse import parse_qs, urlparse
 import re
 
-from pikaraoke.lib.get_platform import get_installed_js_runtime
+from pikaraoke.lib.get_platform import get_all_js_runtimes, get_installed_js_runtime
 
 # yt-dlp command, gets the yt-dlp module from the current python environment
 yt_dlp_cmd = [sys.executable, "-m", "yt_dlp"]
@@ -219,10 +219,12 @@ def build_ytdl_download_command(
         "filename-sanitization",
     ]
     cmd = yt_dlp_cmd + args
-    preferred_js_runtime = get_installed_js_runtime()
-    if preferred_js_runtime and preferred_js_runtime != "deno":
-        # Deno is automatically assumed by yt-dlp, and does not need specification here
-        cmd += ["--js-runtimes", preferred_js_runtime]
+    # Always explicitly pass JS runtimes to yt-dlp so it uses the full
+    # fallback chain.  Node is preferred over deno because deno's
+    # n-challenge solver is known to fail (see issue #18).
+    available_runtimes = get_all_js_runtimes()
+    if available_runtimes:
+        cmd += ["--js-runtimes", ",".join(available_runtimes)]
     if youtubedl_proxy:
         cmd += ["--proxy", youtubedl_proxy]
     if additional_args:
@@ -250,8 +252,9 @@ def _sanitize_search_query(text: str) -> str:
 def get_search_results(textToSearch: str) -> list[list[str]]:
     """Search YouTube for videos matching the query.
 
-    Includes retry logic for DNS resolution failures that can occur
-    in long-running Docker containers (see issue #7).
+    Tries the preferred JS runtime first, then falls back to alternates
+    if yt-dlp's n-challenge solver fails (see issue #18).  Each attempt
+    also retries on DNS resolution failures (see issue #7).
 
     Args:
         textToSearch: Search query string.
@@ -260,52 +263,74 @@ def get_search_results(textToSearch: str) -> list[list[str]]:
         List of [title, url, video_id] for each result.
 
     Raises:
-        Exception: If the search fails after all retries.
+        Exception: If the search fails with all runtimes and retries.
     """
     logging.info("Searching YouTube for: " + textToSearch)
     num_results = 10
     # Sanitize the search query to avoid unintended yt-dlp argument/option injection.
     sanitized_search = _sanitize_search_query(textToSearch)
     yt_search = 'ytsearch%d:"%s"' % (num_results, sanitized_search)
-    cmd = yt_dlp_cmd + ["-j", "--no-playlist", "--flat-playlist", yt_search]
-    logging.debug("Youtube-dl search command: " + " ".join(cmd))
+
+    available_runtimes = get_all_js_runtimes()
+    # Build runtime attempts: preferred list, then a final attempt with no override
+    runtime_attempts = list(available_runtimes) if available_runtimes else []
+    if not runtime_attempts:
+        runtime_attempts = [None]  # No runtime override
 
     last_error = None
-    for attempt in range(_DNS_RETRY_COUNT):
-        try:
-            output = subprocess.check_output(
-                cmd, stderr=subprocess.PIPE
-            ).decode("utf-8", "ignore")
-            logging.debug("Search results: " + output)
-            rc = []
-            for each in output.split("\n"):
-                if len(each) > 2:
-                    j = json.loads(each)
-                    if (not "title" in j) or (not "url" in j):
-                        continue
-                    rc.append([j["title"], j["url"], j["id"]])
-            return rc
-        except subprocess.CalledProcessError as e:
-            stderr_text = e.stderr.decode("utf-8", "ignore") if e.stderr else ""
-            stdout_text = e.output.decode("utf-8", "ignore") if e.output else ""
-            error_text = stderr_text + stdout_text
+    for runtime in runtime_attempts:
+        cmd = yt_dlp_cmd + ["-j", "--no-playlist", "--flat-playlist"]
+        if runtime:
+            cmd += ["--js-runtimes", runtime]
+        cmd.append(yt_search)
+        logging.debug("Youtube-dl search command: " + " ".join(cmd))
 
-            if _is_dns_error(error_text) and attempt < _DNS_RETRY_COUNT - 1:
-                logging.warning(
-                    f"DNS resolution failed (attempt {attempt + 1}/{_DNS_RETRY_COUNT}), "
-                    f"flushing DNS cache and retrying in {_DNS_RETRY_DELAY}s..."
-                )
-                _flush_dns_cache()
-                time.sleep(_DNS_RETRY_DELAY)
-                last_error = e
-                continue
-            logging.debug("Error while executing search: " + str(e))
-            raise e
-        except Exception as e:
-            logging.debug("Error while executing search: " + str(e))
-            raise e
+        # DNS retry loop per runtime attempt (issue #7)
+        for dns_attempt in range(_DNS_RETRY_COUNT):
+            try:
+                output = subprocess.check_output(
+                    cmd, stderr=subprocess.PIPE
+                ).decode("utf-8", "ignore")
+                logging.debug("Search results: " + output)
+                rc = []
+                for each in output.split("\n"):
+                    if len(each) > 2:
+                        j = json.loads(each)
+                        if (not "title" in j) or (not "url" in j):
+                            continue
+                        rc.append([j["title"], j["url"], j["id"]])
+                return rc
+            except subprocess.CalledProcessError as e:
+                stderr_text = e.stderr.decode("utf-8", "ignore") if e.stderr else ""
+                stdout_text = e.output.decode("utf-8", "ignore") if e.output else ""
+                error_text = stderr_text + stdout_text
 
-    # All retries exhausted
-    if last_error:
-        raise last_error
-    raise Exception("Search failed after all retries")
+                # DNS error — retry with cache flush (issue #7)
+                if _is_dns_error(error_text) and dns_attempt < _DNS_RETRY_COUNT - 1:
+                    logging.warning(
+                        f"DNS resolution failed (attempt {dns_attempt + 1}/{_DNS_RETRY_COUNT}), "
+                        f"flushing DNS cache and retrying in {_DNS_RETRY_DELAY}s..."
+                    )
+                    _flush_dns_cache()
+                    time.sleep(_DNS_RETRY_DELAY)
+                    last_error = e
+                    continue
+
+                # JS runtime / n-challenge error — try next runtime (issue #18)
+                if "n challenge" in error_text.lower() or "js" in stderr_text.lower():
+                    logging.warning(
+                        f"yt-dlp search failed with JS runtime '{runtime}': {stderr_text.strip()}"
+                    )
+                    last_error = e
+                    break  # Break DNS retry, move to next runtime
+
+                # Unrecoverable error
+                logging.debug("Error while executing search: " + str(e))
+                raise e
+            except Exception as e:
+                logging.debug("Error while executing search: " + str(e))
+                raise e
+
+    # All runtimes and retries exhausted
+    logging.error("All JS runtimes and DNS retries failed for yt-dlp search")
+    raise last_error or Exception("yt-dlp search failed with all available JS runtimes")
