@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block scripts %}
+<script>
+$(function () {
+  var $tbody = $("#log-table-body");
+  var $levelFilter = $("#level-filter");
+  var autoscroll = true;
+
+  function levelClass(level) {
+    switch (level) {
+      case "ERROR":
+      case "CRITICAL":
+        return "has-text-danger";
+      case "WARNING":
+        return "has-text-warning";
+      case "DEBUG":
+        return "has-text-grey";
+      default:
+        return "";
+    }
+  }
+
+  function appendRow(entry) {
+    var cls = levelClass(entry.level);
+    var row = '<tr class="' + cls + '">' +
+      '<td style="white-space:nowrap">' + entry.time + '</td>' +
+      '<td>' + entry.level + '</td>' +
+      '<td style="word-break:break-word">' + $("<span>").text(entry.message).html() + '</td></tr>';
+    $tbody.append(row);
+  }
+
+  function loadEntries() {
+    var level = $levelFilter.val();
+    var params = {};
+    if (level) params.level = level;
+    $.getJSON("{{ url_for('logs.log_entries') }}", params, function (data) {
+      $tbody.empty();
+      data.forEach(appendRow);
+      if (autoscroll) scrollToBottom();
+    });
+  }
+
+  function scrollToBottom() {
+    var el = document.getElementById("log-scroll-container");
+    if (el) el.scrollTop = el.scrollHeight;
+  }
+
+  // Real-time streaming via SocketIO
+  if (typeof io !== "undefined") {
+    var socket = io("/");
+    socket.on("log_entry", function (entry) {
+      var level = $levelFilter.val();
+      if (level) {
+        var levels = {"DEBUG":10,"INFO":20,"WARNING":30,"ERROR":40,"CRITICAL":50};
+        if ((entry.levelno || 0) < (levels[level] || 0)) return;
+      }
+      appendRow(entry);
+      // Keep table bounded client-side
+      while ($tbody.children().length > 500) {
+        $tbody.children().first().remove();
+      }
+      if (autoscroll) scrollToBottom();
+    });
+  }
+
+  $levelFilter.on("change", loadEntries);
+
+  $("#btn-clear").on("click", function () {
+    $tbody.empty();
+  });
+
+  $("#btn-autoscroll").on("click", function () {
+    autoscroll = !autoscroll;
+    $(this).toggleClass("is-info", autoscroll);
+    $(this).text(autoscroll ? "Auto-scroll: ON" : "Auto-scroll: OFF");
+  });
+
+  loadEntries();
+});
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+  #log-scroll-container {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  #log-table {
+    font-size: 0.85rem;
+  }
+  #log-table td {
+    padding: 0.25em 0.5em;
+    vertical-align: top;
+  }
+</style>
+{% endblock %}
+
+{% block header %}
+<i class="icon icon-doc-text"></i> Logs
+{% endblock %}
+
+{% block content %}
+<div class="field is-grouped" style="margin-bottom: 0.75rem;">
+  <div class="control">
+    <div class="select is-small">
+      <select id="level-filter">
+        <option value="">All levels</option>
+        <option value="DEBUG">DEBUG</option>
+        <option value="INFO" selected>INFO</option>
+        <option value="WARNING">WARNING</option>
+        <option value="ERROR">ERROR</option>
+      </select>
+    </div>
+  </div>
+  <div class="control">
+    <button id="btn-autoscroll" class="button is-small is-info">Auto-scroll: ON</button>
+  </div>
+  <div class="control">
+    <button id="btn-clear" class="button is-small is-danger is-outlined">Clear</button>
+  </div>
+</div>
+
+<div id="log-scroll-container">
+  <table id="log-table" class="table is-narrow is-fullwidth is-striped">
+    <thead>
+      <tr>
+        <th style="width:10em">Time</th>
+        <th style="width:5em">Level</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody id="log-table-body"></tbody>
+  </table>
+</div>
+{% endblock %}

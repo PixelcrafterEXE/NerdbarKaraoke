@@ -759,6 +759,20 @@
 
 
 		{# MSG: Title of the section on shutting down / turning off the machine running Pikaraoke. #}
+		<h1>{% trans %}Logs{% endtrans %}</h1>
+
+		<div class="card">
+			<div class="card-content">
+				<div class="content">
+					<p>{% trans %}View real-time application logs for debugging.{% endtrans %}</p>
+					<a class="button is-primary is-inverted" href="{{ url_for('logs.logs') }}">
+						{% trans %}Open Log Viewer{% endtrans %}
+					</a>
+				</div>
+			</div>
+		</div>
+
+		{# MSG: Title of the section on shutting down / turning off the machine running Pikaraoke. #}
 		<h1>{% trans %}Shutdown{% endtrans %}</h1>
 
 		<div class="card">
