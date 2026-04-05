@@ -119,3 +119,45 @@ def like_counts():
     """
     k = get_karaoke_instance()
     return jsonify(k.likes_manager.get_all_like_counts())
+
+
+@likes_bp.route("/likes/users")
+def likes_users():
+    """Return all users who have liked at least one song."""
+    k = get_karaoke_instance()
+    users = sorted(k.likes_manager.likes.keys())
+    return jsonify(users)
+
+
+@likes_bp.route("/likes/match")
+def taste_match():
+    """Return shared liked songs between two users.
+
+    Query params: user, other
+    """
+    k = get_karaoke_instance()
+    user = request.args.get("user", "").strip()
+    other = request.args.get("other", "").strip()
+    if not user or not other:
+        return jsonify({"error": "Both user and other required"}), 400
+
+    my_likes = k.likes_manager.get_liked_songs(user)
+    their_likes = k.likes_manager.get_liked_songs(other)
+    shared = sorted(my_likes & their_likes)
+    my_total = len(my_likes)
+    their_total = len(their_likes)
+    pct = round(len(shared) / max(min(my_total, their_total), 1) * 100)
+
+    titles = []
+    for s in shared:
+        titles.append(k.filename_from_path(s) if hasattr(k, "filename_from_path") else s)
+
+    return jsonify({
+        "user": user,
+        "other": other,
+        "shared_count": len(shared),
+        "my_total": my_total,
+        "their_total": their_total,
+        "match_pct": pct,
+        "shared_songs": titles,
+    })

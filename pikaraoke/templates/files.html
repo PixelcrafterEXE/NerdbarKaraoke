@@ -38,6 +38,76 @@
 			});
 		});
 
+		// --- Like buttons ---
+		var userLikedSongs = {};
+		function loadUserLikes() {
+			var user = Cookies.get("user") || "";
+			if (!user) return;
+			$.getJSON("{{ url_for('likes.liked_songs') }}", {user: user}, function(songs) {
+				userLikedSongs = {};
+				songs.forEach(function(s) { userLikedSongs[s] = true; });
+				updateLikeButtons();
+			});
+		}
+		function updateLikeButtons() {
+			$(".like-btn").each(function() {
+				var file = $(this).data("file");
+				if (userLikedSongs[file]) {
+					$(this).css({color: "#ff4060", opacity: 1});
+				} else {
+					$(this).css({color: "", opacity: 0.5});
+				}
+			});
+		}
+		$(document).on("click", ".like-btn", function(e) {
+			e.preventDefault();
+			var $btn = $(this);
+			var file = $btn.data("file");
+			var user = Cookies.get("user") || "";
+			if (!user) { setUserCookie(); user = Cookies.get("user") || ""; }
+			if (!user) return;
+			$.post("{{ url_for('likes.toggle_like') }}", {song: file, user: user}, function(data) {
+				if (data.liked) {
+					userLikedSongs[file] = true;
+				} else {
+					delete userLikedSongs[file];
+				}
+				updateLikeButtons();
+			});
+		});
+		loadUserLikes();
+
+		// --- Taste Match ---
+		$("#taste-match-toggle").on("click", function(e) {
+			e.preventDefault();
+			var $panel = $("#taste-match-panel");
+			$panel.toggle();
+			if ($panel.is(":visible")) {
+				$.getJSON("{{ url_for('likes.likes_users') }}", function(users) {
+					var $sel = $("#taste-match-user").empty();
+					$sel.append('<option value="">Select user…</option>');
+					var me = (Cookies.get("user") || "").trim();
+					users.forEach(function(u) {
+						if (u !== me) $sel.append('<option value="' + u + '">' + u + '</option>');
+					});
+				});
+			}
+		});
+		$("#taste-match-btn").on("click", function() {
+			var other = $("#taste-match-user").val();
+			var me = (Cookies.get("user") || "").trim();
+			if (!other || !me) return;
+			$.getJSON("{{ url_for('likes.taste_match') }}", {user: me, other: other}, function(data) {
+				var html = '<p class="mt-2"><strong>' + data.match_pct + '% match</strong> (' + data.shared_count + ' songs in common)</p>';
+				if (data.shared_songs.length > 0) {
+					html += '<ul style="margin-top:0.5em; font-size:0.9em;">';
+					data.shared_songs.forEach(function(t) { html += '<li>' + t + '</li>'; });
+					html += '</ul>';
+				}
+				$("#taste-match-result").html(html);
+			});
+		});
+
 		// Drag and drop support for video files (admin only)
 		{% if admin %}
 		const dropZone = document.body;
@@ -223,6 +293,10 @@
 		<a href="{{ url_for('files.browse', liked='1') }}">
 			&#9829; {% trans %}Liked{% endtrans %}
 		</a>
+		|
+		<a href="#" id="taste-match-toggle">
+			&#127928; {% trans %}Taste Match{% endtrans %}
+		</a>
 	</span>
 	{% if admin %}
 	<a class="batch-edit-btn" href="{{ url_for('batch_song_renamer.browse')}}" title="Edit all songs"
@@ -231,6 +305,23 @@
 	>
 	{% endif%}
 </p>
+
+<div id="taste-match-panel" class="box" style="display:none; margin-bottom:1em;">
+	<p class="mb-2"><strong>&#127928; {% trans %}Taste Match{% endtrans %}</strong></p>
+	<div class="field has-addons">
+		<div class="control">
+			<div class="select is-small">
+				<select id="taste-match-user">
+					<option value="">{% trans %}Select user…{% endtrans %}</option>
+				</select>
+			</div>
+		</div>
+		<div class="control">
+			<button id="taste-match-btn" class="button is-small is-info">{% trans %}Compare{% endtrans %}</button>
+		</div>
+	</div>
+	<div id="taste-match-result"></div>
+</div>
 
 <div id="alpha-bar" class="column is-full has-background-dark mobile-hide">
 	<a href="{{ url_for('files.browse') }}?letter=numeric">#</a>
@@ -254,6 +345,9 @@
 			</a>
 		</td>
 		<td class="break-word" style="padding-right: 0">{{filename_from_path(song)}}</td>
+		<td style="padding: 0 4px; width: 28px;">
+			<a class="like-btn" data-file="{{song}}" title="Like" style="cursor:pointer; font-size:1.1em; opacity:0.5;">&#9829;</a>
+		</td>
 		{% if admin %}
 		<td style="padding-right: 0">
 			<a
