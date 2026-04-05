@@ -579,14 +579,13 @@ class QueueManager:
             t = weight_pct / 100.0
             weights = []
             for song in eligible_songs:
-                # Linear interpolation between uniform (t=0) and liked-only (t=1):
-                #   liked song    → w = 1.0  (always)
-                #   non-liked     → w = 1.0 - t
-                # At 0%: all songs weight 1 → pure uniform random
-                # At 100%: non-liked weight 0 → pick uniformly from liked songs only
-                # At 50%: non-liked weight 0.5 → liked songs are 2× as likely
+                # Complementary linear weights: liked = t, non-liked = 1 - t
+                # (liked_weight = 1 - non_liked_weight)
+                # At 100%: liked = 1, non-liked = 0  → liked songs only
+                # At  50%: liked = 0.5, non-liked = 0.5  → liked songs favoured proportionally
+                # At   0%: falls through to random.sample below (pure uniform)
                 liked = like_counts.get(song, 0) > 0
-                w = 1.0 if liked else (1.0 - t)
+                w = t if liked else (1.0 - t)
                 weights.append(w)
             # Edge case: no liked songs in library → fall back to uniform
             if not any(w > 0 for w in weights):
