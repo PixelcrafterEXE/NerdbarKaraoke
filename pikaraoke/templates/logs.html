@@ -25,8 +25,7 @@ $(function () {
     var row = '<tr class="' + cls + '">' +
       '<td style="white-space:nowrap">' + entry.time + '</td>' +
       '<td>' + entry.level + '</td>' +
-      '<td style="font-size:0.85em">' + entry.name + '</td>' +
-      '<td>' + $("<span>").text(entry.message).html() + '</td></tr>';
+      '<td style="word-break:break-word">' + $("<span>").text(entry.message).html() + '</td></tr>';
     $tbody.append(row);
   }
 
@@ -126,9 +125,8 @@ $(function () {
   <table id="log-table" class="table is-narrow is-fullwidth is-striped">
     <thead>
       <tr>
-        <th>Time</th>
-        <th>Level</th>
-        <th>Logger</th>
+        <th style="width:10em">Time</th>
+        <th style="width:5em">Level</th>
         <th>Message</th>
       </tr>
     </thead>
