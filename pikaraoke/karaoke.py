@@ -839,6 +839,7 @@ class Karaoke:
         return {
             "now_playing": self.now_playing,
             "now_playing_user": self.now_playing_user,
+            "now_playing_file": self.now_playing_filename,
             "now_playing_duration": self.now_playing_duration,
             "now_playing_transpose": self.now_playing_transpose,
             "now_playing_tempo": self.now_playing_tempo,

@@ -253,6 +253,9 @@
         html += '<span class="is-hidden-mobile has-text-grey mx-2">&bull;</span>';
         html += '<span class="has-text-weight-bold has-text-success is-hidden-mobile">' + np.now_playing + '</span>';
         html += '<span class="is-size-7 has-text-weight-bold has-text-success is-hidden-tablet" style="width: 100%;">' + np.now_playing + '</span>';
+        if (np.now_playing_file) {
+            html += ' <a class="like-btn" data-file="' + escape(np.now_playing_file) + '" title="{{ _("Like this song") }}" style="cursor:pointer; font-size:1.1em; opacity:0.5; margin-left:6px;">&#9829;</a>';
+        }
         html += '</div></td>';
 
         var nowRemaining = getNowPlayingRemaining(np);
@@ -435,12 +438,8 @@
     var shadowbanTitleClass = (isAdmin && e.shadowbanned) ? ' has-text-danger' : '';
     html += '<span class="has-text-weight-bold is-hidden-mobile' + shadowbanTitleClass + '">' + e.title + '</span>';
     html += '<span class="is-size-7 has-text-weight-bold is-hidden-tablet' + shadowbanTitleClass + '" style="width: 100%;">' + e.title + '</span>';
+    html += ' <a class="like-btn" data-file="' + escape(e.file) + '" title="{{ _("Like this song") }}" style="cursor:pointer; font-size:1.1em; opacity:0.5; margin-left:6px;">&#9829;</a>';
     html += '</div></td>';
-
-        html += '<td style="width: 32px; vertical-align: middle; text-align: center; padding: 4px;">';
-        html += '<a class="like-btn" data-file="' + escape(e.file) + '" title="{{ _("Like this song") }}" style="cursor:pointer; font-size:1.1em; opacity:0.5;">';
-        html += '&#9829;</a>';
-        html += '</td>';
 
         html += '<td style="width: ' + COL_WIDTH.duration + '; padding: 8px 6px; text-align: center; vertical-align: middle;">';
         html += e.duration_display || '--';
