@@ -7,518 +7,517 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-02 20:09-0800\n"
+"POT-Creation-Date: 2026-04-05 03:54+0200\n"
 "PO-Revision-Date: 2025-01-13 22:53-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de_DE\n"
 "Language-Team: de_DE <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.17.0\n"
 
-#: karaoke.py:455
-msgid "Your preferences were changed successfully"
-msgstr "Die Einstellungen wurden erfolgreich geändert"
-
-#: karaoke.py:458
-msgid "Something went wrong! Your preferences were not changed"
-msgstr "Etwas ist schiefgelaufen! Die Einstellungen wurden nicht geändert"
-
-#: karaoke.py:468
-msgid "Your preferences were cleared successfully"
-msgstr "Die Einstellungen wurden erfolgreich zurückgesetzt"
-
-#: karaoke.py:470
-msgid "Something went wrong! Your preferences were not cleared"
-msgstr "Etwas ist schiefgelaufen! Die Einstellungen wurden nicht zurückgesetzt"
-
-#. Message shown when the song ends abnormally
-#: karaoke.py:668
+#: /app/pikaraoke/karaoke.py:609
 #, python-format
 msgid "Song ended abnormally: %s"
 msgstr "Lied endete unerwartet: %s"
 
-#. Message shown after the song is transposed, first is the semitones and then
-#. the song name
-#: karaoke.py:687
+#: /app/pikaraoke/karaoke.py:632
 #, python-format
 msgid "Transposing by %s semitones: %s"
 msgstr "Transponieren um %s Halbtöne: %s"
 
-#. Message shown after the song is skipped, will be followed by song name
-#: karaoke.py:714
+#: /app/pikaraoke/karaoke.py:648
+#, python-format
+msgid "Tempo: %.1fx"
+msgstr "Tempo: %.1fx"
+
+#: /app/pikaraoke/karaoke.py:673
 #, python-format
 msgid "Skip: %s"
 msgstr "Übersprungen: %s"
 
-#. Message shown after the song is resumed, will be followed by song name
-#: karaoke.py:730
+#: /app/pikaraoke/karaoke.py:689
 #, python-format
 msgid "Resume: %s"
 msgstr "Fortsetzen: %s"
 
-#. Message shown after the song is paused, will be followed by song name
-#: karaoke.py:733 templates/queue.html:434 templates/queue.html:559
+#: /app/pikaraoke/karaoke.py:692 /app/pikaraoke/templates/queue.html:623
+#: /app/pikaraoke/templates/queue.html:896
 msgid "Pause"
 msgstr "Pause"
 
-#. Message shown after the volume is changed, will be followed by the volume
-#. level
-#: karaoke.py:752
+#: /app/pikaraoke/karaoke.py:711
 #, python-format
 msgid "Volume: %s"
 msgstr "Lautstärke: %s"
 
-#: lib/download_manager.py:118
+#: /app/pikaraoke/karaoke.py:981
+#, python-format
+msgid "Song skipped: %s didn't get a microphone"
+msgstr "Song übersprungen: %s hat kein Mikrofon bekommen"
+
+#: /app/pikaraoke/karaoke.py:1005
+#, python-format
+msgid "Timeout: Playing next song by microphone holder %s"
+msgstr "Zeitüberschreitung: Nächster Song wird für Mikrofonhalter %s gespielt"
+
+#: /app/pikaraoke/lib/download_manager.py:123
 #, python-format
 msgid "Download queued (#%d): %s"
 msgstr "Heruntergeladen und in die Warteschlange eingereiht (#%d): %s"
 
-#. Message shown when download is added and will start immediately
-#: lib/download_manager.py:122
+#: /app/pikaraoke/lib/download_manager.py:127
 #, python-format
 msgid "Download starting: %s"
 msgstr "Video wird heruntergeladen: %s"
 
-#. Message shown when download actually starts (after waiting in queue)
-#: lib/download_manager.py:211
+#: /app/pikaraoke/lib/download_manager.py:275
 #, python-format
 msgid "Downloading video: %s"
 msgstr "Video wird heruntergeladen: %s"
 
-#. Message shown after the download process is completed but the song is not
-#. found
-#: lib/download_manager.py:268
+#: /app/pikaraoke/lib/download_manager.py:362
 msgid "Error downloading song: "
 msgstr "Fehler beim Herunterladen des Liedes: "
 
-#. Message shown after the download is completed and queued
-#: lib/download_manager.py:286
+#: /app/pikaraoke/lib/download_manager.py:380
 #, python-format
 msgid "Downloaded and queued: %s"
 msgstr "Heruntergeladen und in die Warteschlange eingereiht: %s"
 
-#. Message shown after the download is completed but not queued
-#: lib/download_manager.py:289
+#: /app/pikaraoke/lib/download_manager.py:383
 #, python-format
 msgid "Downloaded: %s"
 msgstr "Heruntergeladen: %s"
 
-#. Message shown after the download is completed but the adding to queue fails
-#: lib/download_manager.py:312
+#: /app/pikaraoke/lib/download_manager.py:414
 msgid "Error queueing song: "
 msgstr "Fehler beim Hinzufügen des Liedes zur Warteschlange: "
 
-#: lib/queue_manager.py:159
+#: /app/pikaraoke/lib/download_manager.py:451
+#, fuzzy, python-format
+msgid "Transcoding queued (#%d): %s"
+msgstr "Heruntergeladen und in die Warteschlange eingereiht (#%d): %s"
+
+#: /app/pikaraoke/lib/download_manager.py:455
+#, fuzzy, python-format
+msgid "Transcoding starting: %s"
+msgstr "Video wird heruntergeladen: %s"
+
+#: /app/pikaraoke/lib/download_manager.py:488
+#, fuzzy, python-format
+msgid "Transcoding file: %s"
+msgstr "Lied gelöscht: %s"
+
+#: /app/pikaraoke/lib/download_manager.py:647
+msgid "Error transcoding file: "
+msgstr "Fehler beim Transcodieren der Datei: "
+
+#: /app/pikaraoke/lib/download_manager.py:678
+#, fuzzy, python-format
+msgid "Transcoded and queued: %s"
+msgstr "Heruntergeladen und in die Warteschlange eingereiht: %s"
+
+#: /app/pikaraoke/lib/download_manager.py:681
+#, fuzzy, python-format
+msgid "Transcoded: %s"
+msgstr "Lied gelöscht: %s"
+
+#: /app/pikaraoke/lib/download_manager.py:686
+#, python-format
+msgid "Error: Transcoded file was not created: %s"
+msgstr "Fehler: Transcodierte Datei wurde nicht erstellt: %s"
+
+#: /app/pikaraoke/lib/download_manager.py:703
+#, python-format
+msgid "Error: Transcoded file is too small (incomplete): %s"
+msgstr "Fehler: Transcodierte Datei ist zu klein (unvollständig): %s"
+
+#: /app/pikaraoke/lib/download_manager.py:735
+#, python-format
+msgid "Error adding transcoded song: %s"
+msgstr "Fehler beim Hinzufügen des transcode Liedes: %s"
+
+#: /app/pikaraoke/lib/download_manager.py:746
+msgid "Transcoding error: "
+msgstr "Transcodierungsfehler: "
+
+#: /app/pikaraoke/lib/preference_manager.py:156
+msgid "Your preferences were changed successfully"
+msgstr "Die Einstellungen wurden erfolgreich geändert"
+
+#: /app/pikaraoke/lib/preference_manager.py:159
+msgid "Something went wrong! Your preferences were not changed"
+msgstr "Etwas ist schiefgelaufen! Die Einstellungen wurden nicht geändert"
+
+#: /app/pikaraoke/lib/preference_manager.py:169
+msgid "Your preferences were cleared successfully"
+msgstr "Die Einstellungen wurden erfolgreich zurückgesetzt"
+
+#: /app/pikaraoke/lib/preference_manager.py:172
+msgid "Something went wrong! Your preferences were not cleared"
+msgstr "Etwas ist schiefgelaufen! Die Einstellungen wurden nicht zurückgesetzt"
+
+#: /app/pikaraoke/lib/queue_manager.py:291
+#, python-format
+msgid "Queue is closed. No more songs can be added after %s."
+msgstr "Warteschlange geschlossen. Nach %s können keine weiteren Songs hinzugefügt werden."
+
+#: /app/pikaraoke/lib/queue_manager.py:294
+msgid "Queue is closed. No more songs can be added right now."
+msgstr "Warteschlange geschlossen. Es können derzeit keine Songs hinzugefügt werden."
+
+#: /app/pikaraoke/lib/queue_manager.py:337
+msgid "Cannot add songs because queue timing cannot be estimated."
+msgstr "Songs können nicht hinzugefügt werden, da die Wartezeit nicht geschätzt werden kann."
+
+#: /app/pikaraoke/lib/queue_manager.py:345
+msgid "Cannot add this song because its duration is unknown."
+msgstr "Dieser Song kann nicht hinzugefügt werden, da seine Dauer unbekannt ist."
+
+#: /app/pikaraoke/lib/queue_manager.py:353
+#, python-format
+msgid "Queue is closed. The queue already ends after %s."
+msgstr "Warteschlange geschlossen. Die Warteschlange endet bereits nach %s."
+
+#: /app/pikaraoke/lib/queue_manager.py:361
+#, python-format
+msgid "Queue is closed. This song would end after %s."
+msgstr "Warteschlange geschlossen. Dieser Song würde nach %s enden."
+
+#: /app/pikaraoke/lib/queue_manager.py:455
 #, python-format
 msgid "You reached the limit of %s song(s) from an user in queue!"
 msgstr "Das Limit von %s Lied(er) per Benutzer in der Warteschlange ist erreicht!"
 
-#: lib/queue_manager.py:177
+#: /app/pikaraoke/lib/queue_manager.py:461
+msgid "You are adding songs too quickly. Please wait before adding another song."
+msgstr "Du fügst Songs zu schnell hinzu. Bitte warte, bevor du einen weiteren Song hinzufügst."
+
+#: /app/pikaraoke/lib/queue_manager.py:484
 #, python-format
 msgid "%s added to top of queue: %s"
 msgstr "%s wurde an die Spitze der Warteschlange hinzugefügt: %s"
 
-#: lib/queue_manager.py:184
+#: /app/pikaraoke/lib/queue_manager.py:491
 #, python-format
 msgid "%s added to the queue: %s"
 msgstr "%s wurde der Warteschlange hinzugefügt: %s"
 
-#: lib/queue_manager.py:196
+#: /app/pikaraoke/lib/queue_manager.py:505 /app/pikaraoke/routes/queue.py:390
+#: /app/pikaraoke/routes/queue.py:406
 #, python-format
 msgid "Song added to the queue: %s"
 msgstr "Lied wurde der Warteschlange hinzugefügt: %s"
 
-#. Message shown after the queue is cleared
-#: lib/queue_manager.py:245
+#: /app/pikaraoke/lib/queue_manager.py:555
 msgid "Clear queue"
 msgstr "Warteschlange leeren"
 
-#: lib/stream_manager.py:87
+#: /app/pikaraoke/lib/stream_manager.py:91
 #, python-format
 msgid "Error resolving file: %s"
-msgstr ""
+msgstr "Fehler beim Auflösen der Datei: %s"
 
-#. Message shown after starting the youtube-dl update.
-#: routes/admin.py:65
+#: /app/pikaraoke/routes/admin.py:67
 msgid "Updating youtube-dl! Should take a minute or two... "
 msgstr "Youtube-DL wird aktualisiert! Dies sollte ein bis zwei Minuten dauern..."
 
-#. Message shown after trying to update youtube-dl without admin permissions.
-#: routes/admin.py:72
+#: /app/pikaraoke/routes/admin.py:74
 msgid "You don't have permission to update youtube-dl"
 msgstr "Keine Berechtigung, Youtube-DL zu aktualisieren"
 
-#. Message shown after trying to refresh the song list without admin
-#. permissions.
-#: routes/admin.py:91
+#: /app/pikaraoke/routes/admin.py:93
 msgid "You don't have permission to refresh the song list"
 msgstr "Keine Berechtigung, das Dateisystem zu ändern"
 
-#. Message shown after quitting pikaraoke.
-#: routes/admin.py:108
+#: /app/pikaraoke/routes/admin.py:110
 msgid "Exiting pikaraoke now!"
 msgstr "nerdBar-Karaoke wird jetzt beendet!"
 
-#. Message shown after trying to quit pikaraoke without admin permissions.
-#: routes/admin.py:115
+#: /app/pikaraoke/routes/admin.py:117
 msgid "You don't have permission to quit"
 msgstr "Keine Berechtigung, das Programm zu beenden"
 
-#. Message shown after shutting down the system.
-#: routes/admin.py:132
+#: /app/pikaraoke/routes/admin.py:134
 msgid "Shutting down system now!"
 msgstr "System wird jetzt heruntergefahren!"
 
-#. Message shown after trying to shut down the system without admin
-#. permissions.
-#: routes/admin.py:139
+#: /app/pikaraoke/routes/admin.py:141
 msgid "You don't have permission to shut down"
 msgstr "Keine Berechtigung, das System herunterzufahren"
 
-#. Message shown after rebooting the system.
-#: routes/admin.py:156
+#: /app/pikaraoke/routes/admin.py:158
 msgid "Rebooting system now!"
 msgstr "System wird jetzt neu gestartet!"
 
-#. Message shown after trying to reboot the system without admin permissions.
-#: routes/admin.py:163
+#: /app/pikaraoke/routes/admin.py:165
 msgid "You don't have permission to Reboot"
 msgstr "Keine Berechtigung, das System neu zu starten"
 
-#. Message shown after expanding the filesystem.
-#: routes/admin.py:180
+#: /app/pikaraoke/routes/admin.py:182
 msgid "Expanding filesystem and rebooting system now!"
 msgstr "Dateisystem wird erweitert und das System wird neu gestartet!"
 
-#. Message shown after trying to expand the filesystem on a non-raspberry pi
-#. device.
-#: routes/admin.py:185
+#: /app/pikaraoke/routes/admin.py:187
 msgid "Cannot expand fs on non-raspberry pi devices!"
 msgstr "Dateisystem kann auf Nicht-Raspberry-Pi-Geräten nicht erweitert werden!"
 
-#. Message shown after trying to expand the filesystem without admin
-#. permissions
-#: routes/admin.py:188
+#: /app/pikaraoke/routes/admin.py:190
 msgid "You don't have permission to resize the filesystem"
 msgstr "Keine Berechtigung, das Dateisystem zu ändern"
 
-#. Message shown after logging in as admin successfully
-#: routes/admin.py:230
+#: /app/pikaraoke/routes/admin.py:238
 msgid "Admin mode granted!"
 msgstr "Admin-Modus aktiviert!"
 
-#. Message shown after failing to login as admin
-#: routes/admin.py:234
+#: /app/pikaraoke/routes/admin.py:242
 msgid "Incorrect admin password!"
 msgstr "Falsches Admin-Passwort!"
 
-#. Message shown after logging out as admin successfully
-#: routes/admin.py:264
+#: /app/pikaraoke/routes/admin.py:272
 msgid "Logged out of admin mode!"
 msgstr "Admin-Modus verlassen!"
 
-#. Title of the button to accept the suggested name
-#: routes/batch_song_renamer.py:380
+#: /app/pikaraoke/routes/batch_song_renamer.py:395
 msgid "Accept suggested name"
-msgstr ""
+msgstr "Vorgeschlagenen Namen übernehmen"
 
-#. Title of the files page.
-#. Page title for the page where the user can batch rename songs.
-#: routes/batch_song_renamer.py:388 templates/batch-song-renamer.html:133
+#: /app/pikaraoke/routes/batch_song_renamer.py:403
+#: /app/pikaraoke/templates/batch-song-renamer.html:133
 msgid "Batch Song Renamer"
-msgstr ""
+msgstr "Song-Stapelumbenennung"
 
-#. Message shown after trying to edit a song that is in the queue.
-#: routes/batch_song_renamer.py:487 routes/files.py:152
+#: /app/pikaraoke/routes/batch_song_renamer.py:502
+#: /app/pikaraoke/routes/files.py:157
 msgid "Error: Can't edit this song because it is in the current queue: "
-msgstr ""
-"Fehler: Dieses Lied kann nicht bearbeitet werden, da es in der aktuellen "
-"Warteschlange ist: "
+msgstr "Fehler: Dieser Song kann nicht bearbeitet werden, da er in der aktuellen Warteschlange ist: "
 
-#. Message shown after trying to rename a file to a name that already exists.
-#: routes/batch_song_renamer.py:498 routes/files.py:179
+#: /app/pikaraoke/routes/batch_song_renamer.py:513
+#: /app/pikaraoke/routes/files.py:184
 #, python-format
 msgid "Error renaming file: '%s' to '%s', Filename already exists"
-msgstr ""
-"Fehler beim Umbenennen der Datei: '%s' in '%s', Dateiname existiert "
-"bereits"
+msgstr "Fehler beim Umbenennen von '%s' zu '%s', Dateiname existiert bereits"
 
-#. Message shown after trying to edit a song without specifying the filename.
-#: routes/batch_song_renamer.py:512 routes/files.py:192
+#: /app/pikaraoke/routes/batch_song_renamer.py:527
+#: /app/pikaraoke/routes/files.py:197
 msgid "Error: No filename parameters were specified!"
 msgstr "Fehler: Keine Dateinamenparameter angegeben!"
 
-#. Title of the files page.
-#. Navigation link for the page where the user can add existing songs to the
-#. queue.
-#: routes/files.py:104 templates/base.html:215
-msgid "Browse"
-msgstr "Durchsuchen"
+#: /app/pikaraoke/routes/effects.py:35
+#, fuzzy
+msgid "Effects are disabled"
+msgstr "Effekte deaktiviert"
 
-#: templates/effects.html:1
+#: /app/pikaraoke/routes/effects.py:41
+#, fuzzy
+msgid "You don't have permission to access effects"
+msgstr "Keine Berechtigung, das System neu zu starten"
+
+#: /app/pikaraoke/routes/effects.py:47 /app/pikaraoke/templates/base.html:226
+#: /app/pikaraoke/templates/effects.html:378
 msgid "Effects"
 msgstr "Effekte"
 
-#: templates/effects.html:1
-msgid "OFF"
-msgstr "Aus"
+#: /app/pikaraoke/routes/effects.py:87 /app/pikaraoke/routes/effects.py:126
+msgid "No microphone assigned"
+msgstr "Kein Mikrofon zugewiesen"
 
-#: templates/effects.html:1
-msgid "ON"
-msgstr "An"
+#: /app/pikaraoke/routes/effects.py:97 /app/pikaraoke/routes/effects.py:123
+msgid "Effects disabled"
+msgstr "Effekte deaktiviert"
 
-#: templates/effects.html:1
-msgid "Effect"
-msgstr "Effekt"
+#: /app/pikaraoke/routes/effects.py:99 /app/pikaraoke/routes/info.py:120
+#: /app/pikaraoke/routes/queue.py:159 /app/pikaraoke/routes/queue.py:189
+#: /app/pikaraoke/routes/queue.py:191
+msgid "Unauthorized"
+msgstr "Nicht autorisiert"
 
-#: templates/effects.html:1
-msgid "Edit"
-msgstr "Bearbeiten"
+#: /app/pikaraoke/routes/files.py:109 /app/pikaraoke/templates/base.html:220
+msgid "Browse"
+msgstr "Durchsuchen"
 
-#: templates/effects.html:1
-msgid "None"
-msgstr "Keine"
-#: templates/effects.html:1
-msgid "No effects data available."
-msgstr "Keine Effektdaten verfügbar."
-
-#: templates/effects.html:1
-msgid "No effects are available for your microphone."
-msgstr "Für dein Mikrofon sind keine Effekte verfügbar."
-
-#: templates/effects.html:1
-msgid "Failed to load effects data."
-msgstr "Fehler beim Laden der Effektdaten."
-
-#: templates/effects.html:1
-msgid "Failed to update effects."
-msgstr "Aktualisierung der Effekte fehlgeschlagen."
-
-#: templates/effects.html:1
-msgid "My Effects"
-msgstr "Meine Effekte"
-
-#: templates/effects.html:1
-msgid "Allow for users"
-msgstr "Für Benutzer zulassen"
-
-#: templates/effects.html:1
-msgid "Parameter"
-msgstr "Parameter"
-
-#: templates/effects.html:1
-msgid "Value"
-msgstr "Wert"
-
-#: templates/effects.html:1
-msgid "Allow user"
-msgstr "Für Benutzer zulassen"
-
-#: templates/info.html:304
-msgid "Effects & Mixer"
-msgstr "Effekte & Mixer"
-
-#: templates/info.html:304
-msgid "Enable effects UI and OSC output"
-msgstr "Effekte-Oberfläche und OSC-Ausgabe aktivieren"
-
-#: templates/info.html:304
-msgid "OSC mixer IP address"
-msgstr "OSC-Mixer-IP-Adresse"
-
-#: templates/info.html:304
-msgid "OSC mixer port"
-msgstr "OSC-Mixer-Port"
-
-#: templates/info.html:304
-msgid "Microphone Channels & FX Racks"
-msgstr "Mikrofonkanäle & FX-Racks"
-
-#: templates/info.html:304
-msgid "Channel values map to FX source (0 = INS, 1-16 = MIX1..MIX16, 17 = M/C). Use 0 for \"no rack\"; valid rack indexes are 1–4."
-msgstr "Kanalwerte entsprechen der FX-Quelle (0 = INS, 1–16 = MIX1..MIX16, 17 = M/C). Verwenden Sie 0 für \"kein Rack\"; gültige Rack-Indizes sind 1–4."
-
-#: templates/info.html:304
-msgid "Red microphone"
-msgstr "Rotes Mikrofon"
-
-#: templates/info.html:304
-msgid "Green microphone"
-msgstr "Grünes Mikrofon"
-
-#: templates/info.html:304
-msgid "Blue Microphone"
-msgstr "Blaues Mikrofon"
-
-#: templates/info.html:304
-msgid "Yellow Microphone"
-msgstr "Gelbes Mikrofon"
-
-#: templates/info.html:304
-msgid "Channel"
-msgstr "Kanal"
-
-#: templates/info.html:304
-msgid "FX rack"
-msgstr "FX-Rack"
-
-#. Message shown after trying to delete a song that is in the queue.
-#: routes/files.py:132
+#: /app/pikaraoke/routes/files.py:137
 msgid "Error: Can't delete this song because it is in the current queue"
-msgstr ""
+msgstr "Fehler: Dieser Song kann nicht gelöscht werden, da er in der aktuellen Warteschlange ist"
 "Fehler: Dieses Lied kann nicht gelöscht werden, da es in der aktuellen "
 "Warteschlange ist"
 
-#. Message shown after deleting a song. Followed by the song path
-#: routes/files.py:140
+#: /app/pikaraoke/routes/files.py:145
 #, python-format
 msgid "Song deleted: %s"
 msgstr "Lied gelöscht: %s"
 
-#. Message shown after trying to delete a song without specifying the song.
-#: routes/files.py:143
+#: /app/pikaraoke/routes/files.py:148
 msgid "Error: No song specified!"
 msgstr "Fehler: Kein Lied angegeben!"
 
-#. Message shown after renaming a file.
-#: routes/files.py:187
+#: /app/pikaraoke/routes/files.py:192
 #, python-format
 msgid "Renamed file: %s to %s"
 msgstr "Datei umbenannt: %s in %s"
 
-#: routes/info.py:105
+#: /app/pikaraoke/routes/files.py:207
+#, fuzzy
+msgid "You don't have permission to upload videos"
+msgstr "Keine Berechtigung, das Programm zu beenden"
+
+#: /app/pikaraoke/routes/files.py:210
+msgid "No video file selected"
+msgstr "Keine Videodatei ausgewählt"
+
+#: /app/pikaraoke/routes/files.py:217
+msgid "File type not supported. Allowed: MP4, MKV, AVI, WebM, MOV"
+msgstr "Dateityp nicht unterstützt. Erlaubt: MP4, MKV, AVI, WebM, MOV"
+
+#: /app/pikaraoke/routes/files.py:243
+#, fuzzy
+msgid "Error uploading video"
+msgstr "Fehler beim Herunterladen des Liedes: "
+
+#: /app/pikaraoke/routes/info.py:127
 msgid "CPU usage query unsupported"
 msgstr "CPU-Nutzungsabfrage wird nicht unterstützt"
 
-#. Message shown after trying to change preferences without admin permissions.
-#: routes/preferences.py:46
+#: /app/pikaraoke/routes/preferences.py:46
+msgid "FX rack must be an integer between 0 and 4"
+msgstr "FX-Rack muss eine ganze Zahl zwischen 0 und 4 sein"
+
+#: /app/pikaraoke/routes/preferences.py:48
+msgid "FX rack must be between 0 and 4"
+msgstr "FX-Rack muss zwischen 0 und 4 liegen"
+
+#: /app/pikaraoke/routes/preferences.py:54
+msgid "Channel must be an integer between 0 and 17"
+msgstr "Kanal muss eine ganze Zahl zwischen 0 und 17 sein"
+
+#: /app/pikaraoke/routes/preferences.py:56
+msgid "Channel must be between 0 and 17"
+msgstr "Kanal muss zwischen 0 und 17 liegen"
+
+#: /app/pikaraoke/routes/preferences.py:62
+msgid "Number of microphones must be an integer between 1 and 16"
+msgstr "Anzahl der Mikrofone muss eine ganze Zahl zwischen 1 und 16 sein"
+
+#: /app/pikaraoke/routes/preferences.py:64
+#, fuzzy
+msgid "Number of microphones must be between 1 and 16"
+msgstr "Anzahl der Mikrofone"
+
+#: /app/pikaraoke/routes/preferences.py:73
 msgid "You don't have permission to change preferences"
 msgstr "Keine Berechtigung, Einstellungen zu ändern"
 
-#. Message shown after trying to clear preferences without admin permissions.
-#: routes/preferences.py:69
+#: /app/pikaraoke/routes/preferences.py:95
 msgid "You don't have permission to clear preferences"
 msgstr "Keine Berechtigung, Einstellungen zu löschen"
 
-#. Message shown after adding random tracks
-#: routes/queue.py:98
+#: /app/pikaraoke/routes/queue.py:116
 #, python-format
 msgid "Added %s random tracks"
 msgstr "%s zufällige Titel hinzugefügt"
 
-#. Message shown after running out songs to add during random track addition
-#: routes/queue.py:101
+#: /app/pikaraoke/routes/queue.py:119
 msgid "Ran out of songs!"
 msgstr "Nicht genügend Lieder zum Hinzufügen!"
 
-#. Message shown when non-admin tries to edit queue
-#: routes/queue.py:172
-msgid "Unauthorized"
-msgstr "Nicht autorisiert"
-
-#: routes/effects.py:96
-msgid "Effects disabled"
-msgstr "Effekte deaktiviert"
-
-#: routes/effects.py:103
-msgid "Missing effect"
-msgstr "Fehlender Effekt"
-
-#: routes/effects.py:131
-msgid "Invalid parameters"
-msgstr "Ungültige Parameter"
-
-#: routes/effects.py:86
-msgid "No microphone assigned"
-msgstr "Kein Mikrofon zugewiesen"
-
-#: lib/effects_manager.py:209
-msgid "Invalid effect"
-msgstr "Ungültiger Effekt"
-
-#: lib/effects_manager.py:211
-msgid "Effect not available"
-msgstr "Effekt nicht verfügbar"
-
-#: routes/queue.py:182
+#: /app/pikaraoke/routes/queue.py:201
 msgid "Cleared the queue!"
 msgstr "Warteschlange wurde geleert!"
 
-#: routes/queue.py:204
+#: /app/pikaraoke/routes/queue.py:223
 #, fuzzy
 msgid "Moved to top of queue"
 msgstr "%s wurde an die Spitze der Warteschlange hinzugefügt: %s"
 
-#: routes/queue.py:220
+#: /app/pikaraoke/routes/queue.py:239
 #, fuzzy
 msgid "Moved to bottom of queue"
 msgstr "%s wurde an die Spitze der Warteschlange hinzugefügt: %s"
 
-#: routes/queue.py:228
+#: /app/pikaraoke/routes/queue.py:247
 msgid "Moved down in queue"
 msgstr "In der Warteschlange nach unten verschoben"
 
-#: routes/queue.py:234
+#: /app/pikaraoke/routes/queue.py:253
 msgid "Error moving down in queue"
 msgstr "Fehler beim Verschieben in der Warteschlange nach unten"
 
-#: routes/queue.py:241
+#: /app/pikaraoke/routes/queue.py:260
 msgid "Moved up in queue"
 msgstr "In der Warteschlange nach oben verschoben"
 
-#: routes/queue.py:247
+#: /app/pikaraoke/routes/queue.py:266
 msgid "Error moving up in queue"
 msgstr "Fehler beim Verschieben in der Warteschlange nach oben"
 
-#: routes/queue.py:254
+#: /app/pikaraoke/routes/queue.py:273
 msgid "Deleted from queue"
 msgstr "Aus der Warteschlange entfernt"
 
-#: routes/queue.py:260
+#: /app/pikaraoke/routes/queue.py:279
 msgid "Error deleting from queue"
 msgstr "Fehler beim Entfernen aus der Warteschlange"
 
-#. Message shown after trying to stream a file that does not exist.
-#: routes/stream.py:166
+#: /app/pikaraoke/routes/queue.py:302
+#, fuzzy
+msgid "Shadowbanned"
+msgstr "Herunterfahren"
+
+#: /app/pikaraoke/routes/queue.py:302
+msgid "Unshadowbanned"
+msgstr "Shadowban aufgehoben"
+
+#: /app/pikaraoke/routes/queue.py:308
+msgid "Song not found in queue"
+msgstr "Song nicht in der Warteschlange gefunden"
+
+#: /app/pikaraoke/routes/queue.py:320
+msgid "Unpinned"
+msgstr "Losgelöst"
+
+#: /app/pikaraoke/routes/queue.py:325
+msgid "Error unpinning"
+msgstr "Fehler beim Loslösen"
+
+#: /app/pikaraoke/routes/queue.py:402
+#, fuzzy, python-format
+msgid "Song is already in the queue: %s"
+msgstr "Lied wurde der Warteschlange hinzugefügt: %s"
+
+#: /app/pikaraoke/routes/stream.py:178
 msgid "File not found."
 msgstr "Datei nicht gefunden."
 
-#: routes/stream.py:235
+#: /app/pikaraoke/routes/stream.py:249
 msgid "Failed to stream subtitle: "
-msgstr ""
+msgstr "Fehler beim Streamen des Untertitels: "
 
-#. Prompt to change the username displayed next to queued songs. CURRENT_NAME
-#. is replaced with the name
-#: templates/base.html:25
+#: /app/pikaraoke/templates/base.html:28
 msgid ""
 "Do you want to change the name of the person using this device? This will"
 " show up on queued songs. Current: CURRENT_NAME"
-msgstr "Möchtest du den Namen der Person ändern, die dieses Gerät benutzt? Dieser Name erscheint bei den Songs in der Warteschlange. Aktuell: CURRENT_NAME"
+msgstr ""
+"Möchtest du den Namen der Person ändern, die dieses Gerät benutzt? Dieser"
+" Name erscheint bei den Songs in der Warteschlange. Aktuell: CURRENT_NAME"
 
-#. Confirmation prompt to clear entire queue. User must type ok to confirm
-#: templates/base.html:27
+#: /app/pikaraoke/templates/base.html:30
 #, fuzzy
 msgid "Are you sure you want to clear the ENTIRE queue? Type ok to continue"
 msgstr "Die Einstellungen wirklich zurücksetzen?"
 
-#. Confirmation dialog when removing a song from the queue. SONG_TITLE is
-#. replaced with the title
-#: templates/base.html:29
+#: /app/pikaraoke/templates/base.html:32
 #, fuzzy
 msgid "Are you sure you want to delete SONG_TITLE from the queue?"
 msgstr "Dieses Lied wirklich aus der Bibliothek löschen?"
 
-#. Confirmation dialog when permanently deleting a song file from the library
-#: templates/base.html:31
+#: /app/pikaraoke/templates/base.html:34
 msgid "Are you sure you want to delete this song from the library?"
 msgstr "Dieses Lied wirklich aus der Bibliothek löschen?"
 
-#. Prompt which asks the user their name when they first try to add to the
-#. queue.
-#: templates/base.html:87
+#: /app/pikaraoke/templates/base.html:90
 msgid ""
 "Please enter your name. This will show up next to the songs you queue up "
 "from this device."
@@ -526,143 +525,194 @@ msgstr ""
 "Bitte gib deinen Namen ein. Der Name wird neben den von dir hinzugefügten"
 " Liedern angezeigt."
 
-#. Navigation link for the home page.
-#: templates/base.html:199
+#: /app/pikaraoke/templates/base.html:204
 msgid "Home"
 msgstr "Startseite"
 
-#. Navigation link for the queue page.
-#: templates/base.html:205 templates/queue.html:492
+#: /app/pikaraoke/templates/base.html:210
+#: /app/pikaraoke/templates/queue.html:741
 msgid "Queue"
 msgstr "Warteschlange"
 
-#. Navigation link for the search page add songs to the queue.
-#. Submit button on the search form for searching YouTube.
-#: templates/base.html:210 templates/search.html:481
+#: /app/pikaraoke/templates/base.html:215
+#: /app/pikaraoke/templates/search.html:731
 msgid "Search"
 msgstr "Suche"
 
-#. Message about the wait for loading the songs
-#: templates/batch-song-renamer.html:136
+#: /app/pikaraoke/templates/base.html:245
+#: /app/pikaraoke/templates/info.html:291
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: /app/pikaraoke/templates/batch-song-renamer.html:136
 msgid ""
 "The loading process may take a few seconds, as the song titles are "
 "compared online. Loading time may vary\n"
 "\tbased on your internet connection."
 msgstr ""
+"Der Ladevorgang kann einige Sekunden dauern, da die Songtitel online "
+"verglichen werden. Die Ladezeit kann je nach\n"
+"\tInternetverbindung variieren."
 
-#. Label which displays that all songs are being shown
-#: templates/batch-song-renamer.html:141
+#: /app/pikaraoke/templates/batch-song-renamer.html:141
 msgid ""
 "Showing all\n"
 "\tsongs"
 msgstr ""
+"Alle\n"
+"\tSongs"
 
-#. Button which changes to show only the songs to rename
-#: templates/batch-song-renamer.html:144
+#: /app/pikaraoke/templates/batch-song-renamer.html:144
 msgid "Show only songs to rename"
-msgstr ""
+msgstr "Nur umzubenennende Songs anzeigen"
 
-#. Label which displays that only songs to rename are being shown.
-#: templates/batch-song-renamer.html:147
+#: /app/pikaraoke/templates/batch-song-renamer.html:147
 msgid ""
 "Showing only songs\n"
 "\tto rename"
 msgstr ""
+"Nur umzubenennende\n"
+"\tSongs"
 
-#. Button which changes to show all songs
-#: templates/batch-song-renamer.html:150
+#: /app/pikaraoke/templates/batch-song-renamer.html:150
 msgid "Show all songs"
-msgstr ""
+msgstr "Alle Songs anzeigen"
 
-#. Message displaying that the songs are currently being loaded
-#: templates/batch-song-renamer.html:158
+#: /app/pikaraoke/templates/batch-song-renamer.html:158
 msgid "Loading songs..."
 msgstr "Lieder werden geladen..."
 
-#. Warning when no suggested tracks are found for a search.
-#: templates/edit.html:83
+#: /app/pikaraoke/templates/edit.html:83
 msgid "No suggestion!"
 msgstr "Kein Vorschlag!"
 
-#. Page title for the page where a song can be edited.
-#: templates/edit.html:98
+#: /app/pikaraoke/templates/edit.html:98
 msgid "Edit Song"
 msgstr "Lied bearbeiten"
 
-#. Label on the control to edit the song's name
-#: templates/edit.html:111
+#: /app/pikaraoke/templates/edit.html:111
 msgid "Edit Song Name"
 msgstr "Liedname bearbeiten"
 
-#. Label on button which auto formats the song's title.
-#: templates/edit.html:118
+#: /app/pikaraoke/templates/edit.html:118
 msgid "Auto-format"
 msgstr "Automatische Formatierung"
 
-#. Label on button which swaps the order of the artist and song in the title.
-#: templates/edit.html:120
+#: /app/pikaraoke/templates/edit.html:120
 msgid "Swap artist/song order"
 msgstr "Künstler-/Liedreihenfolge tauschen"
 
-#. Label on button which saves the changes.
-#: templates/edit.html:130
+#: /app/pikaraoke/templates/edit.html:122
+msgid "Suggest from Last.fm"
+msgstr "Von Last.fm vorschlagen"
+
+#: /app/pikaraoke/templates/edit.html:130
 msgid "Save"
 msgstr "Speichern"
 
-#. Label on button which deletes the current song.
-#: templates/edit.html:140
+#: /app/pikaraoke/templates/edit.html:140
 msgid "Delete this song"
 msgstr "Dieses Lied löschen"
 
-#. Label which displays that the songs are currently sorted by
-#. alphabetical order.
-#: templates/files.html:92
+#: /app/pikaraoke/templates/effects.html:72
+msgid "OFF"
+msgstr "Aus"
+
+#: /app/pikaraoke/templates/effects.html:73
+msgid "ON"
+msgstr "An"
+
+#: /app/pikaraoke/templates/effects.html:97
+msgid "No effects data available."
+msgstr "Keine Effektdaten verfügbar."
+
+#: /app/pikaraoke/templates/effects.html:110
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: /app/pikaraoke/templates/effects.html:116
+msgid "Allow for users"
+msgstr "Für Benutzer zulassen"
+
+#: /app/pikaraoke/templates/effects.html:123
+msgid "Parameter"
+msgstr "Parameter"
+
+#: /app/pikaraoke/templates/effects.html:124
+msgid "Value"
+msgstr "Wert"
+
+#: /app/pikaraoke/templates/effects.html:125
+msgid "Allow user"
+msgstr "Für Benutzer zulassen"
+
+#: /app/pikaraoke/templates/effects.html:169
+msgid "No effects are available for your microphone."
+msgstr "Für dein Mikrofon sind keine Effekte verfügbar."
+
+#: /app/pikaraoke/templates/effects.html:184
+msgid "My Effects"
+msgstr "Meine Effekte"
+
+#: /app/pikaraoke/templates/effects.html:188
+msgid "Effect"
+msgstr "Effekt"
+
+#: /app/pikaraoke/templates/effects.html:191
+msgid "None"
+msgstr "Keine"
+
+#: /app/pikaraoke/templates/effects.html:217
+#, fuzzy
+msgid "No parameters are available for user control."
+msgstr "Für dein Mikrofon sind keine Effekte verfügbar."
+
+#: /app/pikaraoke/templates/effects.html:245
+msgid "Failed to load effects data."
+msgstr "Fehler beim Laden der Effektdaten."
+
+#: /app/pikaraoke/templates/effects.html:257
+#: /app/pikaraoke/templates/effects.html:268
+msgid "Failed to update effects."
+msgstr "Aktualisierung der Effekte fehlgeschlagen."
+
+#: /app/pikaraoke/templates/files.html:210
 msgid "Sorted Alphabetically"
 msgstr "Alphabetisch sortiert"
 
-#. Button which changes how the songs are sorted so they become sorted by date.
-#: templates/files.html:94
+#: /app/pikaraoke/templates/files.html:212
 msgid ""
 "Sort by\n"
 "\t\t\tDate"
 msgstr "Nach Datum sortiert"
 
-#. Label which displays that the songs are currently sorted by
-#. date.
-#: templates/files.html:98
+#: /app/pikaraoke/templates/files.html:216
 msgid "Sorted by date"
 msgstr "Nach Datum sortiert"
 
-#. Button which changes how the songs are sorted so they become sorted by name.
-#: templates/files.html:100
+#: /app/pikaraoke/templates/files.html:218
 msgid ""
 "Sort by\n"
 "\t\t\tAlphabetical"
 msgstr "Alphabetisch sortieren"
 
-#. Button to open the batch song renamer page.
-#: templates/files.html:107
+#: /app/pikaraoke/templates/files.html:225
 msgid "Edit all songs"
 msgstr "Alle Lieder bearbeiten"
 
-#. Message which shows in the "Now Playing" section when there is no song
-#. currently playing
-#: templates/home.html:35
+#: /app/pikaraoke/templates/home.html:41
 msgid "Nothing is playing right now."
 msgstr "Es wird gerade nichts abgespielt."
 
-#. Title text for the icon marking the next wish.
-#: templates/home.html:43
+#: /app/pikaraoke/templates/home.html:49
 msgid "Next wish"
 msgstr "Nächster Wunsch"
 
-#. Alternative text for the "Up next" section if no more songs are queued up.
-#: templates/home.html:46
+#: /app/pikaraoke/templates/home.html:52
 msgid "No song is queued."
 msgstr "Kein Lied in der Warteschlange"
 
-#. Confirmation message when clicking a button to skip a track.
-#: templates/home.html:134
+#: /app/pikaraoke/templates/home.html:171
 msgid ""
 "Are you sure you want to skip this track? If you didn't add this song, "
 "ask permission first!"
@@ -670,69 +720,92 @@ msgstr ""
 "Bist du sicher, dass du dieses Lied überspringen möchtest? Wenn du diesen"
 " Song nicht selbst hinzugefügt hast, frage um Erlaubnis!"
 
-#. Header showing the currently playing song.
-#: templates/home.html:181
+#: /app/pikaraoke/templates/home.html:239
+#: /app/pikaraoke/templates/home.html:409
+msgid "Available"
+msgstr "Verfügbar"
+
+#: /app/pikaraoke/templates/home.html:240
+#: /app/pikaraoke/templates/home.html:412
+#: /app/pikaraoke/templates/home.html:413
+msgid "Unassign"
+msgstr "Freigeben"
+
+#: /app/pikaraoke/templates/home.html:291
 msgid "Now Playing"
 msgstr "Jetzt läuft"
 
-#. Title for the section displaying the next song to be played.
-#: templates/home.html:194
+#: /app/pikaraoke/templates/home.html:306
 msgid "Next Song"
 msgstr "Nächstes Lied"
 
-#. Title of the box with controls such as pause and skip.
-#: templates/home.html:201
+#: /app/pikaraoke/templates/home.html:318
 msgid "Player Control"
 msgstr "Player-Steuerung"
 
-#. Title attribute on the button to play or pause the current song.
-#: templates/home.html:205
+#: /app/pikaraoke/templates/home.html:322
 msgid "Restart Song"
 msgstr "Lied neu starten"
 
-#. Title attribute on the button to skip to the next song.
-#: templates/home.html:207
+#: /app/pikaraoke/templates/home.html:324
 msgid "Play/Pause"
 msgstr "Abspielen/Pause"
 
-#: templates/home.html:209
+#: /app/pikaraoke/templates/home.html:326
 msgid "Stop Current Song"
 msgstr "Aktuelles Lied stoppen"
 
-#. Title of a control to change the key/pitch of the playing song.
-#: templates/home.html:231
+#: /app/pikaraoke/templates/home.html:348
 msgid "Change Key"
 msgstr "Tonart ändern"
 
-#. Label on the button to confirm the change in key/pitch of the playing song.
-#: templates/home.html:251
+#: /app/pikaraoke/templates/home.html:368
 msgid "Change"
 msgstr "Ändern"
 
-#. Confirmation text whe the user selects quit.
-#: templates/info.html:64
+#: /app/pikaraoke/templates/home.html:375
+msgid "Tempo"
+msgstr "Tempo"
+
+#: /app/pikaraoke/templates/home.html:393
+#, fuzzy
+msgid "Reset"
+msgstr "Lied neu starten"
+
+#: /app/pikaraoke/templates/home.html:403
+msgid "Microphone Status"
+msgstr "Mikrofon-Status"
+
+#: /app/pikaraoke/templates/home.html:412
+msgid "microphone"
+msgstr "Mikrofon"
+
+#: /app/pikaraoke/templates/home.html:424
+#, python-format
+msgid "You have the #%(user_microphone)s microphone"
+msgstr "Du hast das Mikrofon #%(user_microphone)s"
+
+#: /app/pikaraoke/templates/home.html:427
+msgid "Hand Back Microphone"
+msgstr "Mikrofon zurückgeben"
+
+#: /app/pikaraoke/templates/info.html:200
 msgid "Are you sure you want to quit?"
 msgstr "Wirklich beenden?"
 
-#. Confirmation text whe the user starts to turn off the machine running
-#. Pikaraoke.
-#: templates/info.html:72
+#: /app/pikaraoke/templates/info.html:208
 msgid "Are you sure you want to shut down?"
 msgstr "Das System wirklich herunterfahren?"
 
-#. Confirmation text whe the user clears preferences.
-#: templates/info.html:80
+#: /app/pikaraoke/templates/info.html:216
 msgid "Are you sure you want to clear your preferences?"
 msgstr "Die Einstellungen wirklich zurücksetzen?"
 
-#. Confirmation text whe the user starts to reboot the machine running
-#. Pikaraoke.
-#: templates/info.html:88
+#: /app/pikaraoke/templates/info.html:224
 msgid "Are you sure you want to reboot?"
 msgstr "Das System wirklich neu starten?"
 
-#. Confirmation text whe the user asks to update the Youtube-dl tool.
-#: templates/info.html:98
+#: /app/pikaraoke/templates/info.html:234
 msgid ""
 "Are you sure you want to update Youtube-dl right now? Current and pending"
 " downloads may fail."
@@ -740,159 +813,207 @@ msgstr ""
 "Bist du sicher, dass du Youtube-DL jetzt aktualisieren möchtest? Aktive "
 "und ausstehende Downloads könnten fehlschlagen."
 
-#. Title of the settings page.
-#: templates/info.html:155
-msgid "Settings"
-msgstr "Einstellungen"
-
-#. Label which appears before a url which links to the current page.
-#: templates/info.html:167
+#: /app/pikaraoke/templates/info.html:303
 #, python-format
 msgid "URL of %(site_title)s:"
 msgstr "URL von %(site_title)s:"
 
-#. Label before a QR code which brings a frind (pal) to the main page if
-#. scanned, so they can also add songs. QR code follows this text.
-#: templates/info.html:173
+#: /app/pikaraoke/templates/info.html:309
 msgid "Handy URL QR code to share with a pal:"
 msgstr "URL-QR-Code zum weitergeben"
 
-#. Title of the system data section.
-#: templates/info.html:182
-msgid "System Data"
-msgstr "Systemstatistiken"
+#: /app/pikaraoke/templates/info.html:316
+msgid "Preferred language"
+msgstr "Bevorzugte Sprache"
 
-#. Header of the information section about the computer running Pikaraoke.
-#: templates/info.html:187
-msgid "System Info"
-msgstr "Systeminfo"
-
-#. The hardware platform
-#: templates/info.html:193
-msgid "Platform:"
-msgstr "Plattform:"
-
-#. The os version
-#: templates/info.html:195
-msgid "OS Version:"
-msgstr "OS-Version:"
-
-#. The version of the program "Youtube-dl".
-#: templates/info.html:197
-msgid "Youtube-dl (yt-dlp) version:"
-msgstr "Youtube-DL (yt-dlp)-Version:"
-
-#. The version of the program "ffmpeg".
-#: templates/info.html:199
-msgid "FFmpeg version:"
-msgstr "FFmpeg-Version:"
-
-#. The version of Pikaraoke running right now.
-#: templates/info.html:201
-msgid "Pikaraoke version:"
-msgstr "nerdBar-Karaoke-Version:"
-
-#. Header of the information section about the System stats.
-#: templates/info.html:207
-msgid "System stats"
-msgstr "Systemstatistiken"
-
-#. The CPU usage of the computer running Pikaraoke.
-#: templates/info.html:213
-msgid "CPU:"
-msgstr ""
-
-#: templates/info.html:213 templates/info.html:215 templates/info.html:217
-#, fuzzy
-msgid "Loading..."
-msgstr "Lieder werden geladen..."
-
-#. The disk usage of the computer running Pikaraoke. Used by downloaded songs.
-#: templates/info.html:215
-msgid "Disk Usage:"
-msgstr ""
-
-#. The memory (RAM) usage of the computer running Pikaraoke.
-#: templates/info.html:217
-msgid "Memory:"
-msgstr ""
-
-#. Title of the user preferences section.
-#: templates/info.html:224
+#: /app/pikaraoke/templates/info.html:331
 msgid "System Settings"
 msgstr "Systemeinstellungen"
 
-#. Title text for the queue settings section of preferences
-#: templates/info.html:230
+#: /app/pikaraoke/templates/info.html:335
 msgid "Queue settings"
 msgstr "Warteschlangen-Einstellungen"
 
-#. Title text for the interface settings section of preferences
-#: templates/info.html:264
+#: /app/pikaraoke/templates/info.html:343
+msgid "Limit of songs an individual user can add to the queue (0 = unlimited)"
+msgstr "Limit an Songs, die ein einzelner Nutzer der Warteschlange hinzufügen kann (0 = unbegrenzt)"
+"Limit an Liedern, die ein Benutzer zur Warteschlange hinzufügen kann (0 ="
+" unbegrenzt)"
+
+#: /app/pikaraoke/templates/info.html:350
+msgid ""
+"Song add cooldown count (number of songs to trigger cooldown, -1 = "
+"disabled)"
+msgstr ""
+"Cooldown-Anzahl beim Hinzufügen von Songs (Anzahl der Songs bis zum "
+"Cooldown, -1 = deaktiviert)"
+
+#: /app/pikaraoke/templates/info.html:357
+msgid "Song add cooldown duration in minutes (-1 = disabled)"
+msgstr "Cooldown-Dauer für Song-Hinzufügen in Minuten (-1 = deaktiviert)"
+
+#: /app/pikaraoke/templates/info.html:363
+msgid "Allow adding songs to the queue"
+msgstr "Hinzufügen von Songs zur Warteschlange erlauben"
+
+#: /app/pikaraoke/templates/info.html:378
+msgid "Queue closing time (24-hour HH:MM, leave blank to disable)"
+msgstr "Schließzeit der Warteschlange (24-Stunden HH:MM, leer lassen zum Deaktivieren)"
+"Schließzeit der Warteschlange (24-Stunden HH:MM, leer lassen zum "
+"Deaktivieren)"
+
+#: /app/pikaraoke/templates/info.html:385
+msgid "Queue order mode"
+msgstr "Warteschlangenmodus"
+
+#: /app/pikaraoke/templates/info.html:389
+#: /app/pikaraoke/templates/queue.html:747
+#: /app/pikaraoke/templates/queue.html:756
+msgid "Chronological"
+msgstr "Chronologisch"
+
+#: /app/pikaraoke/templates/info.html:390
+#: /app/pikaraoke/templates/queue.html:750
+msgid "Voting"
+msgstr "Abstimmung"
+
+#: /app/pikaraoke/templates/info.html:391
+#: /app/pikaraoke/templates/queue.html:753
+msgid "Fair"
+msgstr "Fair"
+
+#: /app/pikaraoke/templates/info.html:398
+msgid "Pin mode (admin move)"
+msgstr "Pin-Modus (Admin-Verschieben)"
+
+#: /app/pikaraoke/templates/info.html:402
+#, fuzzy
+msgid "Keep position"
+msgstr "Position beibehalten"
+
+#: /app/pikaraoke/templates/info.html:403
+msgid "Pin to previous song"
+msgstr "An vorherigen Song anheften"
+
+#: /app/pikaraoke/templates/info.html:414
+msgid "Effects & Mixer"
+msgstr "Effekte & Mixer"
+
+#: /app/pikaraoke/templates/info.html:421
+msgid "Enable effects UI and OSC output"
+msgstr "Effekte-Oberfläche und OSC-Ausgabe aktivieren"
+
+#: /app/pikaraoke/templates/info.html:428
+msgid "OSC mixer IP address"
+msgstr "OSC-Mixer-IP-Adresse"
+
+#: /app/pikaraoke/templates/info.html:435
+msgid "OSC mixer port"
+msgstr "OSC-Mixer-Port"
+
+#: /app/pikaraoke/templates/info.html:441
+msgid "Microphone Channels & FX Racks"
+msgstr "Mikrofonkanäle & FX-Racks"
+
+#: /app/pikaraoke/templates/info.html:443
+msgid ""
+"Channel values map to FX source (0 = INS, 1-16 = MIX1..MIX16, 17 = M/C). "
+"Use 0 for \"no rack\"; valid rack indexes are 1–4."
+msgstr ""
+"Kanalwerte entsprechen der FX-Quelle (0 = INS, 1–16 = MIX1..MIX16, 17 = "
+"M/C). Verwenden Sie 0 für \"kein Rack\"; gültige Rack-Indizes sind 1–4."
+
+#: /app/pikaraoke/templates/info.html:446
+#, fuzzy, python-format
+msgid "Microphone #%(i)s"
+msgstr "Mikrofon"
+
+#: /app/pikaraoke/templates/info.html:449
+msgid "Channel"
+msgstr "Kanal"
+
+#: /app/pikaraoke/templates/info.html:453
+msgid "FX rack"
+msgstr "FX-Rack"
+
+#: /app/pikaraoke/templates/info.html:465
+#, fuzzy
+msgid "Microphone Tracking"
+msgstr "Mikrofon-Status"
+
+#: /app/pikaraoke/templates/info.html:473
+msgid "Show microphone status on home page (non-admins)"
+msgstr "Mikrofonstatus auf der Startseite anzeigen (Nicht-Admins)"
+
+#: /app/pikaraoke/templates/info.html:480
+msgid "Reset microphone assignments after each song"
+msgstr "Mikrofonzuweisungen nach jedem Lied zurücksetzen"
+
+#: /app/pikaraoke/templates/info.html:487
+msgid "Wait for singer to get a microphone before playing their song"
+msgstr "Warten bis der Sänger ein Mikrofon hat, bevor sein Lied gespielt wird"
+
+#: /app/pikaraoke/templates/info.html:494
+msgid "Microphone wait timeout in seconds"
+msgstr "Mikrofon-Wartezeit in Sekunden"
+
+#: /app/pikaraoke/templates/info.html:500
+msgid "Action when microphone wait timeout expires:"
+msgstr "Aktion wenn Mikrofon-Wartezeit abläuft:"
+
+#: /app/pikaraoke/templates/info.html:504
+msgid "Play song anyway"
+msgstr "Lied trotzdem abspielen"
+
+#: /app/pikaraoke/templates/info.html:505
+msgid "Skip song"
+msgstr "Lied überspringen"
+
+#: /app/pikaraoke/templates/info.html:506
+msgid "Keep queue position"
+msgstr "Position beibehalten"
+
+#: /app/pikaraoke/templates/info.html:513
+msgid "Number of microphones"
+msgstr "Anzahl der Mikrofone"
+
+#: /app/pikaraoke/templates/info.html:517
+msgid "Microphone colors (pick per microphone)"
+msgstr "Mikrofonfarben (pro Mikrofon auswählen)"
+
+#: /app/pikaraoke/templates/info.html:528
+msgid "Colors are saved automatically and apply to microphone icons in the UI."
+msgstr "Farben werden automatisch gespeichert und auf die Mikrofon-Icons in der Oberfläche angewendet."
+"Farben werden automatisch gespeichert und gelten für Mikrofonsymbole in "
+"der Benutzeroberfläche."
+
+#: /app/pikaraoke/templates/info.html:536
 msgid "Interface settings"
 msgstr "Interface-Einstellungen"
 
-#. Title text for the sound/video settings section of preferences
-#: templates/info.html:379
-msgid "Sound/Video settings"
-msgstr "Ton-/Video-Einstellungen"
+#: /app/pikaraoke/templates/info.html:541
+msgid "Message of the day (MOTD)"
+msgstr "Nachricht des Tages (MOTD)"
 
-#. Help text explaining the the need to restart after changing splash screen
-#. preferences
-#: templates/info.html:237
-msgid ""
-"*You may need to refresh the splash screen for these changes to take "
-"effect."
-msgstr ""
-"Möglicherweise muss der Begrüßungsbildschirm neu geladen werden, damit "
-"die Änderungen sichtbar sind."
-
-#. Checkbox label which enable/disables background video on the Splash Screen
-#: templates/info.html:240
-msgid "Disable background video"
-msgstr "Hintergrundvideo deaktivieren"
-
-#. Checkbox label which enable/disables background music on the Splash Screen
-#: templates/info.html:246
-msgid "Disable background music"
-msgstr "Hintergrundmusik deaktivieren"
-
-#. Checkbox label which enable/disables the Score Screen
-#: templates/info.html:252
-msgid "Disable the score screen after each song"
-msgstr "Bewertungsbildschirm nach jedem Lied deaktivieren"
-
-#. Checkbox label which enable/disables notifications on the splash screen
-#: templates/info.html:258
-msgid "Hide notifications"
-msgstr "Benachrichtigungen ausblenden"
-
-#. Checkbox label which enable/disables the URL display
-#: templates/info.html:264
+#: /app/pikaraoke/templates/info.html:548
 msgid "Hide the URL and QR code"
 msgstr "URL und QR-Code ausblenden"
 
-#. Checkbox label which enable/disables showing overlay data on the splash
-#. screen
-#: templates/info.html:270
+#: /app/pikaraoke/templates/info.html:554
 msgid "Hide all overlays, including now playing, up next, and QR code"
-msgstr ""
+msgstr "Alle Überlagerungen ausblenden, einschließlich aktuell gespielt, als nächstes und QR-Code"
 "Alle Overlays ausblenden, einschließlich 'Jetzt läuft', 'Als Nächstes' "
 "und QR-Code"
 
-#. Numberbox label for setting the default video volume
-#: templates/info.html:276
-msgid "Default volume of the videos (min 0, max 100)"
-msgstr "Standardlautstärke der Videos (min 0, max 100)"
+#: /app/pikaraoke/templates/info.html:560
+msgid "Hide notifications"
+msgstr "Benachrichtigungen ausblenden"
 
-#. Numberbox label for setting the background music volume
-#: templates/info.html:282
-msgid "Volume of the background music (min 0, max 100)"
-msgstr "Lautstärke der Hintergrundmusik (min 0, max 100)"
+#: /app/pikaraoke/templates/info.html:566
+msgid "Disable the score screen after each song"
+msgstr "Bewertungsbildschirm nach jedem Lied deaktivieren"
 
-#. Numberbox label for setting the inactive delay before showing the
-#. screensaver
-#: templates/info.html:289
+#: /app/pikaraoke/templates/info.html:573
 msgid ""
 "The amount of idle time in seconds before the screen saver activates. Set"
 " to 0 to disable it."
@@ -900,68 +1021,92 @@ msgstr ""
 "Inaktivzeit bis sich der Bildschirmschoner aktiviert. Zum Deaktivieren "
 "auf 0 setzen."
 
-#. Numberbox label for setting the delay before playing the next song
-#: templates/info.html:296
+#: /app/pikaraoke/templates/info.html:580
 msgid "The delay in seconds before starting the next song"
 msgstr "Die Verzögerung in Sekunden vor dem Start des nächsten Liedes"
 
-#. Title text for the Score Phrases section of preferences
-#: templates/info.html:307
+#: /app/pikaraoke/templates/info.html:587
 msgid "Score phrases"
-msgstr ""
+msgstr "Bewertungsphrasen"
 
-#. Help text explaining how to add phrases
-#: templates/info.html:314
+#: /app/pikaraoke/templates/info.html:589
 msgid "Add one phrase per line in each box and hit save."
-msgstr ""
+msgstr "Füge einen Satz pro Zeile in jedes Feld ein und klicke auf Speichern."
 
-#. Title for LOW Score Phrases
-#: templates/info.html:316
+#: /app/pikaraoke/templates/info.html:591
 msgid "LOW Score Phrases (score < 30)"
-msgstr ""
+msgstr "NIEDRIGE Punkte-Phrasen (Punkte < 30)"
 
-#. Placeholder for the low score phrases textarea
-#: templates/info.html:318
+#: /app/pikaraoke/templates/info.html:593
 msgid "Could be better..."
-msgstr ""
+msgstr "Könnte besser sein..."
 
-#. Title for MID Score Phrases
-#: templates/info.html:321
+#: /app/pikaraoke/templates/info.html:596
 msgid "MID Score Phrases (30 > score < 60)"
-msgstr ""
+msgstr "MITTLERE Punkte-Phrasen (30 > Punkte < 60)"
 
-#. Placeholder for the MID score phrases textarea
-#: templates/info.html:323
+#: /app/pikaraoke/templates/info.html:598
 msgid "That was ok..."
-msgstr ""
+msgstr "Das war okay..."
 
-#. Title for HIGH Score Phrases
-#: templates/info.html:326
+#: /app/pikaraoke/templates/info.html:601
 msgid "HIGH Score Phrases (60 < score)"
-msgstr ""
+msgstr "HOHE Punkte-Phrasen (60 < Punkte)"
 
-#. Placeholder for the HIGH score phrases textarea
-#: templates/info.html:328
+#: /app/pikaraoke/templates/info.html:603
 msgid "Wonderfull..."
-msgstr ""
+msgstr "Wunderbar..."
 
-#. Label for language selection dropdown
-#: templates/info.html:349
-msgid "Preferred language (requires restart)"
-msgstr ""
+#: /app/pikaraoke/templates/info.html:611
+msgid "Browse page results per page (10-1000, default 500)"
+msgstr "Ergebnisse pro Seite auf der Durchsuchen-Seite (10-1000, Standard 500)"
 
-#. Checkbox label which enable/disables audio volume normalization
-#: templates/info.html:365
+#: /app/pikaraoke/templates/info.html:620
+msgid "Sound/Video settings"
+msgstr "Ton-/Video-Einstellungen"
+
+#: /app/pikaraoke/templates/info.html:627
+msgid "Disable background video"
+msgstr "Hintergrundvideo deaktivieren"
+
+#: /app/pikaraoke/templates/info.html:633
+msgid "Disable background music"
+msgstr "Hintergrundmusik deaktivieren"
+
+#: /app/pikaraoke/templates/info.html:639
+msgid "Default volume of the videos (min 0, max 100)"
+msgstr "Standardlautstärke der Videos (min 0, max 100)"
+
+#: /app/pikaraoke/templates/info.html:645
+msgid "Volume of the background music (min 0, max 100)"
+msgstr "Lautstärke der Hintergrundmusik (min 0, max 100)"
+
+#: /app/pikaraoke/templates/info.html:651
 msgid "Normalize audio volume"
 msgstr "Audio-Lautstärke normalisieren"
 
-#. Checkbox label which enable/disables high quality video downloads
-#: templates/info.html:371
+#: /app/pikaraoke/templates/info.html:657
+msgid "Skip leading silence during playback"
+msgstr "Stille zu Beginn beim Abspielen überspringen"
+
+#: /app/pikaraoke/templates/info.html:663
+msgid "Skip trailing silence during playback (auto-ends song)"
+msgstr "Stille am Ende beim Abspielen überspringen (beendet Song automatisch)"
+
+#: /app/pikaraoke/templates/info.html:670
+msgid "Silence detection threshold (dB, default -50)"
+msgstr "Stille-Erkennungsschwelle (dB, Standard -50)"
+
+#: /app/pikaraoke/templates/info.html:677
+#, fuzzy
+msgid "Minimum silence duration (seconds, default 0.5)"
+msgstr "Mindestdauer der Stille für das Abschneiden (Sekunden)"
+
+#: /app/pikaraoke/templates/info.html:683
 msgid "Download high quality videos"
 msgstr "Videos in hoher Qualität herunterladen"
 
-#. Checkbox label which enable/disables full transcode before playback
-#: templates/info.html:377
+#: /app/pikaraoke/templates/info.html:689
 msgid ""
 "Transcode video completely before playing (better browser compatibility, "
 "slower starts). Buffer size will be ignored.*"
@@ -969,8 +1114,7 @@ msgstr ""
 "Video vor dem Abspielen vollständig transkodieren (Bessere Browser-"
 "Kompatibilität, langsamerer Liedstart). Puffergröße wird ignoriert."
 
-#. Checkbox label which enable/disables CDG pixel scaling
-#: templates/info.html:383
+#: /app/pikaraoke/templates/info.html:695
 msgid ""
 "Enable CDG pixel scaling (crisper visuals for CDG files, may increase CPU"
 " usage)"
@@ -978,60 +1122,15 @@ msgstr ""
 "CDG-Pixel-Skalierung aktivieren (schärfere Darstellung für CDG-Dateien, "
 "kann die CPU-Auslastung erhöhen)"
 
-#. Numberbox label for audio video synchronization
-#: templates/info.html:390
+#: /app/pikaraoke/templates/info.html:702
 msgid ""
 "Fix the audio and video synchronization in seconds (negative = advances "
 "audio | positive = delays audio)"
-msgstr "Audio- und Videosynchronisation in Sekunden korrigieren (negativ = Audio voraus | positiv = Audio verzögert)"
-
-#. Numberbox label for limitting the number of songs for each player
-#: templates/info.html:397
-msgid "Limit of songs an individual user can add to the queue (0 = unlimited)"
 msgstr ""
-"Limit an Liedern, die ein Benutzer zur Warteschlange hinzufügen kann (0 ="
-" unbegrenzt)"
+"Audio- und Videosynchronisation in Sekunden korrigieren (negativ = Audio "
+"voraus | positiv = Audio verzögert)"
 
-#. Checkbox label which enables/disables adding songs to the queue
-#: templates/info.html:478
-msgid "Allow adding songs to the queue"
-msgstr "Hinzufügen von Songs zur Warteschlange erlauben"
-
-#. Time input label for automatic queue closing
-#: templates/info.html:495
-msgid "Queue closing time (24-hour HH:MM, leave blank to disable)"
-msgstr "Schließzeit der Warteschlange (24-Stunden HH:MM, leer lassen zum Deaktivieren)"
-
-#. Numberbox label for cooldown song count
-#: templates/info.html:409
-msgid "Song add cooldown count (number of songs to trigger cooldown, -1 = disabled)"
-msgstr ""
-"Cooldown-Anzahl beim Hinzufügen von Songs (Anzahl der Songs bis zum Cooldown, -1 = deaktiviert)"
-
-#. Numberbox label for cooldown duration
-#: templates/info.html:416
-msgid "Song add cooldown duration in minutes (-1 = disabled)"
-msgstr "Cooldown-Dauer für Song-Hinzufügen in Minuten (-1 = deaktiviert)"
-
-#. Label for selecting how queue order is determined.
-#: templates/info.html:403
-msgid "Queue order mode"
-msgstr "Warteschlangenmodus"
-
-#: templates/info.html:428
-msgid "Chronological"
-msgstr "Chronologisch"
-
-#: templates/info.html:429
-msgid "Voting"
-msgstr "Abstimmung"
-
-#: templates/info.html:430
-msgid "Fair"
-msgstr "Fair"
-
-#. Numberbox label for setting the buffer size in kilobytes
-#: templates/info.html:410
+#: /app/pikaraoke/templates/info.html:709
 msgid ""
 "Buffer size in kilobytes. Transcode this amount of the video before "
 "sending it to the splash screen. "
@@ -1039,28 +1138,19 @@ msgstr ""
 "Puffergröße in Kilobytes. Transkodiert diesen Teil des Videos, bevor es "
 "abgespielt wird."
 
-#. Numberbox label for browse page results per page
-#: templates/info.html:522
-msgid "Browse page results per page (10-1000, default 500)"
-msgstr "Ergebnisse pro Seite auf der Durchsuchen-Seite (10-1000, Standard 500)"
-
-#. Text for the link where the user can clear all user preferences
-#: templates/info.html:423
+#: /app/pikaraoke/templates/info.html:715
 msgid "Clear preferences"
 msgstr "Einstellungen löschen"
 
-#. Title of the updates section.
-#: templates/info.html:431
+#: /app/pikaraoke/templates/info.html:723
 msgid "Updates"
 msgstr "Aktualisierungen"
 
-#. Label for the Refresh the song list on the updates section
-#: templates/info.html:436
+#: /app/pikaraoke/templates/info.html:728
 msgid "Refresh the song list"
 msgstr "Liederliste aktualisieren"
 
-#. Help text explaining the Rescan song directory link.
-#: templates/info.html:441
+#: /app/pikaraoke/templates/info.html:733
 msgid ""
 "You should only need to do this if you manually copied files to the "
 "download directory while pikaraoke was running."
@@ -1068,18 +1158,15 @@ msgstr ""
 "Nur nötig, wenn manuell Dateien in das Liederverzeichnis kopiert wurden, "
 "während nerdBar-Karaoke aktiv ist."
 
-#. Text on the link which forces Pikaraoke to rescan and pick up any new songs.
-#: templates/info.html:446
+#: /app/pikaraoke/templates/info.html:738
 msgid "Rescan song directory"
 msgstr "Liederverzeichnis erneut scannen"
 
-#. Label for the YT-DLP update on the updates section
-#: templates/info.html:455
+#: /app/pikaraoke/templates/info.html:747
 msgid "YT-DLP update"
-msgstr ""
+msgstr "YT-DLP-Aktualisierung"
 
-#. Text explaining why you might want to update youtube-dl.
-#: templates/info.html:460
+#: /app/pikaraoke/templates/info.html:752
 #, python-format
 msgid ""
 "\n"
@@ -1090,18 +1177,14 @@ msgid ""
 msgstr ""
 "\n"
 "Wenn das Herunterladen oder die Suche nicht funktionieren, wird eine "
-"Aktualisierung von Youtube-DL das Problem wahrscheinlich beheben. "
-"Die aktuell installierte Version ist: \"%(youtubedl_version)s\"."
+"Aktualisierung von Youtube-DL das Problem wahrscheinlich beheben. Die "
+"aktuell installierte Version ist: \"%(youtubedl_version)s\"."
 
-#. Text for the link which will try and update youtube-dl on the machine
-#. running Pikaraoke.
-#: templates/info.html:466
+#: /app/pikaraoke/templates/info.html:758
 msgid "Update youtube-dl"
 msgstr "Youtube-DL aktualisieren"
 
-#. Help text which explains why updating youtube-dl can fail. The log is a file
-#. on the machine running Pikaraoke.
-#: templates/info.html:470
+#: /app/pikaraoke/templates/info.html:762
 msgid ""
 "* This update link above may fail if you don't have proper file "
 "permissions.\n"
@@ -1110,14 +1193,24 @@ msgstr ""
 "* Diese Aktualisierung kann ohne die nötigen Dateiberechtigungen "
 "fehlschlagen. Pikaraoke-Log auf Fehler überprüfen."
 
-#. Title of the section on shutting down / turning off the machine running
-#. Pikaraoke.
-#: templates/info.html:482
+#: /app/pikaraoke/templates/info.html:774
+#, fuzzy
+msgid "Logs"
+msgstr "Anmelden"
+
+#: /app/pikaraoke/templates/info.html:779
+msgid "View real-time application logs for debugging."
+msgstr "Echtzeit-Anwendungsprotokolle zur Fehlersuche anzeigen."
+
+#: /app/pikaraoke/templates/info.html:781
+msgid "Open Log Viewer"
+msgstr "Log-Viewer öffnen"
+
+#: /app/pikaraoke/templates/info.html:788
 msgid "Shutdown"
 msgstr "Herunterfahren"
 
-#. Explainitory text which explains why to use the shutdown link.
-#: templates/info.html:489
+#: /app/pikaraoke/templates/info.html:795
 msgid ""
 "Don't just pull the plug! Always shut down your server properly to avoid "
 "data corruption."
@@ -1125,36 +1218,28 @@ msgstr ""
 "Zieh nicht einfach den Stecker! Fahr den Server immer korrekt herunter, "
 "um Datenkorruption zu vermeiden."
 
-#. Text for button which turns off Pikaraoke for everyone using it at your
-#. house.
-#: templates/info.html:496
+#: /app/pikaraoke/templates/info.html:802
 msgid "Quit Pikaraoke"
 msgstr "nerdBar-Karaoke beenden"
 
-#. Text for button which reboots the machine running Pikaraoke.
-#: templates/info.html:499
+#: /app/pikaraoke/templates/info.html:805
 msgid "Reboot System"
 msgstr "System neustarten"
 
-#. Text for button which turn soff the machine running Pikaraoke.
-#: templates/info.html:502
+#: /app/pikaraoke/templates/info.html:808
 msgid "Shutdown System"
 msgstr "System herunterfahren"
 
-#. Title of the updates section.
-#: templates/info.html:513
+#: /app/pikaraoke/templates/info.html:819
 msgid "Other"
 msgstr "Sonstiges"
 
-#. Title for section containing a few other options on the Info page.
-#. Text for button
-#: templates/info.html:518 templates/info.html:530
+#: /app/pikaraoke/templates/info.html:824
+#: /app/pikaraoke/templates/info.html:836
 msgid "Expand Raspberry Pi filesystem"
 msgstr "Raspberry Pi-Dateisystem erweitern"
 
-#. Explainitory text which explains why you might want to expand the
-#. filesystem.
-#: templates/info.html:523
+#: /app/pikaraoke/templates/info.html:829
 msgid ""
 "If you just installed the pre-built pikaraoke pi image and your SD card "
 "is larger than 4GB,\n"
@@ -1167,322 +1252,440 @@ msgstr ""
 "den gesamten Speicherplatz nutzbar zu machen. Dies musst du nur einmal "
 "machen. Das System startet hierzu neu."
 
-#. Title of the admin section.
-#: templates/info.html:539 templates/info.html:564
+#: /app/pikaraoke/templates/info.html:845
+#: /app/pikaraoke/templates/info.html:912
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
-#. Title for section logout on the Info page.
-#: templates/info.html:546
+#: /app/pikaraoke/templates/info.html:852
 msgid "Logout"
-msgstr ""
+msgstr "Ausloggen"
 
-#. Message for the log out user from admin mode button.
-#: templates/info.html:552
+#: /app/pikaraoke/templates/info.html:858
 msgid "Click here to logout from admin mode."
 msgstr "Hier klicken, um den Admin-Modus zu verlassen."
 
-#. Link which will log out the user from admin mode.
-#: templates/info.html:554
+#: /app/pikaraoke/templates/info.html:860
 msgid "Log out"
-msgstr ""
+msgstr "Abmelden"
 
-#. Title for section login on the Info page.
-#. Title for the log in page for admins.
-#. Text on submit button for the admin login form.
-#: templates/info.html:570 templates/login.html:8 templates/login.html:20
+#: /app/pikaraoke/templates/info.html:869
+msgid "System Data"
+msgstr "Systemstatistiken"
+
+#: /app/pikaraoke/templates/info.html:874
+msgid "System Info"
+msgstr "Systeminfo"
+
+#: /app/pikaraoke/templates/info.html:880
+msgid "Platform:"
+msgstr "Plattform:"
+
+#: /app/pikaraoke/templates/info.html:882
+msgid "OS Version:"
+msgstr "OS-Version:"
+
+#: /app/pikaraoke/templates/info.html:884
+msgid "Youtube-dl (yt-dlp) version:"
+msgstr "Youtube-DL (yt-dlp)-Version:"
+
+#: /app/pikaraoke/templates/info.html:886
+msgid "FFmpeg version:"
+msgstr "FFmpeg-Version:"
+
+#: /app/pikaraoke/templates/info.html:888
+#, fuzzy
+msgid "nerdBar-Karaoke version:"
+msgstr "nerdBar-Karaoke-Version:"
+
+#: /app/pikaraoke/templates/info.html:894
+msgid "System stats"
+msgstr "Systemstatistiken"
+
+#: /app/pikaraoke/templates/info.html:900
+msgid "CPU:"
+msgstr "CPU:"
+
+#: /app/pikaraoke/templates/info.html:900
+#: /app/pikaraoke/templates/info.html:902
+#: /app/pikaraoke/templates/info.html:904
+#, fuzzy
+msgid "Loading..."
+msgstr "Lieder werden geladen..."
+
+#: /app/pikaraoke/templates/info.html:902
+msgid "Disk Usage:"
+msgstr "Festplattennutzung:"
+
+#: /app/pikaraoke/templates/info.html:904
+msgid "Memory:"
+msgstr "Arbeitsspeicher:"
+
+#: /app/pikaraoke/templates/info.html:918 /app/pikaraoke/templates/login.html:8
+#: /app/pikaraoke/templates/login.html:20
 msgid "Login"
 msgstr "Anmelden"
 
-#. Message for the log in user to admin mode button.
-#: templates/info.html:576
+#: /app/pikaraoke/templates/info.html:924
 msgid "Click here to login as admin."
-msgstr ""
+msgstr "Hier klicken, um sich als Admin anzumelden."
 
-#. Link which will let the user log into admin mode.
-#: templates/info.html:578
+#: /app/pikaraoke/templates/info.html:926
 msgid "Log in"
 msgstr "Anmelden"
 
-#. Title fo the form to enter the administrator password.
-#: templates/login.html:11
+#: /app/pikaraoke/templates/login.html:11
 msgid "Enter the administrator password"
 msgstr "Administratorpasswort eingeben"
 
-#: templates/queue.html:164 templates/queue.html:313
+#: /app/pikaraoke/templates/queue.html:16
+#: /app/pikaraoke/templates/queue.html:868
+#, fuzzy
+msgid "Shadowban"
+msgstr "Herunterfahren"
+
+#: /app/pikaraoke/templates/queue.html:17
+#, fuzzy
+msgid "Unshadowban"
+msgstr "Herunterfahren"
+
+#: /app/pikaraoke/templates/queue.html:264
+msgid "Now"
+msgstr "Jetzt"
+
+#: /app/pikaraoke/templates/queue.html:273
+#: /app/pikaraoke/templates/queue.html:464
 msgid "Options"
-msgstr ""
+msgstr "Optionen"
 
-#: templates/queue.html:213
+#: /app/pikaraoke/templates/queue.html:329
 msgid "Pending downloads"
-msgstr ""
+msgstr "Ausstehende Downloads"
 
-#: templates/queue.html:218
+#: /app/pikaraoke/templates/queue.html:334
 #, fuzzy
 msgid "Queued"
 msgstr "Warteschlange"
 
-#: templates/queue.html:226
+#: /app/pikaraoke/templates/queue.html:342
 #, fuzzy
 msgid "Download Errors"
 msgstr "Heruntergeladen: %s"
 
-#: templates/queue.html:235
+#: /app/pikaraoke/templates/queue.html:351
 msgid "Failed"
-msgstr ""
+msgstr "Fehlgeschlagen"
 
-#: templates/queue.html:236
+#: /app/pikaraoke/templates/queue.html:352
 msgid "Dismiss"
-msgstr ""
+msgstr "Schließen"
 
-#: templates/queue.html:298
+#: /app/pikaraoke/templates/queue.html:418
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Ziehen zum Neuanordnen"
 
-#: templates/queue.html:338
+#: /app/pikaraoke/templates/queue.html:427
+msgid "Pinned by admin"
+msgstr "Vom Admin angeheftet"
+
+#: /app/pikaraoke/templates/queue.html:453
+#, fuzzy
+msgid "Upvote"
+msgstr "Stimmen"
+
+#: /app/pikaraoke/templates/queue.html:457
+#, fuzzy
+msgid "Downvote"
+msgstr "Herunterladen"
+
+#: /app/pikaraoke/templates/queue.html:479
+#: /app/pikaraoke/templates/splash.html:36
+msgid "Song"
+msgstr "Song"
+
+#: /app/pikaraoke/templates/queue.html:480
+msgid "Duration"
+msgstr "Dauer"
+
+#: /app/pikaraoke/templates/queue.html:481
+msgid "Starts at"
+msgstr "Startet um"
+
+#: /app/pikaraoke/templates/queue.html:483
+msgid "Votes"
+msgstr "Stimmen"
+
+#: /app/pikaraoke/templates/queue.html:507
 msgid "The queue is empty"
 msgstr "Die Warteschlange ist leer"
 
-#: templates/queue.html:432
+#: /app/pikaraoke/templates/queue.html:621
 msgid "Play"
-msgstr ""
+msgstr "Abspielen"
 
-#: templates/queue.html:505
+#: /app/pikaraoke/templates/queue.html:685
+msgid "Enter your name for voting"
+msgstr "Namen für die Abstimmung eingeben"
+
+#: /app/pikaraoke/templates/queue.html:726
+#, fuzzy
+msgid "Error recording vote"
+msgstr "Fehler beim Herunterladen des Liedes: "
+
+#: /app/pikaraoke/templates/queue.html:748
+#: /app/pikaraoke/templates/queue.html:757
+msgid "Songs play in the order they were added."
+msgstr "Songs werden in der Reihenfolge abgespielt, in der sie hinzugefügt wurden."
+"Lieder werden in der Reihenfolge abgespielt, in der sie hinzugefügt "
+"wurden."
+
+#: /app/pikaraoke/templates/queue.html:751
+msgid "Songs are ordered by votes (highest first)."
+msgstr "Lieder werden nach Stimmen sortiert (höchste zuerst)."
+
+#: /app/pikaraoke/templates/queue.html:754
+msgid ""
+"Songs are ordered to rotate users; new users are prioritized, then the "
+"user who has waited the longest."
+msgstr ""
+"Lieder werden so sortiert, dass Nutzer rotieren; neue Nutzer haben "
+"Vorrang, danach derjenige mit der längsten Wartezeit."
+
+#: /app/pikaraoke/templates/queue.html:763
+msgid "Queue mode"
+msgstr "Warteschlangenmodus"
+
+#: /app/pikaraoke/templates/queue.html:818
+msgid "Queue duration"
+msgstr "Warteschlangendauer"
+
+#: /app/pikaraoke/templates/queue.html:819
+msgid "Estimated end time"
+msgstr "Voraussichtliche Endzeit"
+
+#: /app/pikaraoke/templates/queue.html:834
 msgid ""
 "Add <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" "
 "pattern=\"\\d*\" maxlength=\"2\" value=\"3\" min=\"1\" max=\"99\" "
 "style=\"width: 42px\" /> random songs"
 msgstr ""
+"<input id=\"randomNumberInput\" class=\"input mx-2 p-2\" "
+"pattern=\"\\d*\" maxlength=\"2\" value=\"3\" min=\"1\" max=\"99\" "
+"style=\"width: 42px\" /> zufällige Songs hinzufügen"
 
-#: templates/queue.html:509
+#: /app/pikaraoke/templates/queue.html:838
 msgid "Clear all"
 msgstr "Alles löschen"
 
-#: templates/queue.html:523
+#: /app/pikaraoke/templates/queue.html:852
 #, fuzzy
 msgid "Play Next"
 msgstr "Als Nächstes:"
 
-#: templates/queue.html:523
+#: /app/pikaraoke/templates/queue.html:852
 msgid "Move to Top"
-msgstr ""
+msgstr "An den Anfang verschieben"
 
-#: templates/queue.html:527
+#: /app/pikaraoke/templates/queue.html:856
 msgid "Move Up"
-msgstr ""
+msgstr "Nach oben"
 
-#: templates/queue.html:531
+#: /app/pikaraoke/templates/queue.html:860
 msgid "Move Down"
-msgstr ""
+msgstr "Nach unten"
 
-#: templates/queue.html:535
+#: /app/pikaraoke/templates/queue.html:864
 msgid "Move to Bottom"
-msgstr ""
+msgstr "Ans Ende verschieben"
 
-#: templates/queue.html:539
+#: /app/pikaraoke/templates/queue.html:872
+#, fuzzy
+msgid "Unpin"
+msgstr "Freigeben"
+
+#: /app/pikaraoke/templates/queue.html:876
 #, fuzzy
 msgid "Remove from Queue"
 msgstr "Aus der Warteschlange entfernt"
 
-#: templates/queue.html:555
+#: /app/pikaraoke/templates/queue.html:892
 #, fuzzy
 msgid "Restart"
 msgstr "Lied neu starten"
 
-#: templates/queue.html:563
+#: /app/pikaraoke/templates/queue.html:900
 msgid "Skip"
-msgstr ""
+msgstr "Überspringen"
 
-#: templates/queue.html:571
+#: /app/pikaraoke/templates/queue.html:908
 #, fuzzy
 msgid "Download queue"
 msgstr "Heruntergeladen und in die Warteschlange eingereiht: %s"
 
-#: templates/search.html:194
+#: /app/pikaraoke/templates/search.html:438
 msgid "Available songs in local library"
 msgstr "Verfügbare Lieder in der lokalen Bibliothek"
 
-#. Title for the search page.
-#: templates/search.html:466
+#: /app/pikaraoke/templates/search.html:716
 msgid "Search / Add New"
 msgstr "Suchen / Neu hinzufügen"
 
-#: templates/search.html:476
+#: /app/pikaraoke/templates/search.html:726
 msgid "Available Songs"
 msgstr "Verfügbare Lieder"
 
-#. Submit button on the search form when selecting a locally downloaded song.
-#. The button adds it to                                         the queue.
-#: templates/search.html:484
+#: /app/pikaraoke/templates/search.html:734
 msgid "Add to queue"
 msgstr "Zur Warteschlange hinzufügen"
 
-#. Link which clears the text from the search box.
-#: templates/search.html:490
+#: /app/pikaraoke/templates/search.html:740
 msgid "Clear"
 msgstr "Löschen"
 
-#. Checkbox label which enables more options when searching.
-#: templates/search.html:494
+#: /app/pikaraoke/templates/search.html:744
 msgid "Advanced"
 msgstr "Erweitert"
 
-#. Help text below the search bar.
-#: templates/search.html:509
-msgid ""
-"- Type a song (title/artist) to search\n"
-"\t\t\t\t\t\t\t\tthe available songs and click 'Add to queue' to add it to"
-" the queue."
-msgstr ""
-"Tippe ein Lied ein (Titel/Künstler), um die verfügbaren Lieder zu "
-"durchsuchen und klicke auf \"Zur Warteschlange hinzufügen\", um es zur "
-"Warteschlange hinzufügen."
+#: /app/pikaraoke/templates/search.html:760
+msgid "Search for songs"
+msgstr "Nach Liedern suchen"
 
-#. Additonal help text below the search bar.
-#: templates/search.html:513
+#: /app/pikaraoke/templates/search.html:763
 msgid ""
-"- If the song doesn't appear in\n"
-"\t\t\t\t\t\t\t\tthe \"Available Songs\" dropdown, click 'Search' to find "
-"it on Youtube"
+"Type a song title or artist name to search the available local library, "
+"or use 'Search' to find songs on YouTube."
 msgstr ""
-"Wenn das Lied nicht im \"Verfügbare Lieder\"-Dropdown-Menü erscheint, "
-"klicke auf \"Suche\", um es auf Youtube zu finden"
+"Geben Sie einen Liedtitel oder Künstlernamen ein, um die verfügbare "
+"lokale Bibliothek zu durchsuchen, oder verwenden Sie 'Suchen', um Lieder "
+"auf YouTube zu finden."
 
-#. Checkbox label which enables matching songs which are not karaoke versions
-#. (i.e. the songs still                                         have a singer
-#. and are not just instrumentals.)
-#: templates/search.html:529
+#: /app/pikaraoke/templates/search.html:779
 msgid "Include non-karaoke matches"
 msgstr "Nicht-Karaoke-Treffer einbeziehen"
 
-#. Label for an input which takes a YouTube url directly instead of searching
-#. titles.
-#: templates/search.html:535
+#: /app/pikaraoke/templates/search.html:785
 msgid "Direct download YouTube url:"
 msgstr "Direktes Herunterladen von einer YouTube-URL:"
 
-#. Checkbox label which marks the song to be added to the queue after it
-#. finishes downloading.
-#: templates/search.html:552 templates/search.html:618
+#: /app/pikaraoke/templates/search.html:802
+#: /app/pikaraoke/templates/search.html:871
 msgid "Add to queue once downloaded"
 msgstr "Nach dem Herunterladen zur Warteschlange hinzufügen"
 
-#. Button label for the direct download form's submit button.
-#. Label on the button which starts the download of the selected song.
-#: templates/search.html:557 templates/search.html:623
+#: /app/pikaraoke/templates/search.html:807
+#: /app/pikaraoke/templates/search.html:876
 msgid "Download"
 msgstr "Herunterladen"
 
-#. Html text which displays what was searched for, in quotes while the page is
-#. loading.
-#: templates/search.html:579
+#: /app/pikaraoke/templates/search.html:829
 #, python-format
 msgid ""
 "Searching YouTube for\n"
 "\t\t<small><i>'%(search_term)s'</i></small>"
 msgstr "Suche auf Youtube nach <small><i>'%(search_term)s'</i></small>"
 
-#. Html text which displays what was searched for, in quotes.
-#: templates/search.html:587
-#, python-format
-msgid ""
-"Search results for\n"
-"\t\t\t\t<small><i>'%(search_string)s'</i></small>"
-msgstr "Suchergebnisse für <small><i>'%(search_string)s'</i></small>"
+#: /app/pikaraoke/templates/search.html:838
+msgid "Search results for"
+msgstr "Suchergebnisse für"
 
-#. Help text which explains that the select box above can be operated to select
-#. different search                                         results.
-#: templates/search.html:604
+#: /app/pikaraoke/templates/search.html:857
 msgid "Click dropdown to show more results"
 msgstr "Klicke auf das Dropdown-Menü für weitere Ergebnisse"
 
-#. Label displayed before the YouTube url for the chosen search result.
-#: templates/search.html:607
+#: /app/pikaraoke/templates/search.html:860
 msgid "Link:"
 msgstr "Link:"
 
-#: templates/splash.html:22
+#: /app/pikaraoke/templates/splash.html:33
 msgid "Connection lost. Is the server still running?"
-msgstr ""
+msgstr "Verbindung verloren. Läuft der Server noch?"
 
-#: templates/splash.html:23
+#: /app/pikaraoke/templates/splash.html:34
 msgid ""
 "This browser is not fully supported. You may experience streaming issues."
 " Please use Chrome/Safari/Firefox/Edge for best results."
 msgstr ""
+"Dieser Browser wird nicht vollständig unterstützt. Es könnten Streaming-"
+"Probleme auftreten. Bitte verwende Chrome/Safari/Firefox/Edge für beste Ergebnisse."
 
-#: templates/splash.html:27
+#: /app/pikaraoke/templates/splash.html:35
+#, python-format
+msgid "Waiting for %s to get a microphone..."
+msgstr "Warten auf ein Mikrofon für %s..."
+
+#: /app/pikaraoke/templates/splash.html:37
+msgid "Time remaining"
+msgstr "Verbleibende Zeit"
+
+#: /app/pikaraoke/templates/splash.html:41
 msgid "Never sing again... ever."
 msgstr "Sing bloß nie wieder... niemals."
 
-#: templates/splash.html:28
+#: /app/pikaraoke/templates/splash.html:42
 msgid "That was a really good impression of a dying cat!"
 msgstr "Das war eine wirklich gute Imitation einer sterbenden Katze!"
 
-#: templates/splash.html:29
+#: /app/pikaraoke/templates/splash.html:43
 msgid "Thank God it's over."
 msgstr "Gott sei Dank ist es vorbei."
 
-#: templates/splash.html:30
+#: /app/pikaraoke/templates/splash.html:44
 msgid "Pass the mic, please!"
 msgstr "Lass lieber jemand anderes singen!"
 
-#: templates/splash.html:31
+#: /app/pikaraoke/templates/splash.html:45
 msgid "Well, I'm sure you're very good at your day job."
 msgstr "Nun, bestimmt bist du wenigstens in deinem Hauptberuf sehr gut."
 
-#: templates/splash.html:35
+#: /app/pikaraoke/templates/splash.html:49
 msgid "I've seen better."
 msgstr "Ich habe schon Besseres gesehen."
 
-#: templates/splash.html:36
+#: /app/pikaraoke/templates/splash.html:50
 msgid "Ok... just ok."
 msgstr "Okay... einfach okay."
 
-#: templates/splash.html:37
+#: /app/pikaraoke/templates/splash.html:51
 msgid "Not bad for an amateur."
 msgstr "Nicht schlecht für einen Amateur."
 
-#: templates/splash.html:38
+#: /app/pikaraoke/templates/splash.html:52
 msgid "You put on a decent show."
 msgstr "Du hast eine ordentliche Show abgeliefert."
 
-#: templates/splash.html:39
+#: /app/pikaraoke/templates/splash.html:53
 msgid "That was... something."
 msgstr "Das war... etwas."
 
-#: templates/splash.html:43
+#: /app/pikaraoke/templates/splash.html:57
 msgid "Congratulations! That was unbelievable!"
 msgstr "Herzlichen Glückwunsch! Das war unglaublich!"
 
-#: templates/splash.html:44
+#: /app/pikaraoke/templates/splash.html:58
 msgid "Wow, have you tried auditioning for The Voice?"
 msgstr "Wow, hast du dich schon für 'The Voice' beworben?"
 
-#: templates/splash.html:45
+#: /app/pikaraoke/templates/splash.html:59
 msgid "Please, sing another one!"
 msgstr "Bitte, sing noch eins!"
 
-#: templates/splash.html:46
+#: /app/pikaraoke/templates/splash.html:60
 msgid "You rock! You know that?!"
 msgstr "Du rockst! Weißt du das?!"
 
-#: templates/splash.html:47
+#: /app/pikaraoke/templates/splash.html:61
 msgid "Woah, who let Freddie Mercury in here?"
 msgstr "Wow, wer hat Freddie Mercury hier reingelassen?"
 
-#. Label for the next song to be played in the queue.
-#: templates/splash.html:114
+#: /app/pikaraoke/templates/splash.html:132
 msgid "Next up:"
 msgstr "Als Nächstes:"
 
-#. The title of the score screen, telling the user their singing score
-#: templates/splash.html:143
+#: /app/pikaraoke/templates/splash.html:160
 msgid "Your Score"
 msgstr "Deine Punktzahl"
 
-#. Prompt for interaction in order to enable video autoplay.
-#: templates/splash.html:157
+#: /app/pikaraoke/templates/splash.html:174
 msgid ""
 "Due to limitations with browser permissions, you must interact\n"
 "      with the page once before it allows autoplay of videos. Pikaraoke "
@@ -1491,22 +1694,16 @@ msgid ""
 "      <a onClick=\"handleConfirmation()\">confirm</a>."
 msgstr ""
 "Aufgrund eingeschränkter Browserberechtigungen musst du mit der Seite "
-"interagieren, damit Autoplay für Videos aktiviert werden kann. nerdBar-Karaoke "
-"kann ansonsten keine Videos abspielen. Klicke hierzu auf den Button <a "
-"onClick=\"handleConfirmation()\">Bestätigen</a>."
+"interagieren, damit Autoplay für Videos aktiviert werden kann. nerdBar-"
+"Karaoke kann ansonsten keine Videos abspielen. Klicke hierzu auf den "
+"Button <a onClick=\"handleConfirmation()\">Bestätigen</a>."
 
-#. Button to confirm to enable video autoplay.
-#: templates/splash.html:170
+#: /app/pikaraoke/templates/splash.html:187
 msgid "Confirm"
 msgstr "Bestätigen"
 
 #~ msgid "Add 3 random songs"
 #~ msgstr "3 zufällige Lieder hinzufügen"
-
-#: templates/queue.html
-msgid "Add <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" pattern=\"\\d*\" maxlength=\"2\" value=\"3\" min=\"1\" max=\"99\" style=\"width: 42px\" /> random songs"
-msgstr "Füge <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" pattern=\"\\d*\" maxlength=\"2\" value=\"3\" min=\"1\" max=\"99\" style=\"width: 42px\" /> zufällige Songs hinzu"
-
 
 #~ msgid ""
 #~ "\n"
@@ -1525,27 +1722,8 @@ msgstr "Füge <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" pattern=\
 #~ "              once downloaded"
 #~ msgstr "Nach dem Herunterladen zur Warteschlange hinzufügen"
 
-
 #~ msgid "Download started: %s. This may take a couple of minutes to complete."
 #~ msgstr "Herunterladen gestartet: %s. Dies kann einige Minuten dauern."
-
-msgid "Queue duration"
-msgstr "Warteschlangendauer"
-
-msgid "Estimated end time"
-msgstr "Voraussichtliche Endzeit"
-
-msgid "Song"
-msgstr "Song"
-
-msgid "Duration"
-msgstr "Dauer"
-
-msgid "Starts at"
-msgstr "Startet um"
-
-msgid "Votes"
-msgstr "Stimmen"
 
 #~ msgid "Song will be added to queue."
 #~ msgstr "Lied wird der Warteschlange hinzugefügt."
@@ -1598,116 +1776,73 @@ msgstr "Stimmen"
 #~ msgid "Memory: %(memory)s"
 #~ msgstr "Speicher: %(memory)s"
 
-#: templates/home.html
-msgid "Available"
-msgstr "Verfügbar"
+#~ msgid "Red microphone"
+#~ msgstr "Rotes Mikrofon"
 
-#: templates/home.html
-msgid "Unassign"
-msgstr "Freigeben"
+#~ msgid "Green microphone"
+#~ msgstr "Grünes Mikrofon"
 
-#: templates/home.html
-msgid "microphone"
-msgstr "Mikrofon"
+#~ msgid "Blue Microphone"
+#~ msgstr "Blaues Mikrofon"
 
-#: templates/home.html
-#, python-format
-msgid "You have the %(microphone)s microphone"
-msgstr "Du hast das %(microphone)s Mikrofon"
+#~ msgid "Yellow Microphone"
+#~ msgstr "Gelbes Mikrofon"
 
-#: templates/home.html
-msgid "Hand Back Microphone"
-msgstr "Mikrofon zurückgeben"
+#~ msgid "Missing effect"
+#~ msgstr "Fehlender Effekt"
 
-#: templates/queue.html
-msgid "Queue mode"
-msgstr "Warteschlangenmodus"
+#~ msgid "Invalid parameters"
+#~ msgstr "Ungültige Parameter"
 
-#: templates/queue.html
-msgid "Songs play in the order they were added."
-msgstr "Lieder werden in der Reihenfolge abgespielt, in der sie hinzugefügt wurden."
+#~ msgid "Invalid effect"
+#~ msgstr "Ungültiger Effekt"
 
-#: templates/queue.html
-msgid "Songs are ordered by votes (highest first)."
-msgstr "Lieder werden nach Stimmen sortiert (höchste zuerst)."
+#~ msgid "Effect not available"
+#~ msgstr "Effekt nicht verfügbar"
 
-#: templates/queue.html
-msgid "Songs are ordered to rotate users; new users are prioritized, then the user who has waited the longest."
-msgstr "Lieder werden so sortiert, dass Nutzer rotieren; neue Nutzer haben Vorrang, danach derjenige mit der längsten Wartezeit."
+#~ msgid ""
+#~ "*You may need to refresh the "
+#~ "splash screen for these changes to "
+#~ "take effect."
+#~ msgstr ""
+#~ "Möglicherweise muss der Begrüßungsbildschirm "
+#~ "neu geladen werden, damit die Änderungen"
+#~ " sichtbar sind."
 
-#: templates/home.html
-msgid "Microphone Status"
-msgstr "Mikrofon-Status"
+#~ msgid "Preferred language (requires restart)"
+#~ msgstr ""
 
-#: templates/edit.html
-msgid "Suggest from Last.fm"
-msgstr "Von Last.fm vorschlagen"
+#~ msgid ""
+#~ "- Type a song (title/artist) to search\n"
+#~ "\t\t\t\t\t\t\t\tthe available songs and "
+#~ "click 'Add to queue' to add it "
+#~ "to the queue."
+#~ msgstr ""
+#~ "Tippe ein Lied ein (Titel/Künstler), um"
+#~ " die verfügbaren Lieder zu durchsuchen "
+#~ "und klicke auf \"Zur Warteschlange "
+#~ "hinzufügen\", um es zur Warteschlange "
+#~ "hinzufügen."
 
-#: templates/search.html
-msgid "Search for songs"
-msgstr "Nach Liedern suchen"
+#~ msgid ""
+#~ "- If the song doesn't appear in\n"
+#~ "\t\t\t\t\t\t\t\tthe \"Available Songs\" "
+#~ "dropdown, click 'Search' to find it "
+#~ "on Youtube"
+#~ msgstr ""
+#~ "Wenn das Lied nicht im \"Verfügbare "
+#~ "Lieder\"-Dropdown-Menü erscheint, klicke auf"
+#~ " \"Suche\", um es auf Youtube zu "
+#~ "finden"
 
-#: templates/search.html
-msgid "Type a song title or artist name to search the available local library, or use 'Search' to find songs on YouTube."
-msgstr "Geben Sie einen Liedtitel oder Künstlernamen ein, um die verfügbare lokale Bibliothek zu durchsuchen, oder verwenden Sie 'Suchen', um Lieder auf YouTube zu finden."
+#~ msgid ""
+#~ "Search results for\n"
+#~ "\t\t\t\t<small><i>'%(search_string)s'</i></small>"
+#~ msgstr "Suchergebnisse für <small><i>'%(search_string)s'</i></small>"
 
-#: templates/info.html
-msgid "Number of microphones"
-msgstr "Anzahl der Mikrofone"
+#~ msgid "Trim silence at the start/end of downloads"
+#~ msgstr "Stille am Anfang/Ende von Downloads abschneiden"
 
-#: templates/info.html
-msgid "Show microphone status on home page (non-admins)"
-msgstr "Mikrofonstatus auf der Startseite anzeigen (Nicht-Admins)"
-
-#: templates/info.html
-msgid "Reset microphone assignments after each song"
-msgstr "Mikrofonzuweisungen nach jedem Lied zurücksetzen"
-
-#: templates/info.html
-msgid "Wait for singer to get a microphone before playing their song"
-msgstr "Warten bis der Sänger ein Mikrofon hat, bevor sein Lied gespielt wird"
-
-#: templates/info.html
-msgid "Microphone wait timeout in seconds"
-msgstr "Mikrofon-Wartezeit in Sekunden"
-
-#: templates/info.html
-msgid "Action when microphone wait timeout expires:"
-msgstr "Aktion wenn Mikrofon-Wartezeit abläuft:"
-
-#: templates/info.html
-msgid "Microphone colors (pick per microphone)"
-msgstr "Mikrofonfarben (pro Mikrofon auswählen)"
-
-#: templates/info.html
-msgid "Colors are saved automatically and apply to microphone icons in the UI."
-msgstr "Farben werden automatisch gespeichert und gelten für Mikrofonsymbole in der Benutzeroberfläche."
-
-#: templates/info.html
-msgid "Trim silence at the start/end of downloads"
-msgstr "Stille am Anfang/Ende von Downloads abschneiden"
-
-#: templates/info.html
-msgid "Silence threshold for trimming (dB)"
-msgstr "Stilleschwellenwert für das Abschneiden (dB)"
-
-#: templates/info.html
-msgid "Minimum silence duration for trimming (seconds)"
-msgstr "Mindestdauer der Stille für das Abschneiden (Sekunden)"
-
-#: templates/info.html
-msgid "Preferred language"
-msgstr "Bevorzugte Sprache"
-
-#: templates/info.html
-msgid "Play song anyway"
-msgstr "Lied trotzdem abspielen"
-
-#: templates/info.html
-msgid "Skip song"
-msgstr "Lied überspringen"
-
-#: templates/info.html
-msgid "Keep queue position"
-msgstr "Position beibehalten"
+#~ msgid "Silence threshold for trimming (dB)"
+#~ msgstr "Stilleschwellenwert für das Abschneiden (dB)"
 
