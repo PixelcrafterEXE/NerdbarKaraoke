@@ -433,6 +433,20 @@ const handleNowPlayingUpdate = (np) => {
       }
     }
 
+    // Leading silence seek: register the canplay listener BEFORE video.load()
+    // so we never miss the event due to a race condition.
+    if (_silenceLeadingEnd !== null) {
+      const leadingSeekHandler = () => {
+        video.removeEventListener('canplay', leadingSeekHandler);
+        if (!_leadingSeekDone && _silenceLeadingEnd !== null) {
+          _leadingSeekDone = true;
+          console.log('[silence] seeking past leading silence to', _silenceLeadingEnd.toFixed(2) + 's');
+          video.currentTime = _silenceLeadingEnd;
+        }
+      };
+      video.addEventListener('canplay', leadingSeekHandler);
+    }
+
     video.load();
     if (volume !== np.volume) {
       volume = np.volume;
@@ -454,20 +468,6 @@ const handleNowPlayingUpdate = (np) => {
       // Retry once if it was an autoplay block
       setTimeout(() => video.play(), 1000);
     });
-
-    // Leading silence seek: once the video can play (metadata + data available),
-    // seek past the silent intro detected by ffprobe.
-    if (_silenceLeadingEnd !== null) {
-      const leadingSeekHandler = () => {
-        video.removeEventListener('canplay', leadingSeekHandler);
-        if (!_leadingSeekDone && _silenceLeadingEnd !== null) {
-          _leadingSeekDone = true;
-          console.log('[silence] seeking past leading silence to', _silenceLeadingEnd.toFixed(2) + 's');
-          video.currentTime = _silenceLeadingEnd;
-        }
-      };
-      video.addEventListener('canplay', leadingSeekHandler);
-    }
 
     // Trailing silence: register a timeupdate handler that ends the song
     // when playback reaches the trailing silence boundary.
