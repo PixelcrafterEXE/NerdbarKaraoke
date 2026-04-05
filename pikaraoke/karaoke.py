@@ -465,6 +465,7 @@ class Karaoke:
         enqueue: bool = False,
         user: str = "Pikaraoke",
         title: str | None = None,
+        additional_users: list[str] | None = None,
     ) -> None:
         """Queue a video for download from YouTube.
 
@@ -476,8 +477,9 @@ class Karaoke:
             enqueue: Whether to add to playback queue after download.
             user: Username to attribute the download to.
             title: Display title (defaults to URL if not provided).
+            additional_users: Optional list of co-requestee usernames.
         """
-        self.download_manager.queue_download(video_url, enqueue, user, title)
+        self.download_manager.queue_download(video_url, enqueue, user, title, additional_users=additional_users)
 
     def get_available_songs(self) -> None:
         """Scan the download directory and update the available songs list."""

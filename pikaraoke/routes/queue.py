@@ -365,7 +365,15 @@ def enqueue():
     else:
         d = request.form.to_dict()
         user = d["song-added-by"]
-    rc = k.queue_manager.enqueue(song, user)
+    # Support additional requestees (comma-separated or repeated param)
+    additional_users: list[str] = []
+    if "additional_users" in request.args:
+        additional_users = [u.strip() for u in request.args["additional_users"].split(",") if u.strip()]
+    elif request.form:
+        d = request.form.to_dict()
+        if "additional_users" in d:
+            additional_users = [u.strip() for u in d["additional_users"].split(",") if u.strip()]
+    rc = k.queue_manager.enqueue(song, user, additional_users=additional_users)
     broadcast_event("queue_update")
     song_title = html.escape(k.filename_from_path(song))
 

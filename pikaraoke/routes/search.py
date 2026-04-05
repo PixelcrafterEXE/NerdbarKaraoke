@@ -142,12 +142,13 @@ def download():
     song = d["song-url"]
     user = d["song-added-by"]
     title = d["song-title"]
+    additional_users = [u.strip() for u in d.get("additional_users", "").split(",") if u.strip()]
     if "queue" in d and d["queue"] == "on":
         queue = True
     else:
         queue = False
 
     # Queue the download (processed serially by the download worker)
-    k.download_video(song, queue, user, title)
+    k.download_video(song, queue, user, title, additional_users=additional_users)
 
     return redirect(url_for("search.search"))

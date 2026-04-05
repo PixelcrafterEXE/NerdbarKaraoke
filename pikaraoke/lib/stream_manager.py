@@ -348,8 +348,9 @@ class StreamManager:
             if not k.queue_manager.queue:
                 return
             entry = k.queue_manager.queue[0]
-        k.now_playing_user = entry["user"]
-        k.queue_manager.record_play(k.now_playing_user)
+        entry_users = k.queue_manager.get_entry_users(entry)
+        k.now_playing_user = ", ".join(entry_users)
+        k.queue_manager.record_play(entry_users[0], entry)
         k.is_paused = False
         song_file = entry["file"]
         removed = k.queue_manager.pop_song_by_file(song_file)
