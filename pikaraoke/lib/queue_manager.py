@@ -34,6 +34,7 @@ class QueueManager:
         socketio,
         get_limit_user_songs_by: Callable[[], int],
         get_queue_mode: Callable[[], str] | None = None,
+        get_pin_mode: Callable[[], str] | None = None,
         get_now_playing_user: Callable[[], str | None] | None = None,
         filename_from_path: Callable[[str, bool], str] | None = None,
         log_and_send: Callable[[str, str], None] | None = None,
@@ -84,6 +85,7 @@ class QueueManager:
         self.socketio = socketio
         self._get_limit_user_songs_by = get_limit_user_songs_by
         self._get_queue_mode = get_queue_mode or (lambda: "chronological")
+        self._get_pin_mode = get_pin_mode or (lambda: "keep_position")
         self._get_now_playing_user = get_now_playing_user
         self._filename_from_path = filename_from_path
         self._log_and_send = log_and_send
@@ -613,6 +615,7 @@ class QueueManager:
             else:
                 logging.info("Moving song to top of queue: " + song["file"])
                 del self.queue[index]
+                song["pinned"] = True
                 self.queue.insert(0, song)
                 rc = True
         elif action == "up":
@@ -621,6 +624,7 @@ class QueueManager:
             else:
                 logging.info("Bumping song up in queue: " + song["file"])
                 del self.queue[index]
+                song["pinned"] = True
                 self.queue.insert(index - 1, song)
                 rc = True
         elif action == "down":
@@ -629,12 +633,17 @@ class QueueManager:
             else:
                 logging.info("Bumping song down in queue: " + song["file"])
                 del self.queue[index]
+                song["pinned"] = True
                 self.queue.insert(index + 1, song)
                 rc = True
         elif action == "delete":
             logging.info("Deleting song from queue: " + song["file"])
             self.clear_song_votes(song["file"])
             del self.queue[index]
+            rc = True
+        elif action == "unpin":
+            logging.info("Unpinning song in queue: " + song["file"])
+            song.pop("pinned", None)
             rc = True
         else:
             logging.error("Unrecognized direction: " + action)
@@ -772,7 +781,11 @@ class QueueManager:
         return non_shadowbanned if non_shadowbanned else list(self.queue)
 
     def _reorder_queue_fair(self) -> None:
-        """Reorder queue according to fair-queue playback history rules."""
+        """Reorder queue according to fair-queue playback history rules.
+
+        Songs with ``"pinned": True`` (admin-moved) keep their current
+        relative positions and are not subject to reordering.
+        """
         if not self.queue:
             return
 
@@ -780,12 +793,25 @@ class QueueManager:
         shadowbanned = [item for item in self.queue if self.is_shadowbanned(item["file"])]
         candidates = non_shadowbanned if non_shadowbanned else list(self.queue)
 
+        # Separate pinned and unpinned entries, preserving relative order
+        pinned_with_pos: list[tuple[int, dict[str, Any]]] = []
+        unpinned: list[dict[str, Any]] = []
+        randomizer_songs: list[dict[str, Any]] = []
+        for idx, item in enumerate(candidates):
+            if item.get("pinned"):
+                pinned_with_pos.append((idx, item))
+            elif (item.get("user") or "").strip() in ("Randomizer", "Pikaraoke"):
+                randomizer_songs.append(item)
+            else:
+                unpinned.append(item)
+
+        # Reorder only unpinned songs using fair-queue logic
         temp_played_users = set(self.played_users)
         temp_last_played = dict(self.last_played_order)
         temp_sequence = self.play_sequence
 
         ordered: list[dict[str, Any]] = []
-        remaining = list(candidates)
+        remaining = list(unpinned)
 
         while remaining:
             chosen_index = None
@@ -818,6 +844,21 @@ class QueueManager:
                     temp_sequence += 1
                     temp_played_users.add(user)
                     temp_last_played[user] = temp_sequence
+
+        # Append randomizer songs after all user-requested songs
+        ordered.extend(randomizer_songs)
+
+        # Re-insert pinned songs based on pin_mode preference
+        pin_mode = self._get_pin_mode()
+        if pin_mode == "pin_to_previous":
+            # Insert all pinned songs at the front, preserving their relative order
+            for i, (_orig_idx, item) in enumerate(pinned_with_pos):
+                ordered.insert(i, item)
+        else:
+            # keep_position: re-insert at original positions (clamped to bounds)
+            for orig_idx, item in pinned_with_pos:
+                insert_at = min(orig_idx, len(ordered))
+                ordered.insert(insert_at, item)
 
         if non_shadowbanned:
             self.queue = ordered + shadowbanned

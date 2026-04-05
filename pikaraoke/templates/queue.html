@@ -428,6 +428,9 @@
     html += '<td style="padding: 8px 10px; vertical-align: middle;">';
     html += '<div class="is-flex is-flex-wrap-wrap is-align-items-baseline">';
     html += '<span class="has-text-success">' + displayUser + '</span>';
+    if (isAdmin && e.pinned) {
+      html += '<span class="has-text-warning ml-1" title="{{ _("Pinned by admin") }}">&#128204;</span>';
+    }
     html += '<span class="is-hidden-mobile has-text-grey mx-2">&bull;</span>';
     var shadowbanTitleClass = (isAdmin && e.shadowbanned) ? ' has-text-danger' : '';
     html += '<span class="has-text-weight-bold is-hidden-mobile' + shadowbanTitleClass + '">' + e.title + '</span>';
@@ -585,6 +588,14 @@
       var queueLen = window.queuePageState.queue.length;
       if (index >= queueLen - 1) {
           $('#opt-down, #opt-bottom').hide();
+      }
+
+      // Show unpin option if song is pinned
+      var isPinned = entry && entry.pinned;
+      if (isPinned) {
+          $('#opt-unpin').show();
+      } else {
+          $('#opt-unpin').hide();
       }
 
       $('#song-options-modal').addClass('is-active');
@@ -860,6 +871,10 @@
         <a id="opt-shadowban" class="panel-block py-3" href="#" onclick="executeQueueAction('shadowban'); return false;">
             <span class="icon mr-2"><i class="icon-cancel"></i></span>
             <span id="opt-shadowban-label">{% trans %}Shadowban{% endtrans %}</span>
+        </a>
+        <a id="opt-unpin" class="panel-block py-3 has-text-warning" href="#" onclick="executeQueueAction('unpin'); return false;" style="display:none;">
+            <span class="icon mr-2">&#128204;</span>
+            {% trans %}Unpin{% endtrans %}
         </a>
         <a id="opt-delete" class="panel-block py-3 has-text-danger" href="#" onclick="executeQueueAction('delete'); return false;">
             <span class="icon mr-2"><i class="icon-trash-empty"></i></span>

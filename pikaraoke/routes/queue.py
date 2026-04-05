@@ -168,6 +168,7 @@ def reorder():
             k.queue_manager.queue
         ):
             item = k.queue_manager.queue.pop(old_index)
+            item["pinned"] = True
             k.queue_manager.queue.insert(new_index, item)
             broadcast_event("queue_update")
             k.update_now_playing_socket()
@@ -307,6 +308,23 @@ def queue_edit():
             message = _("Song not found in queue") + ": " + html.escape(k.filename_from_path(song))
             if not is_ajax:
               flash(message, "is-danger")
+
+        elif action == "unpin":
+            result = k.queue_manager.queue_edit(song, "unpin")
+            if result:
+                # Re-sort after unpinning so the song returns to its fair position
+                if k.queue_mode == "fair":
+                    k.queue_manager._reorder_queue_fair()
+                elif k.queue_mode == "democratic":
+                    k.queue_manager._reorder_queue_by_votes()
+                message = _("Unpinned") + ": " + html.escape(k.filename_from_path(song))
+                if not is_ajax:
+                    flash(message, "is-success")
+                success = True
+            else:
+                message = _("Error unpinning") + ": " + html.escape(k.filename_from_path(song))
+                if not is_ajax:
+                    flash(message, "is-danger")
 
     if success:
         broadcast_event("queue_update")

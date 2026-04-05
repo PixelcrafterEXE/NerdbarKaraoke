@@ -80,6 +80,7 @@ def info():
         avsync=k.avsync,
         limit_user_songs_by=k.limit_user_songs_by,
         queue_mode=k.queue_mode,
+        pin_mode=k.pin_mode,
         song_add_cooldown_count=k.song_add_cooldown_count,
         song_add_cooldown_duration=k.song_add_cooldown_duration,
         queue_add_open=k.queue_add_open,
