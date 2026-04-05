@@ -64,6 +64,7 @@ class PreferenceManager:
         "mixer_ip": "",
         "mixer_port": 10023,
         "effects_enabled": True,
+        "pin_mode": "keep_position",  # "keep_position" or "pin_to_next"
     }
 
     def __init__(self, config_file_path: str = "config.ini", target: object | None = None) -> None:

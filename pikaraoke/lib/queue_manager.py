@@ -34,6 +34,7 @@ class QueueManager:
         socketio,
         get_limit_user_songs_by: Callable[[], int],
         get_queue_mode: Callable[[], str] | None = None,
+        get_pin_mode: Callable[[], str] | None = None,
         get_now_playing_user: Callable[[], str | None] | None = None,
         filename_from_path: Callable[[str, bool], str] | None = None,
         log_and_send: Callable[[str, str], None] | None = None,
@@ -84,6 +85,7 @@ class QueueManager:
         self.socketio = socketio
         self._get_limit_user_songs_by = get_limit_user_songs_by
         self._get_queue_mode = get_queue_mode or (lambda: "chronological")
+        self._get_pin_mode = get_pin_mode or (lambda: "keep_position")
         self._get_now_playing_user = get_now_playing_user
         self._filename_from_path = filename_from_path
         self._log_and_send = log_and_send
@@ -836,10 +838,17 @@ class QueueManager:
                     temp_played_users.add(user)
                     temp_last_played[user] = temp_sequence
 
-        # Re-insert pinned songs at their original positions (clamped to bounds)
-        for orig_idx, item in pinned_with_pos:
-            insert_at = min(orig_idx, len(ordered))
-            ordered.insert(insert_at, item)
+        # Re-insert pinned songs based on pin_mode preference
+        pin_mode = self._get_pin_mode()
+        if pin_mode == "pin_to_next":
+            # Insert all pinned songs at the front, preserving their relative order
+            for i, (_orig_idx, item) in enumerate(pinned_with_pos):
+                ordered.insert(i, item)
+        else:
+            # keep_position: re-insert at original positions (clamped to bounds)
+            for orig_idx, item in pinned_with_pos:
+                insert_at = min(orig_idx, len(ordered))
+                ordered.insert(insert_at, item)
 
         if non_shadowbanned:
             self.queue = ordered + shadowbanned

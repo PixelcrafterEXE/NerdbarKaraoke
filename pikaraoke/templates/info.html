@@ -393,6 +393,18 @@
 						</div>
 					</div>
 
+					<div class="user-preference-container">
+						<label class="label" for="pref-pin-mode">
+							{% trans %}Pin mode (admin move){% endtrans %}
+						</label>
+						<div class="select">
+							<select id="pref-pin-mode" class="user-preference-input" data-pref="pin_mode" data-start-value="{{ pin_mode }}">
+								<option value="keep_position" {% if pin_mode == "keep_position" %}selected{% endif %}>{% trans %}Keep position{% endtrans %}</option>
+								<option value="pin_to_next" {% if pin_mode == "pin_to_next" %}selected{% endif %}>{% trans %}Pin to next{% endtrans %}</option>
+							</select>
+						</div>
+					</div>
+
 				</div>
 			</div>
 

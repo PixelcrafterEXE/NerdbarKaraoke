@@ -263,6 +263,7 @@ class Karaoke:
             socketio=socketio,
             get_limit_user_songs_by=lambda: self.limit_user_songs_by,
             get_queue_mode=lambda: self.queue_mode,
+            get_pin_mode=lambda: self.pin_mode,
             get_now_playing_user=lambda: self.now_playing_user,
             filename_from_path=self.filename_from_path,
             log_and_send=self.log_and_send,
