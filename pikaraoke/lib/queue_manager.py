@@ -576,20 +576,21 @@ class QueueManager:
             like_counts = self._get_all_like_counts()
 
         if weight_pct > 0 and like_counts:
-            max_likes = max(like_counts.values()) if like_counts else 1
+            t = weight_pct / 100.0
             weights = []
             for song in eligible_songs:
-                likes = like_counts.get(song, 0)
-                # Quadratic scaling: at weight_pct=100 a maximally-liked song gets
-                # a 101× boost over non-liked songs so the setting has a meaningful
-                # effect even in large libraries.  Formula:
-                #   w = 1 + (weight_pct/100)² × weight_pct × (likes/max_likes)
-                # Examples at weight_pct=100: most-liked → 101×, non-liked → 1×
-                #             at weight_pct= 50: most-liked →  13.5×, non-liked → 1×
-                #             at weight_pct= 10: most-liked →   1.1×, non-liked → 1×
-                factor = (weight_pct / 100.0) ** 2 * weight_pct
-                w = 1.0 + factor * (likes / max(max_likes, 1))
+                # Linear interpolation between uniform (t=0) and liked-only (t=1):
+                #   liked song    → w = 1.0  (always)
+                #   non-liked     → w = 1.0 - t
+                # At 0%: all songs weight 1 → pure uniform random
+                # At 100%: non-liked weight 0 → pick uniformly from liked songs only
+                # At 50%: non-liked weight 0.5 → liked songs are 2× as likely
+                liked = like_counts.get(song, 0) > 0
+                w = 1.0 if liked else (1.0 - t)
                 weights.append(w)
+            # Edge case: no liked songs in library → fall back to uniform
+            if not any(w > 0 for w in weights):
+                weights = [1.0] * len(eligible_songs)
             selected = []
             remaining = list(eligible_songs)
             remaining_weights = list(weights)
