@@ -641,6 +641,10 @@ class QueueManager:
             self.clear_song_votes(song["file"])
             del self.queue[index]
             rc = True
+        elif action == "unpin":
+            logging.info("Unpinning song in queue: " + song["file"])
+            song.pop("pinned", None)
+            rc = True
         else:
             logging.error("Unrecognized direction: " + action)
         if rc:
@@ -846,7 +850,7 @@ class QueueManager:
 
         # Re-insert pinned songs based on pin_mode preference
         pin_mode = self._get_pin_mode()
-        if pin_mode == "pin_to_next":
+        if pin_mode == "pin_to_previous":
             # Insert all pinned songs at the front, preserving their relative order
             for i, (_orig_idx, item) in enumerate(pinned_with_pos):
                 ordered.insert(i, item)

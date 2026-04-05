@@ -590,6 +590,14 @@
           $('#opt-down, #opt-bottom').hide();
       }
 
+      // Show unpin option if song is pinned
+      var isPinned = entry && entry.pinned;
+      if (isPinned) {
+          $('#opt-unpin').show();
+      } else {
+          $('#opt-unpin').hide();
+      }
+
       $('#song-options-modal').addClass('is-active');
   }
 
@@ -863,6 +871,10 @@
         <a id="opt-shadowban" class="panel-block py-3" href="#" onclick="executeQueueAction('shadowban'); return false;">
             <span class="icon mr-2"><i class="icon-cancel"></i></span>
             <span id="opt-shadowban-label">{% trans %}Shadowban{% endtrans %}</span>
+        </a>
+        <a id="opt-unpin" class="panel-block py-3 has-text-warning" href="#" onclick="executeQueueAction('unpin'); return false;" style="display:none;">
+            <span class="icon mr-2">&#128204;</span>
+            {% trans %}Unpin{% endtrans %}
         </a>
         <a id="opt-delete" class="panel-block py-3 has-text-danger" href="#" onclick="executeQueueAction('delete'); return false;">
             <span class="icon mr-2"><i class="icon-trash-empty"></i></span>
