@@ -17,7 +17,9 @@
 			e.preventDefault();
 			setUserCookie();
 			var user = Cookies.get("user");
-			$.get(this.href + encodeURIComponent(user), function (data) {
+			var url = new URL(this.href, window.location.origin);
+			url.searchParams.set("user", user);
+			$.get(url.toString(), function (data) {
 				var obj = JSON.parse(data);
 				console.log('Enqueue response:', obj);
 				var message = obj.message || "";
@@ -90,35 +92,18 @@
 		});
 		loadUserLikes();
 
-		// --- Taste Match ---
-		$("#taste-match-toggle").on("click", function(e) {
+		// --- Match Filter ---
+		$("#match-filter-toggle").on("click", function(e) {
 			e.preventDefault();
-			var $panel = $("#taste-match-panel");
-			$panel.toggle();
-			if ($panel.is(":visible")) {
-				$.getJSON("{{ url_for('likes.likes_users') }}", function(users) {
-					var $sel = $("#taste-match-user").empty();
-					$sel.append('<option value="">Select user…</option>');
-					var me = (Cookies.get("user") || "").trim();
-					users.forEach(function(u) {
-						if (u !== me) $sel.append('<option value="' + u + '">' + u + '</option>');
-					});
-				});
-			}
+			$("#match-filter-panel").toggle();
 		});
-		$("#taste-match-btn").on("click", function() {
-			var other = $("#taste-match-user").val();
-			var me = (Cookies.get("user") || "").trim();
-			if (!other || !me) return;
-			$.getJSON("{{ url_for('likes.taste_match') }}", {user: me, other: other}, function(data) {
-				var html = '<p class="mt-2"><strong>' + data.match_pct + '% match</strong> (' + data.shared_count + ' songs in common)</p>';
-				if (data.shared_songs.length > 0) {
-					html += '<ul style="margin-top:0.5em; font-size:0.9em;">';
-					data.shared_songs.forEach(function(t) { html += '<li>' + t + '</li>'; });
-					html += '</ul>';
-				}
-				$("#taste-match-result").html(html);
+		$("#match-filter-btn").on("click", function() {
+			var selected = [];
+			$("#match-user-list input[type=checkbox]:checked").each(function() {
+				selected.push($(this).val());
 			});
+			if (selected.length === 0) return;
+			window.location.href = "{{ url_for('files.browse') }}?match_users=" + encodeURIComponent(selected.join(","));
 		});
 
 		// Drag and drop support for video files (admin only)
@@ -307,9 +292,9 @@
 			&#9829; {% trans %}Liked{% endtrans %}
 		</a>
 		|
-		<a href="#" id="taste-match-toggle">
-			&#127928; {% trans %}Taste Match{% endtrans %}
-		</a>
+		<a href="#" id="match-filter-toggle">
+			&#127919; {% trans %}Match{% endtrans %}{% if match_users %} ({{ match_users | join(", ") }}){% endif %}
+		</a>{% if match_users %} | <a href="{{ url_for('files.browse') }}">{% trans %}Clear{% endtrans %}</a>{% endif %}
 	</span>
 	{% if admin %}
 	<a class="batch-edit-btn" href="{{ url_for('batch_song_renamer.browse')}}" title="Edit all songs"
@@ -319,21 +304,29 @@
 	{% endif%}
 </p>
 
-<div id="taste-match-panel" class="box" style="display:none; margin-bottom:1em;">
-	<p class="mb-2"><strong>&#127928; {% trans %}Taste Match{% endtrans %}</strong></p>
-	<div class="field has-addons">
-		<div class="control">
-			<div class="select is-small">
-				<select id="taste-match-user">
-					<option value="">{% trans %}Select user…{% endtrans %}</option>
-				</select>
-			</div>
-		</div>
-		<div class="control">
-			<button id="taste-match-btn" class="button is-small is-info">{% trans %}Compare{% endtrans %}</button>
-		</div>
+<div id="match-filter-panel" class="box" style="{% if not match_users %}display:none; {% endif %}margin-bottom:1em;">
+	<p class="mb-2"><strong>&#127919; {% trans %}Match Filter{% endtrans %}</strong></p>
+	<p class="is-size-7 mb-3" style="color:#aaa;">
+		{# MSG: Info text explaining the match filter feature #}
+		{% trans %}Shows only songs liked by <em>all</em> selected users. Adding a song while in match mode queues it for all matched users as co-singers.{% endtrans %}
+	</p>
+	{% if all_liked_users %}
+	<div id="match-user-list" class="mb-3" style="display:flex; flex-wrap:wrap; gap:0.4em;">
+		{% for u in all_liked_users %}
+		<label class="tag" style="cursor:pointer; user-select:none;">
+			<input type="checkbox" value="{{ u }}" style="margin-right:4px;"
+				{% if u in match_users %}checked{% endif %}>
+			{{ u }}
+		</label>
+		{% endfor %}
 	</div>
-	<div id="taste-match-result"></div>
+	<button id="match-filter-btn" class="button is-small is-info">{% trans %}Apply Filter{% endtrans %}</button>
+	{% if match_users %}
+		<a href="{{ url_for('files.browse') }}" class="button is-small ml-2">{% trans %}Clear{% endtrans %}</a>
+	{% endif %}
+	{% else %}
+	<p class="is-size-7" style="color:#aaa;">{% trans %}No users have liked any songs yet.{% endtrans %}</p>
+	{% endif %}
 </div>
 
 <div id="alpha-bar" class="column is-full has-background-dark mobile-hide">
@@ -345,6 +338,12 @@
 </div>
 
 {{ pagination.links }} {{ pagination.info }}
+{% if match_users %}
+<div class="notification is-info is-light" style="margin-bottom:0.75em; padding:0.75em 1em;">
+	&#127919; {% trans %}Showing songs liked by{% endtrans %} <strong>{{ match_users | join(", ") }}</strong>.
+	{% trans %}Adding a song will queue it for all of them as co-singers.{% endtrans %}
+</div>
+{% endif %}
 <table>
 	{% for song in songs %}
 	<tr value="{{ song }}">
@@ -352,8 +351,8 @@
 		<td id="{{filename_from_path(song)[0].lower()}}" style="padding-right: 0">
 			<a
 				class="add-song-link has-text-weight-bold has-text-success"
-				title="Add '{{filename_from_path(song)}}' to queue"
-				href="{{url_for('queue.enqueue')}}?song={{url_escape(song.encode('utf-8','surrogateescape'))}}&user="
+				title="Add '{{filename_from_path(song)}}' to queue{% if match_users %} for {{ match_users | join(', ') }}{% endif %}"
+				href="{{url_for('queue.enqueue')}}?song={{url_escape(song.encode('utf-8','surrogateescape'))}}&user={% if match_users %}&additional_users={{ match_users | join(',') | urlencode }}{% endif %}"
 				><i class="icon icon-list-add"></i>
 			</a>
 		</td>

@@ -53,12 +53,21 @@ def browse():
 
     available_songs = k.available_songs
 
-    # Filter by liked songs if requested
+    # Filter by a single user's liked songs
     liked_filter = request.args.get("liked")
     liked_user = request.args.get("liked_user", "").strip() or request.cookies.get("user", "").strip()
     if liked_filter and liked_user:
         liked_set = k.likes_manager.get_liked_songs(liked_user)
         available_songs = [s for s in available_songs if s in liked_set]
+
+    # Filter to the intersection of liked songs for multiple users (match mode)
+    match_users_raw = request.args.get("match_users", "").strip()
+    match_users = [u.strip() for u in match_users_raw.split(",") if u.strip()] if match_users_raw else []
+    if match_users:
+        intersection: set[str] = k.likes_manager.get_liked_songs(match_users[0])
+        for u in match_users[1:]:
+            intersection &= k.likes_manager.get_liked_songs(u)
+        available_songs = [s for s in available_songs if s in intersection]
 
     letter = request.args.get("letter")
 
@@ -116,6 +125,8 @@ def browse():
         title=_("Browse"),
         songs=songs[start_index : start_index + results_per_page],
         admin=is_admin(),
+        match_users=match_users,
+        all_liked_users=sorted(k.likes_manager.likes.keys()),
     )
 
 
