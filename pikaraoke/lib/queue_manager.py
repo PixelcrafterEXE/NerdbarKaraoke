@@ -569,7 +569,8 @@ class QueueManager:
         # Weighted selection: liked songs get extra weight if configured
         weight_pct = 0
         if self._get_liked_song_weight:
-            weight_pct = max(0, min(100, int(self._get_liked_song_weight())))
+            raw = self._get_liked_song_weight()
+            weight_pct = max(0, min(100, int(raw))) if raw != "" and raw is not None else 0
         like_counts: dict[str, int] = {}
         if weight_pct > 0 and self._get_all_like_counts:
             like_counts = self._get_all_like_counts()
