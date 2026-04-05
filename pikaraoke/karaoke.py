@@ -31,6 +31,7 @@ from pikaraoke.lib.get_platform import (
     get_platform,
     is_raspberry_pi,
 )
+from pikaraoke.lib.likes_manager import LikesManager
 from pikaraoke.lib.microphone_manager import MicrophoneManager
 from pikaraoke.lib.network import get_ip
 from pikaraoke.lib.preference_manager import PreferenceManager
@@ -284,6 +285,13 @@ class Karaoke:
             is_admin=self._get_is_admin_callback(),
             data_directory=get_data_directory(),
         )
+
+        # Initialize likes manager
+        self.likes_manager = LikesManager(data_directory=get_data_directory())
+
+        # Wire likes into queue manager for weighted randomizer
+        self.queue_manager._get_all_like_counts = self.likes_manager.get_all_like_counts
+        self.queue_manager._get_liked_song_weight = lambda: getattr(self, "liked_song_weight", 0)
 
     def _load_preferences(self, **cli_overrides: Any) -> None:
         """Load preference-driven attributes from config file.
@@ -831,6 +839,7 @@ class Karaoke:
         return {
             "now_playing": self.now_playing,
             "now_playing_user": self.now_playing_user,
+            "now_playing_file": self.now_playing_filename,
             "now_playing_duration": self.now_playing_duration,
             "now_playing_transpose": self.now_playing_transpose,
             "now_playing_tempo": self.now_playing_tempo,

@@ -393,6 +393,11 @@ def enqueue():
             additional_users = [u.strip() for u in d["additional_users"].split(",") if u.strip()]
     rc = k.queue_manager.enqueue(song, user, additional_users=additional_users)
     broadcast_event("queue_update")
+
+    # Auto-like song on enqueue (server-side, silent)
+    if user and user not in ("Pikaraoke", "Randomizer"):
+        k.likes_manager.like(user, song)
+
     song_title = html.escape(k.filename_from_path(song))
 
     response_data = {"song": song_title, "success": True, "message": _("Song added to the queue: %s") % song_title}

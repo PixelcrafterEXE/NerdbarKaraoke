@@ -53,6 +53,13 @@ def browse():
 
     available_songs = k.available_songs
 
+    # Filter by liked songs if requested
+    liked_filter = request.args.get("liked")
+    liked_user = request.args.get("liked_user", "").strip() or request.cookies.get("user", "").strip()
+    if liked_filter and liked_user:
+        liked_set = k.likes_manager.get_liked_songs(liked_user)
+        available_songs = [s for s in available_songs if s in liked_set]
+
     letter = request.args.get("letter")
 
     if letter:

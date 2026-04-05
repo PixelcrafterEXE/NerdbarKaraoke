@@ -149,6 +149,7 @@
         window.queuePageState.previousNowPlaying = newNowPlaying;
 
         updateQueueSummary(window.queuePageState.queueSummary);
+        updateLikeButtons();
 
                 // Initialize Drag and Drop after HTML is rendered
                 window.initSortable();
@@ -253,6 +254,9 @@
         html += '<span class="is-hidden-mobile has-text-grey mx-2">&bull;</span>';
         html += '<span class="has-text-weight-bold has-text-success is-hidden-mobile">' + np.now_playing + '</span>';
         html += '<span class="is-size-7 has-text-weight-bold has-text-success is-hidden-tablet" style="width: 100%;">' + np.now_playing + '</span>';
+        if (np.now_playing_file) {
+            html += ' <a class="like-btn" data-file="' + escape(np.now_playing_file) + '" title="{{ _("Like this song") }}" style="cursor:pointer; font-size:1.1em; opacity:0.5; margin-left:6px;">&#9829;</a>';
+        }
         html += '</div></td>';
 
         var nowRemaining = getNowPlayingRemaining(np);
@@ -435,6 +439,7 @@
     var shadowbanTitleClass = (isAdmin && e.shadowbanned) ? ' has-text-danger' : '';
     html += '<span class="has-text-weight-bold is-hidden-mobile' + shadowbanTitleClass + '">' + e.title + '</span>';
     html += '<span class="is-size-7 has-text-weight-bold is-hidden-tablet' + shadowbanTitleClass + '" style="width: 100%;">' + e.title + '</span>';
+    html += ' <a class="like-btn" data-file="' + escape(e.file) + '" title="{{ _("Like this song") }}" style="cursor:pointer; font-size:1.1em; opacity:0.5; margin-left:6px;">&#9829;</a>';
     html += '</div></td>';
 
         html += '<td style="width: ' + COL_WIDTH.duration + '; padding: 8px 6px; text-align: center; vertical-align: middle;">';
@@ -735,6 +740,57 @@
 
       // Vote state is rendered from queue payload (user_vote), no extra fetch needed
   });
+
+  // --- Like button handling ---
+  var userLikedSongs = {};
+  var likePending = {};  // track in-flight toggle requests per file path
+  function loadUserLikes() {
+      var user = getUserCookie();
+      if (!user) return;
+      $.getJSON("{{ url_for('likes.liked_songs') }}", {user: user}, function(songs) {
+          userLikedSongs = {};
+          songs.forEach(function(s) { userLikedSongs[s] = true; });
+          updateLikeButtons();
+      });
+  }
+  function updateLikeButtons() {
+      $(".like-btn").each(function() {
+          var file = unescape($(this).data("file"));
+          if (userLikedSongs[file]) {
+              $(this).css({color: "#ff4060", opacity: 1});
+          } else {
+              $(this).css({color: "", opacity: 0.5});
+          }
+      });
+  }
+  $(document).on("click", ".like-btn", function(e) {
+      e.preventDefault();
+      var $btn = $(this);
+      var file = unescape($btn.data("file"));
+      if (likePending[file]) return;  // block concurrent requests for same song
+      var user = getUserCookie();
+      if (!user) { alert("{{ _('Set your name first') }}"); return; }
+      // Optimistic update for instant feedback
+      if (userLikedSongs[file]) {
+          delete userLikedSongs[file];
+      } else {
+          userLikedSongs[file] = true;
+      }
+      updateLikeButtons();
+      likePending[file] = true;
+      $.post("{{ url_for('likes.toggle_like') }}", {song: file, user: user}, function(data) {
+          // Reconcile with actual server state
+          if (data.liked) {
+              userLikedSongs[file] = true;
+          } else {
+              delete userLikedSongs[file];
+          }
+          updateLikeButtons();
+      }).always(function() {
+          delete likePending[file];
+      });
+  });
+  loadUserLikes();
 
   // Visibility handler (same as before)
   // ... (Keep existing visibility logic here if needed) ...

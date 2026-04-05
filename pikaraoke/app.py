@@ -37,6 +37,7 @@ from pikaraoke.routes.files import files_bp
 from pikaraoke.routes.home import home_bp
 from pikaraoke.routes.images import images_bp
 from pikaraoke.routes.info import info_bp
+from pikaraoke.routes.likes import likes_bp
 from pikaraoke.routes.logs import logs_bp, set_log_handler
 from pikaraoke.routes.microphone import microphone_bp
 from pikaraoke.routes.now_playing import nowplaying_bp
@@ -127,6 +128,7 @@ app.register_blueprint(background_music_bp)
 app.register_blueprint(batch_song_renamer_bp)
 app.register_blueprint(queue_bp)
 app.register_blueprint(images_bp)
+app.register_blueprint(likes_bp)
 app.register_blueprint(files_bp)
 app.register_blueprint(search_bp)
 app.register_blueprint(info_bp)

@@ -65,6 +65,7 @@ class PreferenceManager:
         "mixer_port": 10023,
         "effects_enabled": True,
         "pin_mode": "keep_position",  # "keep_position" or "pin_to_previous"
+        "liked_song_weight": 0,  # 0-100: % extra weight for liked songs in randomizer
     }
 
     def __init__(self, config_file_path: str = "config.ini", target: object | None = None) -> None:
