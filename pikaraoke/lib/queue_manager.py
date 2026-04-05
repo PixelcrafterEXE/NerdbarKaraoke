@@ -792,9 +792,12 @@ class QueueManager:
         # Separate pinned and unpinned entries, preserving relative order
         pinned_with_pos: list[tuple[int, dict[str, Any]]] = []
         unpinned: list[dict[str, Any]] = []
+        randomizer_songs: list[dict[str, Any]] = []
         for idx, item in enumerate(candidates):
             if item.get("pinned"):
                 pinned_with_pos.append((idx, item))
+            elif (item.get("user") or "").strip() in ("Randomizer", "Pikaraoke"):
+                randomizer_songs.append(item)
             else:
                 unpinned.append(item)
 
@@ -837,6 +840,9 @@ class QueueManager:
                     temp_sequence += 1
                     temp_played_users.add(user)
                     temp_last_played[user] = temp_sequence
+
+        # Append randomizer songs after all user-requested songs
+        ordered.extend(randomizer_songs)
 
         # Re-insert pinned songs based on pin_mode preference
         pin_mode = self._get_pin_mode()
