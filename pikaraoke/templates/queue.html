@@ -149,6 +149,7 @@
         window.queuePageState.previousNowPlaying = newNowPlaying;
 
         updateQueueSummary(window.queuePageState.queueSummary);
+        updateLikeButtons();
 
                 // Initialize Drag and Drop after HTML is rendered
                 window.initSortable();
@@ -742,6 +743,7 @@
 
   // --- Like button handling ---
   var userLikedSongs = {};
+  var likePending = {};  // track in-flight toggle requests per file path
   function loadUserLikes() {
       var user = getUserCookie();
       if (!user) return;
@@ -765,20 +767,30 @@
       e.preventDefault();
       var $btn = $(this);
       var file = unescape($btn.data("file"));
+      if (likePending[file]) return;  // block concurrent requests for same song
       var user = getUserCookie();
       if (!user) { alert("{{ _('Set your name first') }}"); return; }
+      // Optimistic update for instant feedback
+      if (userLikedSongs[file]) {
+          delete userLikedSongs[file];
+      } else {
+          userLikedSongs[file] = true;
+      }
+      updateLikeButtons();
+      likePending[file] = true;
       $.post("{{ url_for('likes.toggle_like') }}", {song: file, user: user}, function(data) {
+          // Reconcile with actual server state
           if (data.liked) {
               userLikedSongs[file] = true;
           } else {
               delete userLikedSongs[file];
           }
           updateLikeButtons();
+      }).always(function() {
+          delete likePending[file];
       });
   });
   loadUserLikes();
-  // Re-apply like styling after queue re-renders
-  $(document).on("DOMNodeInserted", "#queue-table", function() { updateLikeButtons(); });
 
   // Visibility handler (same as before)
   // ... (Keep existing visibility logic here if needed) ...

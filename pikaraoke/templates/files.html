@@ -40,6 +40,7 @@
 
 		// --- Like buttons ---
 		var userLikedSongs = {};
+		var likePending = {};  // track in-flight toggle requests per file path
 		function loadUserLikes() {
 			var user = Cookies.get("user") || "";
 			if (!user) return;
@@ -63,16 +64,28 @@
 			e.preventDefault();
 			var $btn = $(this);
 			var file = $btn.data("file");
+			if (likePending[file]) return;  // block concurrent requests for same song
 			var user = Cookies.get("user") || "";
 			if (!user) { setUserCookie(); user = Cookies.get("user") || ""; }
 			if (!user) return;
+			// Optimistic update for instant feedback
+			if (userLikedSongs[file]) {
+				delete userLikedSongs[file];
+			} else {
+				userLikedSongs[file] = true;
+			}
+			updateLikeButtons();
+			likePending[file] = true;
 			$.post("{{ url_for('likes.toggle_like') }}", {song: file, user: user}, function(data) {
+				// Reconcile with actual server state
 				if (data.liked) {
 					userLikedSongs[file] = true;
 				} else {
 					delete userLikedSongs[file];
 				}
 				updateLikeButtons();
+			}).always(function() {
+				delete likePending[file];
 			});
 		});
 		loadUserLikes();
