@@ -98,6 +98,7 @@ class DownloadManager:
         enqueue: bool = False,
         user: str = "Pikaraoke",
         title: str | None = None,
+        additional_users: list[str] | None = None,
     ) -> None:
         """Queue a video for download.
 
@@ -136,6 +137,7 @@ class DownloadManager:
             "user": user,
             "title": title,
             "display_title": displayed_title,
+            "additional_users": additional_users or [],
         }
 
         # Add to the download queue and shadow list
@@ -180,6 +182,7 @@ class DownloadManager:
                         download_request["enqueue"],
                         download_request["user"],
                         download_request["title"],
+                        additional_users=download_request.get("additional_users", []),
                     )
                 else:
                     # Initialize active download state
@@ -198,6 +201,7 @@ class DownloadManager:
                         download_request["enqueue"],
                         download_request["user"],
                         download_request["title"],
+                        additional_users=download_request.get("additional_users", []),
                     )
             except Exception as e:
                 logging.error(f"Error processing request: {e}")
@@ -254,6 +258,7 @@ class DownloadManager:
         enqueue: bool,
         user: str,
         title: str | None,
+        additional_users: list[str] | None = None,
     ) -> int:
         """Execute a video download.
 
@@ -262,6 +267,7 @@ class DownloadManager:
             enqueue: Whether to add to queue after download.
             user: Username to attribute the download to.
             title: Display title (defaults to URL if not provided).
+            additional_users: Optional list of co-requestee usernames.
 
         Returns:
             Return code from the download process (0 = success).
@@ -408,6 +414,7 @@ class DownloadManager:
                             user,
                             log_action=False,
                             bypass_queue_restrictions=bypass,
+                            additional_users=additional_users,
                         )
                     else:
                         # MSG: Message shown after the download is completed but the adding to queue fails
@@ -477,6 +484,7 @@ class DownloadManager:
         enqueue: bool,
         user: str,
         title: str | None,
+        additional_users: list[str] | None = None,
     ) -> int:
         """Execute transcoding of a video file to MP4 format."""
         from flask_babel import _
@@ -729,6 +737,7 @@ class DownloadManager:
                                     user,
                                     log_action=False,
                                     bypass_queue_restrictions=bypass,
+                                    additional_users=additional_users,
                                 )
                         else:
                             # MSG: Message shown after transcoding is completed but the adding to available songs fails
