@@ -625,6 +625,14 @@
 
 		$(".song-added-by").val(getUserCookie());
 
+		// Sync co-requestees into hidden fields on form submit
+		$("form").on("submit", function () {
+			$(".additional-users-hidden").val($("#additional-users").val());
+		});
+		$("#direct-download-button").on("click", function () {
+			$(".additional-users-hidden").val($("#additional-users").val());
+		});
+
 		// Restore checkbox states from cookies
 		restoreCheckboxStates();
 
@@ -733,7 +741,13 @@
 					the queue. #}
 					<a class="button is-info" id="add-queue-link">{% trans %}Add to queue{% endtrans %}</a>
 				</div>
-				<input class="song-added-by" type="hidden" name="song-added-by" />
+			<input class="song-added-by" type="hidden" name="song-added-by" />
+			</div>
+			<div class="field mb-1">
+				<div class="control">
+					<input class="input is-small" type="text" name="additional_users" id="additional-users"
+						placeholder="Singing with… (comma-separated names)" />
+				</div>
 			</div>
 			<div class="control is-flex is-justify-content-flex-end is-align-items-center mb-2">
 				<a id="clear-search" class="has-text-danger" style="margin-right: 15px">
@@ -794,6 +808,7 @@
 						value="https://www.youtube.com/watch?v="
 					/>
 					<input class="song-added-by" type="hidden" name="song-added-by" />
+					<input class="additional-users-hidden" type="hidden" name="additional_users" />
 					<input class="song-title" type="hidden" name="song-title" value="" />
 					<div class="field" style="margin-top: 12px;">
 						<label class="checkbox is-flex is-align-items-center">
@@ -851,6 +866,7 @@
 					</select>
 				</div>
 				<input class="song-added-by" type="hidden" name="song-added-by" />
+				<input class="additional-users-hidden" type="hidden" name="additional_users" />
 				<input id="song-title" type="hidden" name="song-title" />
 				<p class="help">
 					{# MSG: Help text which explains that the select box above can be operated to select different search
