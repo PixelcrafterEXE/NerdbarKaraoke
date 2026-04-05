@@ -580,8 +580,15 @@ class QueueManager:
             weights = []
             for song in eligible_songs:
                 likes = like_counts.get(song, 0)
-                # Base weight = 1.0; liked songs get up to (1 + weight_pct/100 * likes/max_likes)
-                w = 1.0 + (weight_pct / 100.0) * (likes / max(max_likes, 1))
+                # Quadratic scaling: at weight_pct=100 a maximally-liked song gets
+                # a 101× boost over non-liked songs so the setting has a meaningful
+                # effect even in large libraries.  Formula:
+                #   w = 1 + (weight_pct/100)² × weight_pct × (likes/max_likes)
+                # Examples at weight_pct=100: most-liked → 101×, non-liked → 1×
+                #             at weight_pct= 50: most-liked →  13.5×, non-liked → 1×
+                #             at weight_pct= 10: most-liked →   1.1×, non-liked → 1×
+                factor = (weight_pct / 100.0) ** 2 * weight_pct
+                w = 1.0 + factor * (likes / max(max_likes, 1))
                 weights.append(w)
             selected = []
             remaining = list(eligible_songs)
