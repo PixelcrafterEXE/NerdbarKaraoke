@@ -293,7 +293,7 @@
 		</a>
 		|
 		<a href="#" id="match-filter-toggle">
-			&#127919; {% trans %}Match{% endtrans %}{% if match_users %} ({{ match_users | join(", ") }}){% endif %}
+			{% trans %}Match{% endtrans %}{% if match_users %} ({{ match_users | join(", ") }}){% endif %}
 		</a>{% if match_users %} | <a href="{{ url_for('files.browse') }}">{% trans %}Clear{% endtrans %}</a>{% endif %}
 	</span>
 	{% if admin %}
@@ -321,9 +321,6 @@
 		{% endfor %}
 	</div>
 	<button id="match-filter-btn" class="button is-small is-info">{% trans %}Apply Filter{% endtrans %}</button>
-	{% if match_users %}
-		<a href="{{ url_for('files.browse') }}" class="button is-small ml-2">{% trans %}Clear{% endtrans %}</a>
-	{% endif %}
 	{% else %}
 	<p class="is-size-7" style="color:#aaa;">{% trans %}No users have liked any songs yet.{% endtrans %}</p>
 	{% endif %}

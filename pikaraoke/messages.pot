@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-04-05 03:54+0200\n"
+"POT-Creation-Date: 2026-04-14 18:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,1099 +17,1129 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: /app/pikaraoke/karaoke.py:609
+#: pikaraoke/karaoke.py:619
 #, python-format
 msgid "Song ended abnormally: %s"
 msgstr ""
 
-#: /app/pikaraoke/karaoke.py:632
+#: pikaraoke/karaoke.py:642
 #, python-format
 msgid "Transposing by %s semitones: %s"
 msgstr ""
 
-#: /app/pikaraoke/karaoke.py:648
+#: pikaraoke/karaoke.py:658
 #, python-format
 msgid "Tempo: %.1fx"
 msgstr ""
 
-#: /app/pikaraoke/karaoke.py:673
+#: pikaraoke/karaoke.py:683
 #, python-format
 msgid "Skip: %s"
 msgstr ""
 
-#: /app/pikaraoke/karaoke.py:689
+#: pikaraoke/karaoke.py:699
 #, python-format
 msgid "Resume: %s"
 msgstr ""
 
-#: /app/pikaraoke/karaoke.py:692 /app/pikaraoke/templates/queue.html:623
-#: /app/pikaraoke/templates/queue.html:896
+#: pikaraoke/karaoke.py:702 pikaraoke/templates/queue.html:633
+#: pikaraoke/templates/queue.html:957
 msgid "Pause"
 msgstr ""
 
-#: /app/pikaraoke/karaoke.py:711
+#: pikaraoke/karaoke.py:721
 #, python-format
 msgid "Volume: %s"
 msgstr ""
 
-#: /app/pikaraoke/karaoke.py:981
+#: pikaraoke/karaoke.py:992
 #, python-format
 msgid "Song skipped: %s didn't get a microphone"
 msgstr ""
 
-#: /app/pikaraoke/karaoke.py:1005
+#: pikaraoke/karaoke.py:1016
 #, python-format
 msgid "Timeout: Playing next song by microphone holder %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:123
+#: pikaraoke/lib/download_manager.py:124
 #, python-format
 msgid "Download queued (#%d): %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:127
+#: pikaraoke/lib/download_manager.py:128
 #, python-format
 msgid "Download starting: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:275
+#: pikaraoke/lib/download_manager.py:281
 #, python-format
 msgid "Downloading video: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:362
+#: pikaraoke/lib/download_manager.py:368
 msgid "Error downloading song: "
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:380
+#: pikaraoke/lib/download_manager.py:386
 #, python-format
 msgid "Downloaded and queued: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:383
+#: pikaraoke/lib/download_manager.py:389
 #, python-format
 msgid "Downloaded: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:414
+#: pikaraoke/lib/download_manager.py:421
 msgid "Error queueing song: "
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:451
+#: pikaraoke/lib/download_manager.py:458
 #, python-format
 msgid "Transcoding queued (#%d): %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:455
+#: pikaraoke/lib/download_manager.py:462
 #, python-format
 msgid "Transcoding starting: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:488
+#: pikaraoke/lib/download_manager.py:496
 #, python-format
 msgid "Transcoding file: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:647
+#: pikaraoke/lib/download_manager.py:655
 msgid "Error transcoding file: "
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:678
+#: pikaraoke/lib/download_manager.py:686
 #, python-format
 msgid "Transcoded and queued: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:681
+#: pikaraoke/lib/download_manager.py:689
 #, python-format
 msgid "Transcoded: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:686
+#: pikaraoke/lib/download_manager.py:694
 #, python-format
 msgid "Error: Transcoded file was not created: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:703
+#: pikaraoke/lib/download_manager.py:711
 #, python-format
 msgid "Error: Transcoded file is too small (incomplete): %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:735
+#: pikaraoke/lib/download_manager.py:744
 #, python-format
 msgid "Error adding transcoded song: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/download_manager.py:746
+#: pikaraoke/lib/download_manager.py:755
 msgid "Transcoding error: "
 msgstr ""
 
-#: /app/pikaraoke/lib/preference_manager.py:156
+#: pikaraoke/lib/preference_manager.py:157
 msgid "Your preferences were changed successfully"
 msgstr ""
 
-#: /app/pikaraoke/lib/preference_manager.py:159
+#: pikaraoke/lib/preference_manager.py:160
 msgid "Something went wrong! Your preferences were not changed"
 msgstr ""
 
-#: /app/pikaraoke/lib/preference_manager.py:169
+#: pikaraoke/lib/preference_manager.py:170
 msgid "Your preferences were cleared successfully"
 msgstr ""
 
-#: /app/pikaraoke/lib/preference_manager.py:172
+#: pikaraoke/lib/preference_manager.py:173
 msgid "Something went wrong! Your preferences were not cleared"
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:291
+#: pikaraoke/lib/queue_manager.py:308
 #, python-format
 msgid "Queue is closed. No more songs can be added after %s."
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:294
+#: pikaraoke/lib/queue_manager.py:311
 msgid "Queue is closed. No more songs can be added right now."
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:337
+#: pikaraoke/lib/queue_manager.py:354
 msgid "Cannot add songs because queue timing cannot be estimated."
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:345
+#: pikaraoke/lib/queue_manager.py:362
 msgid "Cannot add this song because its duration is unknown."
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:353
+#: pikaraoke/lib/queue_manager.py:370
 #, python-format
 msgid "Queue is closed. The queue already ends after %s."
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:361
+#: pikaraoke/lib/queue_manager.py:378
 #, python-format
 msgid "Queue is closed. This song would end after %s."
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:455
+#: pikaraoke/lib/queue_manager.py:473
 #, python-format
 msgid "You reached the limit of %s song(s) from an user in queue!"
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:461
+#: pikaraoke/lib/queue_manager.py:479
 msgid "You are adding songs too quickly. Please wait before adding another song."
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:484
+#: pikaraoke/lib/queue_manager.py:511
 #, python-format
 msgid "%s added to top of queue: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:491
+#: pikaraoke/lib/queue_manager.py:518
 #, python-format
 msgid "%s added to the queue: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:505 /app/pikaraoke/routes/queue.py:390
-#: /app/pikaraoke/routes/queue.py:406
+#: pikaraoke/lib/queue_manager.py:532 pikaraoke/routes/queue.py:403
+#: pikaraoke/routes/queue.py:419
 #, python-format
 msgid "Song added to the queue: %s"
 msgstr ""
 
-#: /app/pikaraoke/lib/queue_manager.py:555
+#: pikaraoke/lib/queue_manager.py:619
 msgid "Clear queue"
 msgstr ""
 
-#: /app/pikaraoke/lib/stream_manager.py:91
+#: pikaraoke/lib/stream_manager.py:91
 #, python-format
 msgid "Error resolving file: %s"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:67
+#: pikaraoke/routes/admin.py:67
 msgid "Updating youtube-dl! Should take a minute or two... "
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:74
+#: pikaraoke/routes/admin.py:74
 msgid "You don't have permission to update youtube-dl"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:93
+#: pikaraoke/routes/admin.py:93
 msgid "You don't have permission to refresh the song list"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:110
+#: pikaraoke/routes/admin.py:110
 msgid "Exiting pikaraoke now!"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:117
+#: pikaraoke/routes/admin.py:117
 msgid "You don't have permission to quit"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:134
+#: pikaraoke/routes/admin.py:134
 msgid "Shutting down system now!"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:141
+#: pikaraoke/routes/admin.py:141
 msgid "You don't have permission to shut down"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:158
+#: pikaraoke/routes/admin.py:158
 msgid "Rebooting system now!"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:165
+#: pikaraoke/routes/admin.py:165
 msgid "You don't have permission to Reboot"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:182
+#: pikaraoke/routes/admin.py:182
 msgid "Expanding filesystem and rebooting system now!"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:187
+#: pikaraoke/routes/admin.py:187
 msgid "Cannot expand fs on non-raspberry pi devices!"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:190
+#: pikaraoke/routes/admin.py:190
 msgid "You don't have permission to resize the filesystem"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:238
+#: pikaraoke/routes/admin.py:238
 msgid "Admin mode granted!"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:242
+#: pikaraoke/routes/admin.py:242
 msgid "Incorrect admin password!"
 msgstr ""
 
-#: /app/pikaraoke/routes/admin.py:272
+#: pikaraoke/routes/admin.py:272
 msgid "Logged out of admin mode!"
 msgstr ""
 
-#: /app/pikaraoke/routes/batch_song_renamer.py:395
+#: pikaraoke/routes/batch_song_renamer.py:395
 msgid "Accept suggested name"
 msgstr ""
 
-#: /app/pikaraoke/routes/batch_song_renamer.py:403
-#: /app/pikaraoke/templates/batch-song-renamer.html:133
+#: pikaraoke/routes/batch_song_renamer.py:403
+#: pikaraoke/templates/batch-song-renamer.html:133
 msgid "Batch Song Renamer"
 msgstr ""
 
-#: /app/pikaraoke/routes/batch_song_renamer.py:502
-#: /app/pikaraoke/routes/files.py:157
+#: pikaraoke/routes/batch_song_renamer.py:502 pikaraoke/routes/files.py:175
 msgid "Error: Can't edit this song because it is in the current queue: "
 msgstr ""
 
-#: /app/pikaraoke/routes/batch_song_renamer.py:513
-#: /app/pikaraoke/routes/files.py:184
+#: pikaraoke/routes/batch_song_renamer.py:513 pikaraoke/routes/files.py:202
 #, python-format
 msgid "Error renaming file: '%s' to '%s', Filename already exists"
 msgstr ""
 
-#: /app/pikaraoke/routes/batch_song_renamer.py:527
-#: /app/pikaraoke/routes/files.py:197
+#: pikaraoke/routes/batch_song_renamer.py:527 pikaraoke/routes/files.py:215
 msgid "Error: No filename parameters were specified!"
 msgstr ""
 
-#: /app/pikaraoke/routes/effects.py:35
+#: pikaraoke/routes/effects.py:35
 msgid "Effects are disabled"
 msgstr ""
 
-#: /app/pikaraoke/routes/effects.py:41
+#: pikaraoke/routes/effects.py:41
 msgid "You don't have permission to access effects"
 msgstr ""
 
-#: /app/pikaraoke/routes/effects.py:47 /app/pikaraoke/templates/base.html:226
-#: /app/pikaraoke/templates/effects.html:378
+#: pikaraoke/routes/effects.py:47 pikaraoke/templates/base.html:226
+#: pikaraoke/templates/effects.html:378
 msgid "Effects"
 msgstr ""
 
-#: /app/pikaraoke/routes/effects.py:87 /app/pikaraoke/routes/effects.py:126
+#: pikaraoke/routes/effects.py:87 pikaraoke/routes/effects.py:126
 msgid "No microphone assigned"
 msgstr ""
 
-#: /app/pikaraoke/routes/effects.py:97 /app/pikaraoke/routes/effects.py:123
+#: pikaraoke/routes/effects.py:97 pikaraoke/routes/effects.py:123
 msgid "Effects disabled"
 msgstr ""
 
-#: /app/pikaraoke/routes/effects.py:99 /app/pikaraoke/routes/info.py:120
-#: /app/pikaraoke/routes/queue.py:159 /app/pikaraoke/routes/queue.py:189
-#: /app/pikaraoke/routes/queue.py:191
+#: pikaraoke/routes/effects.py:99 pikaraoke/routes/info.py:121
+#: pikaraoke/routes/queue.py:159 pikaraoke/routes/queue.py:189
+#: pikaraoke/routes/queue.py:191
 msgid "Unauthorized"
 msgstr ""
 
-#: /app/pikaraoke/routes/files.py:109 /app/pikaraoke/templates/base.html:220
+#: pikaraoke/routes/files.py:125 pikaraoke/templates/base.html:220
 msgid "Browse"
 msgstr ""
 
-#: /app/pikaraoke/routes/files.py:137
+#: pikaraoke/routes/files.py:155
 msgid "Error: Can't delete this song because it is in the current queue"
 msgstr ""
 
-#: /app/pikaraoke/routes/files.py:145
+#: pikaraoke/routes/files.py:163
 #, python-format
 msgid "Song deleted: %s"
 msgstr ""
 
-#: /app/pikaraoke/routes/files.py:148
+#: pikaraoke/routes/files.py:166
 msgid "Error: No song specified!"
 msgstr ""
 
-#: /app/pikaraoke/routes/files.py:192
+#: pikaraoke/routes/files.py:210
 #, python-format
 msgid "Renamed file: %s to %s"
 msgstr ""
 
-#: /app/pikaraoke/routes/files.py:207
+#: pikaraoke/routes/files.py:225
 msgid "You don't have permission to upload videos"
 msgstr ""
 
-#: /app/pikaraoke/routes/files.py:210
+#: pikaraoke/routes/files.py:228
 msgid "No video file selected"
 msgstr ""
 
-#: /app/pikaraoke/routes/files.py:217
+#: pikaraoke/routes/files.py:235
 msgid "File type not supported. Allowed: MP4, MKV, AVI, WebM, MOV"
 msgstr ""
 
-#: /app/pikaraoke/routes/files.py:243
+#: pikaraoke/routes/files.py:261
 msgid "Error uploading video"
 msgstr ""
 
-#: /app/pikaraoke/routes/info.py:127
+#: pikaraoke/routes/info.py:128
 msgid "CPU usage query unsupported"
 msgstr ""
 
-#: /app/pikaraoke/routes/preferences.py:46
+#: pikaraoke/routes/preferences.py:46
 msgid "FX rack must be an integer between 0 and 4"
 msgstr ""
 
-#: /app/pikaraoke/routes/preferences.py:48
+#: pikaraoke/routes/preferences.py:48
 msgid "FX rack must be between 0 and 4"
 msgstr ""
 
-#: /app/pikaraoke/routes/preferences.py:54
+#: pikaraoke/routes/preferences.py:54
 msgid "Channel must be an integer between 0 and 17"
 msgstr ""
 
-#: /app/pikaraoke/routes/preferences.py:56
+#: pikaraoke/routes/preferences.py:56
 msgid "Channel must be between 0 and 17"
 msgstr ""
 
-#: /app/pikaraoke/routes/preferences.py:62
+#: pikaraoke/routes/preferences.py:62
 msgid "Number of microphones must be an integer between 1 and 16"
 msgstr ""
 
-#: /app/pikaraoke/routes/preferences.py:64
+#: pikaraoke/routes/preferences.py:64
 msgid "Number of microphones must be between 1 and 16"
 msgstr ""
 
-#: /app/pikaraoke/routes/preferences.py:73
+#: pikaraoke/routes/preferences.py:73
 msgid "You don't have permission to change preferences"
 msgstr ""
 
-#: /app/pikaraoke/routes/preferences.py:95
+#: pikaraoke/routes/preferences.py:95
 msgid "You don't have permission to clear preferences"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:116
+#: pikaraoke/routes/queue.py:116
 #, python-format
 msgid "Added %s random tracks"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:119
+#: pikaraoke/routes/queue.py:119
 msgid "Ran out of songs!"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:201
+#: pikaraoke/routes/queue.py:201
 msgid "Cleared the queue!"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:223
+#: pikaraoke/routes/queue.py:223
 msgid "Moved to top of queue"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:239
+#: pikaraoke/routes/queue.py:239
 msgid "Moved to bottom of queue"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:247
+#: pikaraoke/routes/queue.py:247
 msgid "Moved down in queue"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:253
+#: pikaraoke/routes/queue.py:253
 msgid "Error moving down in queue"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:260
+#: pikaraoke/routes/queue.py:260
 msgid "Moved up in queue"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:266
+#: pikaraoke/routes/queue.py:266
 msgid "Error moving up in queue"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:273
+#: pikaraoke/routes/queue.py:273
 msgid "Deleted from queue"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:279
+#: pikaraoke/routes/queue.py:279
 msgid "Error deleting from queue"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:302
+#: pikaraoke/routes/queue.py:302
 msgid "Shadowbanned"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:302
+#: pikaraoke/routes/queue.py:302
 msgid "Unshadowbanned"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:308
+#: pikaraoke/routes/queue.py:308
 msgid "Song not found in queue"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:320
+#: pikaraoke/routes/queue.py:320
 msgid "Unpinned"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:325
+#: pikaraoke/routes/queue.py:325
 msgid "Error unpinning"
 msgstr ""
 
-#: /app/pikaraoke/routes/queue.py:402
+#: pikaraoke/routes/queue.py:415
 #, python-format
 msgid "Song is already in the queue: %s"
 msgstr ""
 
-#: /app/pikaraoke/routes/stream.py:178
+#: pikaraoke/routes/stream.py:178
 msgid "File not found."
 msgstr ""
 
-#: /app/pikaraoke/routes/stream.py:249
+#: pikaraoke/routes/stream.py:249
 msgid "Failed to stream subtitle: "
 msgstr ""
 
-#: /app/pikaraoke/templates/base.html:28
+#: pikaraoke/templates/base.html:28
 msgid ""
 "Do you want to change the name of the person using this device? This will"
 " show up on queued songs. Current: CURRENT_NAME"
 msgstr ""
 
-#: /app/pikaraoke/templates/base.html:30
+#: pikaraoke/templates/base.html:30
 msgid "Are you sure you want to clear the ENTIRE queue? Type ok to continue"
 msgstr ""
 
-#: /app/pikaraoke/templates/base.html:32
+#: pikaraoke/templates/base.html:32
 msgid "Are you sure you want to delete SONG_TITLE from the queue?"
 msgstr ""
 
-#: /app/pikaraoke/templates/base.html:34
+#: pikaraoke/templates/base.html:34
 msgid "Are you sure you want to delete this song from the library?"
 msgstr ""
 
-#: /app/pikaraoke/templates/base.html:90
+#: pikaraoke/templates/base.html:90
 msgid ""
 "Please enter your name. This will show up next to the songs you queue up "
 "from this device."
 msgstr ""
 
-#: /app/pikaraoke/templates/base.html:204
+#: pikaraoke/templates/base.html:204
 msgid "Home"
 msgstr ""
 
-#: /app/pikaraoke/templates/base.html:210
-#: /app/pikaraoke/templates/queue.html:741
+#: pikaraoke/templates/base.html:210 pikaraoke/templates/queue.html:802
 msgid "Queue"
 msgstr ""
 
-#: /app/pikaraoke/templates/base.html:215
-#: /app/pikaraoke/templates/search.html:731
+#: pikaraoke/templates/base.html:215 pikaraoke/templates/search.html:739
 msgid "Search"
 msgstr ""
 
-#: /app/pikaraoke/templates/base.html:245
-#: /app/pikaraoke/templates/info.html:291
+#: pikaraoke/templates/base.html:245 pikaraoke/templates/info.html:291
 msgid "Settings"
 msgstr ""
 
-#: /app/pikaraoke/templates/batch-song-renamer.html:136
+#: pikaraoke/templates/batch-song-renamer.html:136
 msgid ""
 "The loading process may take a few seconds, as the song titles are "
 "compared online. Loading time may vary\n"
 "\tbased on your internet connection."
 msgstr ""
 
-#: /app/pikaraoke/templates/batch-song-renamer.html:141
+#: pikaraoke/templates/batch-song-renamer.html:141
 msgid ""
 "Showing all\n"
 "\tsongs"
 msgstr ""
 
-#: /app/pikaraoke/templates/batch-song-renamer.html:144
+#: pikaraoke/templates/batch-song-renamer.html:144
 msgid "Show only songs to rename"
 msgstr ""
 
-#: /app/pikaraoke/templates/batch-song-renamer.html:147
+#: pikaraoke/templates/batch-song-renamer.html:147
 msgid ""
 "Showing only songs\n"
 "\tto rename"
 msgstr ""
 
-#: /app/pikaraoke/templates/batch-song-renamer.html:150
+#: pikaraoke/templates/batch-song-renamer.html:150
 msgid "Show all songs"
 msgstr ""
 
-#: /app/pikaraoke/templates/batch-song-renamer.html:158
+#: pikaraoke/templates/batch-song-renamer.html:158
 msgid "Loading songs..."
 msgstr ""
 
-#: /app/pikaraoke/templates/edit.html:83
+#: pikaraoke/templates/edit.html:83
 msgid "No suggestion!"
 msgstr ""
 
-#: /app/pikaraoke/templates/edit.html:98
+#: pikaraoke/templates/edit.html:98
 msgid "Edit Song"
 msgstr ""
 
-#: /app/pikaraoke/templates/edit.html:111
+#: pikaraoke/templates/edit.html:111
 msgid "Edit Song Name"
 msgstr ""
 
-#: /app/pikaraoke/templates/edit.html:118
+#: pikaraoke/templates/edit.html:118
 msgid "Auto-format"
 msgstr ""
 
-#: /app/pikaraoke/templates/edit.html:120
+#: pikaraoke/templates/edit.html:120
 msgid "Swap artist/song order"
 msgstr ""
 
-#: /app/pikaraoke/templates/edit.html:122
+#: pikaraoke/templates/edit.html:122
 msgid "Suggest from Last.fm"
 msgstr ""
 
-#: /app/pikaraoke/templates/edit.html:130
+#: pikaraoke/templates/edit.html:130
 msgid "Save"
 msgstr ""
 
-#: /app/pikaraoke/templates/edit.html:140
+#: pikaraoke/templates/edit.html:140
 msgid "Delete this song"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:72
+#: pikaraoke/templates/effects.html:72
 msgid "OFF"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:73
+#: pikaraoke/templates/effects.html:73
 msgid "ON"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:97
+#: pikaraoke/templates/effects.html:97
 msgid "No effects data available."
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:110
+#: pikaraoke/templates/effects.html:110
 msgid "Edit"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:116
+#: pikaraoke/templates/effects.html:116
 msgid "Allow for users"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:123
+#: pikaraoke/templates/effects.html:123
 msgid "Parameter"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:124
+#: pikaraoke/templates/effects.html:124
 msgid "Value"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:125
+#: pikaraoke/templates/effects.html:125
 msgid "Allow user"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:169
+#: pikaraoke/templates/effects.html:169
 msgid "No effects are available for your microphone."
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:184
+#: pikaraoke/templates/effects.html:184
 msgid "My Effects"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:188
+#: pikaraoke/templates/effects.html:188
 msgid "Effect"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:191
+#: pikaraoke/templates/effects.html:191
 msgid "None"
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:217
+#: pikaraoke/templates/effects.html:217
 msgid "No parameters are available for user control."
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:245
+#: pikaraoke/templates/effects.html:245
 msgid "Failed to load effects data."
 msgstr ""
 
-#: /app/pikaraoke/templates/effects.html:257
-#: /app/pikaraoke/templates/effects.html:268
+#: pikaraoke/templates/effects.html:257 pikaraoke/templates/effects.html:268
 msgid "Failed to update effects."
 msgstr ""
 
-#: /app/pikaraoke/templates/files.html:210
+#: pikaraoke/templates/files.html:278
 msgid "Sorted Alphabetically"
 msgstr ""
 
-#: /app/pikaraoke/templates/files.html:212
+#: pikaraoke/templates/files.html:280
 msgid ""
 "Sort by\n"
 "\t\t\tDate"
 msgstr ""
 
-#: /app/pikaraoke/templates/files.html:216
+#: pikaraoke/templates/files.html:284
 msgid "Sorted by date"
 msgstr ""
 
-#: /app/pikaraoke/templates/files.html:218
+#: pikaraoke/templates/files.html:286
 msgid ""
 "Sort by\n"
 "\t\t\tAlphabetical"
 msgstr ""
 
-#: /app/pikaraoke/templates/files.html:225
+#: pikaraoke/templates/files.html:292
+msgid "Liked"
+msgstr ""
+
+#: pikaraoke/templates/files.html:296
+msgid "Match"
+msgstr ""
+
+#: pikaraoke/templates/files.html:297 pikaraoke/templates/search.html:755
+msgid "Clear"
+msgstr ""
+
+#: pikaraoke/templates/files.html:301
 msgid "Edit all songs"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:41
+#: pikaraoke/templates/files.html:308
+msgid "Match Filter"
+msgstr ""
+
+#: pikaraoke/templates/files.html:311
+msgid ""
+"Shows only songs liked by <em>all</em> selected users. Adding a song "
+"while in match mode queues it for all matched users as co-singers."
+msgstr ""
+
+#: pikaraoke/templates/files.html:323
+msgid "Apply Filter"
+msgstr ""
+
+#: pikaraoke/templates/files.html:325
+msgid "No users have liked any songs yet."
+msgstr ""
+
+#: pikaraoke/templates/files.html:340
+msgid "Showing songs liked by"
+msgstr ""
+
+#: pikaraoke/templates/files.html:341
+msgid "Adding a song will queue it for all of them as co-singers."
+msgstr ""
+
+#: pikaraoke/templates/home.html:41
 msgid "Nothing is playing right now."
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:49
+#: pikaraoke/templates/home.html:49
 msgid "Next wish"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:52
+#: pikaraoke/templates/home.html:52
 msgid "No song is queued."
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:171
+#: pikaraoke/templates/home.html:171
 msgid ""
 "Are you sure you want to skip this track? If you didn't add this song, "
 "ask permission first!"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:239
-#: /app/pikaraoke/templates/home.html:409
+#: pikaraoke/templates/home.html:239 pikaraoke/templates/home.html:409
 msgid "Available"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:240
-#: /app/pikaraoke/templates/home.html:412
-#: /app/pikaraoke/templates/home.html:413
+#: pikaraoke/templates/home.html:240 pikaraoke/templates/home.html:412
+#: pikaraoke/templates/home.html:413
 msgid "Unassign"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:291
+#: pikaraoke/templates/home.html:291
 msgid "Now Playing"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:306
+#: pikaraoke/templates/home.html:306
 msgid "Next Song"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:318
+#: pikaraoke/templates/home.html:318
 msgid "Player Control"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:322
+#: pikaraoke/templates/home.html:322
 msgid "Restart Song"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:324
+#: pikaraoke/templates/home.html:324
 msgid "Play/Pause"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:326
+#: pikaraoke/templates/home.html:326
 msgid "Stop Current Song"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:348
+#: pikaraoke/templates/home.html:348
 msgid "Change Key"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:368
+#: pikaraoke/templates/home.html:368
 msgid "Change"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:375
+#: pikaraoke/templates/home.html:375
 msgid "Tempo"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:393
+#: pikaraoke/templates/home.html:393
 msgid "Reset"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:403
+#: pikaraoke/templates/home.html:403
 msgid "Microphone Status"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:412
+#: pikaraoke/templates/home.html:412
 msgid "microphone"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:424
+#: pikaraoke/templates/home.html:424
 #, python-format
 msgid "You have the #%(user_microphone)s microphone"
 msgstr ""
 
-#: /app/pikaraoke/templates/home.html:427
+#: pikaraoke/templates/home.html:427
 msgid "Hand Back Microphone"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:200
+#: pikaraoke/templates/info.html:200
 msgid "Are you sure you want to quit?"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:208
+#: pikaraoke/templates/info.html:208
 msgid "Are you sure you want to shut down?"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:216
+#: pikaraoke/templates/info.html:216
 msgid "Are you sure you want to clear your preferences?"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:224
+#: pikaraoke/templates/info.html:224
 msgid "Are you sure you want to reboot?"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:234
+#: pikaraoke/templates/info.html:234
 msgid ""
 "Are you sure you want to update Youtube-dl right now? Current and pending"
 " downloads may fail."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:303
+#: pikaraoke/templates/info.html:303
 #, python-format
 msgid "URL of %(site_title)s:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:309
+#: pikaraoke/templates/info.html:309
 msgid "Handy URL QR code to share with a pal:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:316
+#: pikaraoke/templates/info.html:316
 msgid "Preferred language"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:331
+#: pikaraoke/templates/info.html:331
 msgid "System Settings"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:335
+#: pikaraoke/templates/info.html:335
 msgid "Queue settings"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:343
+#: pikaraoke/templates/info.html:343
 msgid "Limit of songs an individual user can add to the queue (0 = unlimited)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:350
+#: pikaraoke/templates/info.html:350
 msgid ""
 "Song add cooldown count (number of songs to trigger cooldown, -1 = "
 "disabled)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:357
+#: pikaraoke/templates/info.html:357
 msgid "Song add cooldown duration in minutes (-1 = disabled)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:363
+#: pikaraoke/templates/info.html:363
 msgid "Allow adding songs to the queue"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:378
+#: pikaraoke/templates/info.html:378
 msgid "Queue closing time (24-hour HH:MM, leave blank to disable)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:385
+#: pikaraoke/templates/info.html:385
 msgid "Queue order mode"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:389
-#: /app/pikaraoke/templates/queue.html:747
-#: /app/pikaraoke/templates/queue.html:756
+#: pikaraoke/templates/info.html:389 pikaraoke/templates/queue.html:808
+#: pikaraoke/templates/queue.html:817
 msgid "Chronological"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:390
-#: /app/pikaraoke/templates/queue.html:750
+#: pikaraoke/templates/info.html:390 pikaraoke/templates/queue.html:811
 msgid "Voting"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:391
-#: /app/pikaraoke/templates/queue.html:753
+#: pikaraoke/templates/info.html:391 pikaraoke/templates/queue.html:814
 msgid "Fair"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:398
+#: pikaraoke/templates/info.html:398
 msgid "Pin mode (admin move)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:402
+#: pikaraoke/templates/info.html:402
 msgid "Keep position"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:403
+#: pikaraoke/templates/info.html:403
 msgid "Pin to previous song"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:414
+#: pikaraoke/templates/info.html:410
+msgid "Randomizer liked-song weight (0-100%)"
+msgstr ""
+
+#: pikaraoke/templates/info.html:424
 msgid "Effects & Mixer"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:421
+#: pikaraoke/templates/info.html:431
 msgid "Enable effects UI and OSC output"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:428
+#: pikaraoke/templates/info.html:438
 msgid "OSC mixer IP address"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:435
+#: pikaraoke/templates/info.html:445
 msgid "OSC mixer port"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:441
+#: pikaraoke/templates/info.html:451
 msgid "Microphone Channels & FX Racks"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:443
+#: pikaraoke/templates/info.html:453
 msgid ""
 "Channel values map to FX source (0 = INS, 1-16 = MIX1..MIX16, 17 = M/C). "
 "Use 0 for \"no rack\"; valid rack indexes are 1–4."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:446
+#: pikaraoke/templates/info.html:456
 #, python-format
 msgid "Microphone #%(i)s"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:449
+#: pikaraoke/templates/info.html:459
 msgid "Channel"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:453
+#: pikaraoke/templates/info.html:463
 msgid "FX rack"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:465
+#: pikaraoke/templates/info.html:475
 msgid "Microphone Tracking"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:473
+#: pikaraoke/templates/info.html:483
 msgid "Show microphone status on home page (non-admins)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:480
+#: pikaraoke/templates/info.html:490
 msgid "Reset microphone assignments after each song"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:487
+#: pikaraoke/templates/info.html:497
 msgid "Wait for singer to get a microphone before playing their song"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:494
+#: pikaraoke/templates/info.html:504
 msgid "Microphone wait timeout in seconds"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:500
+#: pikaraoke/templates/info.html:510
 msgid "Action when microphone wait timeout expires:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:504
+#: pikaraoke/templates/info.html:514
 msgid "Play song anyway"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:505
+#: pikaraoke/templates/info.html:515
 msgid "Skip song"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:506
+#: pikaraoke/templates/info.html:516
 msgid "Keep queue position"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:513
+#: pikaraoke/templates/info.html:523
 msgid "Number of microphones"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:517
+#: pikaraoke/templates/info.html:527
 msgid "Microphone colors (pick per microphone)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:528
+#: pikaraoke/templates/info.html:538
 msgid "Colors are saved automatically and apply to microphone icons in the UI."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:536
+#: pikaraoke/templates/info.html:546
 msgid "Interface settings"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:541
+#: pikaraoke/templates/info.html:551
 msgid "Message of the day (MOTD)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:548
+#: pikaraoke/templates/info.html:558
 msgid "Hide the URL and QR code"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:554
+#: pikaraoke/templates/info.html:564
 msgid "Hide all overlays, including now playing, up next, and QR code"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:560
+#: pikaraoke/templates/info.html:570
 msgid "Hide notifications"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:566
+#: pikaraoke/templates/info.html:576
 msgid "Disable the score screen after each song"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:573
+#: pikaraoke/templates/info.html:583
 msgid ""
 "The amount of idle time in seconds before the screen saver activates. Set"
 " to 0 to disable it."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:580
+#: pikaraoke/templates/info.html:590
 msgid "The delay in seconds before starting the next song"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:587
+#: pikaraoke/templates/info.html:597
 msgid "Score phrases"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:589
+#: pikaraoke/templates/info.html:599
 msgid "Add one phrase per line in each box and hit save."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:591
+#: pikaraoke/templates/info.html:601
 msgid "LOW Score Phrases (score < 30)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:593
+#: pikaraoke/templates/info.html:603
 msgid "Could be better..."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:596
+#: pikaraoke/templates/info.html:606
 msgid "MID Score Phrases (30 > score < 60)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:598
+#: pikaraoke/templates/info.html:608
 msgid "That was ok..."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:601
+#: pikaraoke/templates/info.html:611
 msgid "HIGH Score Phrases (60 < score)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:603
+#: pikaraoke/templates/info.html:613
 msgid "Wonderfull..."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:611
+#: pikaraoke/templates/info.html:621
 msgid "Browse page results per page (10-1000, default 500)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:620
+#: pikaraoke/templates/info.html:630
 msgid "Sound/Video settings"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:627
+#: pikaraoke/templates/info.html:637
 msgid "Disable background video"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:633
+#: pikaraoke/templates/info.html:643
 msgid "Disable background music"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:639
+#: pikaraoke/templates/info.html:649
 msgid "Default volume of the videos (min 0, max 100)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:645
+#: pikaraoke/templates/info.html:655
 msgid "Volume of the background music (min 0, max 100)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:651
+#: pikaraoke/templates/info.html:661
 msgid "Normalize audio volume"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:657
+#: pikaraoke/templates/info.html:667
 msgid "Skip leading silence during playback"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:663
+#: pikaraoke/templates/info.html:673
 msgid "Skip trailing silence during playback (auto-ends song)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:670
+#: pikaraoke/templates/info.html:680
 msgid "Silence detection threshold (dB, default -50)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:677
+#: pikaraoke/templates/info.html:687
 msgid "Minimum silence duration (seconds, default 0.5)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:683
+#: pikaraoke/templates/info.html:693
 msgid "Download high quality videos"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:689
+#: pikaraoke/templates/info.html:699
 msgid ""
 "Transcode video completely before playing (better browser compatibility, "
 "slower starts). Buffer size will be ignored.*"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:695
+#: pikaraoke/templates/info.html:705
 msgid ""
 "Enable CDG pixel scaling (crisper visuals for CDG files, may increase CPU"
 " usage)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:702
+#: pikaraoke/templates/info.html:712
 msgid ""
 "Fix the audio and video synchronization in seconds (negative = advances "
 "audio | positive = delays audio)"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:709
+#: pikaraoke/templates/info.html:719
 msgid ""
 "Buffer size in kilobytes. Transcode this amount of the video before "
 "sending it to the splash screen. "
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:715
+#: pikaraoke/templates/info.html:725
 msgid "Clear preferences"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:723
+#: pikaraoke/templates/info.html:733
 msgid "Updates"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:728
+#: pikaraoke/templates/info.html:738
 msgid "Refresh the song list"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:733
+#: pikaraoke/templates/info.html:743
 msgid ""
 "You should only need to do this if you manually copied files to the "
 "download directory while pikaraoke was running."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:738
+#: pikaraoke/templates/info.html:748
 msgid "Rescan song directory"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:747
+#: pikaraoke/templates/info.html:757
 msgid "YT-DLP update"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:752
+#: pikaraoke/templates/info.html:762
 #, python-format
 msgid ""
 "\n"
@@ -1119,61 +1149,60 @@ msgid ""
 "\t\t\t\t\t"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:758
+#: pikaraoke/templates/info.html:768
 msgid "Update youtube-dl"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:762
+#: pikaraoke/templates/info.html:772
 msgid ""
 "* This update link above may fail if you don't have proper file "
 "permissions.\n"
 "\t\t\t\t\t\t\tCheck the pikaraoke log for errors."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:774
+#: pikaraoke/templates/info.html:784
 msgid "Logs"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:779
+#: pikaraoke/templates/info.html:789
 msgid "View real-time application logs for debugging."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:781
+#: pikaraoke/templates/info.html:791
 msgid "Open Log Viewer"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:788
+#: pikaraoke/templates/info.html:798
 msgid "Shutdown"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:795
+#: pikaraoke/templates/info.html:805
 msgid ""
 "Don't just pull the plug! Always shut down your server properly to avoid "
 "data corruption."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:802
+#: pikaraoke/templates/info.html:812
 msgid "Quit Pikaraoke"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:805
+#: pikaraoke/templates/info.html:815
 msgid "Reboot System"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:808
+#: pikaraoke/templates/info.html:818
 msgid "Shutdown System"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:819
+#: pikaraoke/templates/info.html:829
 msgid "Other"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:824
-#: /app/pikaraoke/templates/info.html:836
+#: pikaraoke/templates/info.html:834 pikaraoke/templates/info.html:846
 msgid "Expand Raspberry Pi filesystem"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:829
+#: pikaraoke/templates/info.html:839
 msgid ""
 "If you just installed the pre-built pikaraoke pi image and your SD card "
 "is larger than 4GB,\n"
@@ -1182,414 +1211,410 @@ msgid ""
 "\t\t\t\t\t\t\tThis will reboot the system."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:845
-#: /app/pikaraoke/templates/info.html:912
+#: pikaraoke/templates/info.html:855 pikaraoke/templates/info.html:922
 msgid "Admin"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:852
+#: pikaraoke/templates/info.html:862
 msgid "Logout"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:858
+#: pikaraoke/templates/info.html:868
 msgid "Click here to logout from admin mode."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:860
+#: pikaraoke/templates/info.html:870
 msgid "Log out"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:869
+#: pikaraoke/templates/info.html:879
 msgid "System Data"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:874
+#: pikaraoke/templates/info.html:884
 msgid "System Info"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:880
+#: pikaraoke/templates/info.html:890
 msgid "Platform:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:882
+#: pikaraoke/templates/info.html:892
 msgid "OS Version:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:884
+#: pikaraoke/templates/info.html:894
 msgid "Youtube-dl (yt-dlp) version:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:886
+#: pikaraoke/templates/info.html:896
 msgid "FFmpeg version:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:888
+#: pikaraoke/templates/info.html:898
 msgid "nerdBar-Karaoke version:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:894
+#: pikaraoke/templates/info.html:904
 msgid "System stats"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:900
+#: pikaraoke/templates/info.html:910
 msgid "CPU:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:900
-#: /app/pikaraoke/templates/info.html:902
-#: /app/pikaraoke/templates/info.html:904
+#: pikaraoke/templates/info.html:910 pikaraoke/templates/info.html:912
+#: pikaraoke/templates/info.html:914
 msgid "Loading..."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:902
+#: pikaraoke/templates/info.html:912
 msgid "Disk Usage:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:904
+#: pikaraoke/templates/info.html:914
 msgid "Memory:"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:918 /app/pikaraoke/templates/login.html:8
-#: /app/pikaraoke/templates/login.html:20
+#: pikaraoke/templates/info.html:928 pikaraoke/templates/login.html:8
+#: pikaraoke/templates/login.html:20
 msgid "Login"
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:924
+#: pikaraoke/templates/info.html:934
 msgid "Click here to login as admin."
 msgstr ""
 
-#: /app/pikaraoke/templates/info.html:926
+#: pikaraoke/templates/info.html:936
 msgid "Log in"
 msgstr ""
 
-#: /app/pikaraoke/templates/login.html:11
+#: pikaraoke/templates/login.html:11
 msgid "Enter the administrator password"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:16
-#: /app/pikaraoke/templates/queue.html:868
+#: pikaraoke/templates/queue.html:16 pikaraoke/templates/queue.html:929
 msgid "Shadowban"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:17
+#: pikaraoke/templates/queue.html:17
 msgid "Unshadowban"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:264
+#: pikaraoke/templates/queue.html:258 pikaraoke/templates/queue.html:442
+msgid "Like this song"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:268
 msgid "Now"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:273
-#: /app/pikaraoke/templates/queue.html:464
+#: pikaraoke/templates/queue.html:277 pikaraoke/templates/queue.html:474
 msgid "Options"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:329
+#: pikaraoke/templates/queue.html:333
 msgid "Pending downloads"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:334
+#: pikaraoke/templates/queue.html:338
 msgid "Queued"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:342
+#: pikaraoke/templates/queue.html:346
 msgid "Download Errors"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:351
+#: pikaraoke/templates/queue.html:355
 msgid "Failed"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:352
+#: pikaraoke/templates/queue.html:356
 msgid "Dismiss"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:418
+#: pikaraoke/templates/queue.html:427
 msgid "Drag to reorder"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:427
+#: pikaraoke/templates/queue.html:436
 msgid "Pinned by admin"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:453
+#: pikaraoke/templates/queue.html:463
 msgid "Upvote"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:457
+#: pikaraoke/templates/queue.html:467
 msgid "Downvote"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:479
-#: /app/pikaraoke/templates/splash.html:36
+#: pikaraoke/templates/queue.html:489 pikaraoke/templates/splash.html:36
 msgid "Song"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:480
+#: pikaraoke/templates/queue.html:490
 msgid "Duration"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:481
+#: pikaraoke/templates/queue.html:491
 msgid "Starts at"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:483
+#: pikaraoke/templates/queue.html:493
 msgid "Votes"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:507
+#: pikaraoke/templates/queue.html:517
 msgid "The queue is empty"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:621
+#: pikaraoke/templates/queue.html:631
 msgid "Play"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:685
+#: pikaraoke/templates/queue.html:695
 msgid "Enter your name for voting"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:726
+#: pikaraoke/templates/queue.html:736
 msgid "Error recording vote"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:748
-#: /app/pikaraoke/templates/queue.html:757
+#: pikaraoke/templates/queue.html:772
+msgid "Set your name first"
+msgstr ""
+
+#: pikaraoke/templates/queue.html:809 pikaraoke/templates/queue.html:818
 msgid "Songs play in the order they were added."
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:751
+#: pikaraoke/templates/queue.html:812
 msgid "Songs are ordered by votes (highest first)."
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:754
+#: pikaraoke/templates/queue.html:815
 msgid ""
 "Songs are ordered to rotate users; new users are prioritized, then the "
 "user who has waited the longest."
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:763
+#: pikaraoke/templates/queue.html:824
 msgid "Queue mode"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:818
+#: pikaraoke/templates/queue.html:879
 msgid "Queue duration"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:819
+#: pikaraoke/templates/queue.html:880
 msgid "Estimated end time"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:834
+#: pikaraoke/templates/queue.html:895
 msgid ""
 "Add <input id=\"randomNumberInput\" class=\"input mx-2 p-2\" "
 "pattern=\"\\d*\" maxlength=\"2\" value=\"3\" min=\"1\" max=\"99\" "
 "style=\"width: 42px\" /> random songs"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:838
+#: pikaraoke/templates/queue.html:899
 msgid "Clear all"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:852
+#: pikaraoke/templates/queue.html:913
 msgid "Play Next"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:852
+#: pikaraoke/templates/queue.html:913
 msgid "Move to Top"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:856
+#: pikaraoke/templates/queue.html:917
 msgid "Move Up"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:860
+#: pikaraoke/templates/queue.html:921
 msgid "Move Down"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:864
+#: pikaraoke/templates/queue.html:925
 msgid "Move to Bottom"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:872
+#: pikaraoke/templates/queue.html:933
 msgid "Unpin"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:876
+#: pikaraoke/templates/queue.html:937
 msgid "Remove from Queue"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:892
+#: pikaraoke/templates/queue.html:953
 msgid "Restart"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:900
+#: pikaraoke/templates/queue.html:961
 msgid "Skip"
 msgstr ""
 
-#: /app/pikaraoke/templates/queue.html:908
+#: pikaraoke/templates/queue.html:969
 msgid "Download queue"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:438
+#: pikaraoke/templates/search.html:438
 msgid "Available songs in local library"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:716
+#: pikaraoke/templates/search.html:724
 msgid "Search / Add New"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:726
+#: pikaraoke/templates/search.html:734
 msgid "Available Songs"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:734
+#: pikaraoke/templates/search.html:742
 msgid "Add to queue"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:740
-msgid "Clear"
-msgstr ""
-
-#: /app/pikaraoke/templates/search.html:744
+#: pikaraoke/templates/search.html:759
 msgid "Advanced"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:760
+#: pikaraoke/templates/search.html:775
 msgid "Search for songs"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:763
+#: pikaraoke/templates/search.html:778
 msgid ""
 "Type a song title or artist name to search the available local library, "
 "or use 'Search' to find songs on YouTube."
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:779
+#: pikaraoke/templates/search.html:794
 msgid "Include non-karaoke matches"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:785
+#: pikaraoke/templates/search.html:800
 msgid "Direct download YouTube url:"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:802
-#: /app/pikaraoke/templates/search.html:871
+#: pikaraoke/templates/search.html:818 pikaraoke/templates/search.html:888
 msgid "Add to queue once downloaded"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:807
-#: /app/pikaraoke/templates/search.html:876
+#: pikaraoke/templates/search.html:823 pikaraoke/templates/search.html:893
 msgid "Download"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:829
+#: pikaraoke/templates/search.html:845
 #, python-format
 msgid ""
 "Searching YouTube for\n"
 "\t\t<small><i>'%(search_term)s'</i></small>"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:838
+#: pikaraoke/templates/search.html:854
 msgid "Search results for"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:857
+#: pikaraoke/templates/search.html:874
 msgid "Click dropdown to show more results"
 msgstr ""
 
-#: /app/pikaraoke/templates/search.html:860
+#: pikaraoke/templates/search.html:877
 msgid "Link:"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:33
+#: pikaraoke/templates/splash.html:33
 msgid "Connection lost. Is the server still running?"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:34
+#: pikaraoke/templates/splash.html:34
 msgid ""
 "This browser is not fully supported. You may experience streaming issues."
 " Please use Chrome/Safari/Firefox/Edge for best results."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:35
+#: pikaraoke/templates/splash.html:35
 #, python-format
 msgid "Waiting for %s to get a microphone..."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:37
+#: pikaraoke/templates/splash.html:37
 msgid "Time remaining"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:41
+#: pikaraoke/templates/splash.html:41
 msgid "Never sing again... ever."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:42
+#: pikaraoke/templates/splash.html:42
 msgid "That was a really good impression of a dying cat!"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:43
+#: pikaraoke/templates/splash.html:43
 msgid "Thank God it's over."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:44
+#: pikaraoke/templates/splash.html:44
 msgid "Pass the mic, please!"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:45
+#: pikaraoke/templates/splash.html:45
 msgid "Well, I'm sure you're very good at your day job."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:49
+#: pikaraoke/templates/splash.html:49
 msgid "I've seen better."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:50
+#: pikaraoke/templates/splash.html:50
 msgid "Ok... just ok."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:51
+#: pikaraoke/templates/splash.html:51
 msgid "Not bad for an amateur."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:52
+#: pikaraoke/templates/splash.html:52
 msgid "You put on a decent show."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:53
+#: pikaraoke/templates/splash.html:53
 msgid "That was... something."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:57
+#: pikaraoke/templates/splash.html:57
 msgid "Congratulations! That was unbelievable!"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:58
+#: pikaraoke/templates/splash.html:58
 msgid "Wow, have you tried auditioning for The Voice?"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:59
+#: pikaraoke/templates/splash.html:59
 msgid "Please, sing another one!"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:60
+#: pikaraoke/templates/splash.html:60
 msgid "You rock! You know that?!"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:61
+#: pikaraoke/templates/splash.html:61
 msgid "Woah, who let Freddie Mercury in here?"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:132
+#: pikaraoke/templates/splash.html:132
 msgid "Next up:"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:160
+#: pikaraoke/templates/splash.html:160
 msgid "Your Score"
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:174
+#: pikaraoke/templates/splash.html:174
 msgid ""
 "Due to limitations with browser permissions, you must interact\n"
 "      with the page once before it allows autoplay of videos. Pikaraoke "
@@ -1598,7 +1623,7 @@ msgid ""
 "      <a onClick=\"handleConfirmation()\">confirm</a>."
 msgstr ""
 
-#: /app/pikaraoke/templates/splash.html:187
+#: pikaraoke/templates/splash.html:187
 msgid "Confirm"
 msgstr ""
 
