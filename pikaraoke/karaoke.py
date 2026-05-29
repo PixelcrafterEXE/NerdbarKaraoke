@@ -508,10 +508,10 @@ class Karaoke:
             return
         logging.info("Deleting song: " + song_path)
         with contextlib.suppress(FileNotFoundError):
-            os.remove(song_path)
-        ext = os.path.splitext(song_path)
+            os.remove(abs_song)
+        ext = os.path.splitext(abs_song)
         # if we have an associated cdg file, delete that too
-        cdg_file = song_path.replace(ext[1], ".cdg")
+        cdg_file = abs_song.replace(ext[1], ".cdg")
         if os.path.exists(cdg_file):
             os.remove(cdg_file)
 
