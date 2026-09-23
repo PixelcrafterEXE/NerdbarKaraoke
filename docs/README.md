@@ -66,7 +66,9 @@ For detailed installation instructions, see the main project documentation.
 
 ## Deployment Configuration
 
-Configure by copying `.env.sample` to `.env` and editing.
+Configure by copying `.env.sample` to `.env` and editing. Secrets (admin password,
+Cloudflare tunnel token, etc.) live only in `.env`, which is gitignored and never
+committed.
 
 ## Docker Installation
 
@@ -75,4 +77,19 @@ To run PiKaraoke in Docker:
 ```bash
 docker compose up --build
 ```
+
+## Public Hosting via Cloudflare Tunnel
+
+The `cloudflared` service in `docker-compose.yml` exposes the app publicly without
+opening any inbound ports on your router/firewall.
+
+1. In the [Cloudflare Zero Trust dashboard](https://one.dash.cloudflare.com/), go to
+   **Networks > Tunnels > Create a tunnel**, choose **Cloudflared**, and name it.
+2. Add a **Public Hostname** pointing at `http://NBK:5555` (the app's service name
+   and port inside the compose network) for your desired domain, e.g.
+   `NBK.mydomain.com`.
+3. Copy the tunnel token from the dashboard's install step and set it as
+   `CLOUDFLARE_TUNNEL_TOKEN` in your `.env` file.
+4. Set `ADDRESS` in `.env` to the public hostname you configured (e.g.
+   `https://NBK.mydomain.com`), then run `docker compose up -d`.
 

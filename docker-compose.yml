@@ -19,12 +19,14 @@ services:
       - "5555:5555"
     restart: always
 
-  tunnel:
-    image: fatedier/frpc:latest
-    container_name: tunnel
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
     restart: always
-    env_file: .env
-    volumes:
-      - ./tunnel.toml:/etc/frp/frpc.toml
+    env_file:
+      - .env
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
       - NBK
