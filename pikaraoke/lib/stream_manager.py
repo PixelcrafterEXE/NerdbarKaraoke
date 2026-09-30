@@ -134,6 +134,19 @@ class StreamManager:
                 subtitle_url,
                 queue_entry,
             )
+        else:
+            # Transcoding failed outright (e.g. FFmpeg exited with an error).
+            # Without popping the entry here, the run loop just retries the
+            # same broken file forever on every iteration.
+            error_message = _("Error transcoding file: %s") % os.path.basename(file_path)
+            entry = queue_entry
+            if entry is None and k.queue_manager.queue:
+                entry = k.queue_manager.queue[0]
+            if entry:
+                removed = k.queue_manager.pop_song_by_file(entry["file"])
+                if removed:
+                    k.queue_manager.clear_song_votes(removed["file"])
+            k.log_and_send(error_message, "danger")
 
     def _copy_file(self, src_path: str, dest_path: str) -> bool:
         """Copy a file that doesn't need transcoding.

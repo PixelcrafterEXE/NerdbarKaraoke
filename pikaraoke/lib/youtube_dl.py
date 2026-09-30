@@ -200,10 +200,17 @@ def build_ytdl_download_command(
         List of command-line arguments for subprocess execution.
     """
     dl_path = download_path + "%(title)s---%(id)s.%(ext)s"
+    # NOTE: plain "mp4" looks like it means "video+audio in an mp4", but
+    # yt-dlp treats it as "best *pre-merged* mp4 format" (yt-dlp itself warns
+    # about this). YouTube frequently has no pre-merged format for a video,
+    # so this silently falls back to a video-only stream with no audio track
+    # at all, which then fails to transcode. Always require bestvideo+bestaudio
+    # so yt-dlp merges an audio track in, same as the high_quality branch,
+    # just capped at a lower resolution to keep it cheap on constrained hosts.
     file_quality = (
         "bestvideo[ext!=webm][height<=1080]+bestaudio[ext!=webm]/best[ext!=webm]"
         if high_quality
-        else "mp4"
+        else "bestvideo[ext!=webm][height<=720]+bestaudio[ext!=webm]/best[ext!=webm]"
     )
     args = [
         "-f",

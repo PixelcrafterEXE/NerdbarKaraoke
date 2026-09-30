@@ -86,7 +86,15 @@ class WebSocketNoiseFilter(logging.Filter):
 
 
 args = parse_pikaraoke_args()
-socketio = SocketIO(async_mode="gevent", cors_allowed_origins=args.url)
+# Hostnames are case-insensitive, but flask-socketio's origin check is a
+# case-sensitive string comparison against cors_allowed_origins, so a
+# browser hitting the site with different casing than --url (e.g. a
+# lowercase DNS/tunnel hostname vs. an uppercase --url) gets rejected with
+# "<origin> is not an accepted origin." Normalize to lowercase here; this
+# is only used for the CORS check, not for display (see args.url usages
+# elsewhere for the QR code / splash screen URL).
+_cors_origin = args.url.lower() if args.url else args.url
+socketio = SocketIO(async_mode="gevent", cors_allowed_origins=_cors_origin)
 babel = Babel()
 
 # Install in-memory log handler for the admin /logs dashboard
