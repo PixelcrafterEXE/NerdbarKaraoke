@@ -1,7 +1,7 @@
 """Home page route."""
 
 import flask_babel
-from flask import Blueprint, render_template, request
+from flask import Blueprint, redirect, render_template, request, url_for
 
 from pikaraoke.lib.current_app import get_karaoke_instance, get_site_name, is_admin
 
@@ -12,6 +12,12 @@ home_bp = Blueprint("home", __name__)
 
 
 @home_bp.route("/")
+def index():
+    """Landing page: goes straight to Search rather than the Home/now-playing page."""
+    return redirect(url_for("search.search"))
+
+
+@home_bp.route("/home")
 def home():
     """Home page with now playing info and controls.
     ---
