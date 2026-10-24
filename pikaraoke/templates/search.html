@@ -743,13 +743,6 @@
 				</div>
 			<input class="song-added-by" type="hidden" name="song-added-by" />
 			</div>
-			<div class="field mb-1">
-				<div class="control">
-					<input class="input is-small" type="text" name="additional_users" id="additional-users"
-						placeholder="Singing with… (comma-separated names)"
-						style="background-color: #363636; color: #fff; border-color: #4a4a4a;" />
-				</div>
-			</div>
 			<div class="control is-flex is-justify-content-flex-end is-align-items-center mb-2">
 				<a id="clear-search" class="has-text-danger" style="margin-right: 15px">
 					{# MSG: Link which clears the text from the search box. #} {% trans %}Clear{% endtrans %}</a
@@ -787,6 +780,14 @@
 
 	<div>
 		<div id="advanced-settings" class="box" style="margin-top: 12px; display: none;">
+			<div class="field mb-4">
+				<div class="control">
+					<input class="input is-small" type="text" name="additional_users" id="additional-users"
+						placeholder="Singing with… (comma-separated names)"
+						style="background-color: #363636; color: #fff; border-color: #4a4a4a;" />
+				</div>
+			</div>
+			<hr style="background-color: rgba(255, 255, 255, 0.1);" />
 			<div class="control mb-4">
 				<label class="checkbox is-flex is-align-items-center">
 					<input type="checkbox" class="checkbox" id="include-non-karaoke" name="include-non-karaoke" />
