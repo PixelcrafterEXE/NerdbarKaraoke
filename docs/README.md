@@ -38,11 +38,7 @@ A FOSS karaoke system for downloading and playing karaoke tracks from YouTube fo
 - [ ] implement multi chanel playback (seperate backing, vocal and clicker tracks)
 - [ ] implement tempo display/control
 
-- [ ] implement tags (ideally autotaged) for genres, moods, languages, artits, duet (stored in file metadata)
-- [ ] implement grouping by tags
 - [ ] store artist in metadata not in title
-- [ ] autoadd tags from last.fm to metadata
-- [ ] Genre-Mode: Only songs of a certain genre are shown and can be added
 
 - [ ] Push-Notification to requester when their song is up next / playing
 

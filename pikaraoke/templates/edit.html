@@ -28,6 +28,30 @@
       $('#new_file_name').val($(this).text());
     });
 
+    $('#suggest-title-ai').click(function (e) {
+      e.preventDefault();
+      $('.suggest_loader').removeClass("is-hidden");
+      $('#suggest_results').html("");
+      $.post("{{ url_for('files.suggest_name_route') }}", { song: {{ song.decode('utf-8', 'ignore') | tojson }} })
+        .done(function (response) {
+          var suggestions;
+          if (response.success) {
+            suggestions = "<li><a class='suggested_item is-warning'>" + response.name + "</a></li>";
+          } else {
+            // {# MSG: Warning when no suggested tracks are found for a search. #}
+            suggestions = "<li>{{ _('No suggestion!') }}</li>";
+            showNotification(response.message, "is-danger");
+          }
+          $('#suggest_results').html("<ul>" + suggestions + "</ul>");
+        })
+        .fail(function () {
+          showNotification("{{ _('Could not get a name suggestion') }}", "is-danger");
+        })
+        .always(function () {
+          $('.suggest_loader').addClass("is-hidden");
+        });
+    });
+
   });
 
 
@@ -89,8 +113,107 @@
     });
   }
 
+  // --- Multi-value tag chip input (genre / mood / language) ---
+  var tagInputs = {};
+
+  function setupTagInput(field) {
+    var $group = $('.tag-input-group[data-field="' + field + '"]');
+    var $chips = $group.find('.tag-chips');
+    var $input = $group.find('.tag-chip-input');
+    var $hidden = $group.find('input[type=hidden]');
+
+    function syncHidden() {
+      var values = $chips.find('.tag-chip').map(function () { return $(this).attr('data-value'); }).get();
+      $hidden.val(values.join(','));
+    }
+
+    function addChip(value) {
+      value = (value || '').trim();
+      if (!value) return;
+      var existing = $chips.find('.tag-chip').map(function () { return $(this).attr('data-value').toLowerCase(); }).get();
+      if (existing.indexOf(value.toLowerCase()) !== -1) return;
+      var $chip = $('<span class="tag is-info tag-chip" data-value="' + $('<div>').text(value).html() + '"></span>').text(value);
+      var $remove = $('<a class="tag-chip-remove" title="{{ _('Remove') }}">&times;</a>');
+      $chip.append(' ').append($remove);
+      $chips.append($chip);
+      syncHidden();
+    }
+
+    function setValues(values) {
+      $chips.empty();
+      (values || []).forEach(addChip);
+      syncHidden();
+    }
+
+    $chips.on('click', '.tag-chip-remove', function () {
+      $(this).closest('.tag-chip').remove();
+      syncHidden();
+    });
+
+    $input.on('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        addChip($input.val());
+        $input.val('');
+      }
+    });
+    $input.on('blur', function () {
+      if ($input.val().trim()) {
+        addChip($input.val());
+        $input.val('');
+      }
+    });
+
+    tagInputs[field] = { setValues: setValues };
+  }
+
+  $(function () {
+    setupTagInput('genre');
+    setupTagInput('mood');
+    setupTagInput('language');
+
+    $('#suggest-tags-ai').click(function (e) {
+      e.preventDefault();
+      var $btn = $(this);
+      $btn.addClass("is-loading");
+      $.post("{{ url_for('files.suggest_tags_route') }}", { song: {{ song.decode('utf-8', 'ignore') | tojson }} })
+        .done(function (response) {
+          if (response.success) {
+            tagInputs.genre.setValues(response.tags.genre);
+            tagInputs.mood.setValues(response.tags.mood);
+            tagInputs.language.setValues(response.tags.language);
+            $('#tag-duet').prop('checked', response.tags.duet);
+          } else {
+            showNotification(response.message, "is-danger");
+          }
+        })
+        .fail(function () {
+          showNotification("{{ _('Could not get a tag suggestion') }}", "is-danger");
+        })
+        .always(function () {
+          $btn.removeClass("is-loading");
+        });
+    });
+  });
 
 </script>
+<style>
+  .tag-input-group {
+    margin-bottom: 1em;
+  }
+  .tag-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+    margin-bottom: 0.4em;
+    min-height: 1.6em;
+  }
+  .tag-chip-remove {
+    margin-left: 0.4em;
+    cursor: pointer;
+    font-weight: bold;
+  }
+</style>
 {% endblock %}
 
 {% block header %}
@@ -113,17 +236,91 @@
       <input autocomplete="off" id="new_file_name" class="input" type="text" name="new_file_name"
         value="{{ filename_from_path(song.decode('utf-8', 'ignore')) }}"></input>
     </div>
-    <ul>
-      {# MSG: Label on button which auto formats the song's title. #}
-      <li><a id='remove-karaoke'>{% trans %}Auto-format{% endtrans %}</a></li>
-      {# MSG: Label on button which swaps the order of the artist and song in the title. #}
-      <li><a id='swap-order'>{% trans %}Swap artist/song order{% endtrans %}</a></li>
-      {# MSG: Label on button which loads results from the website Last.fm and suggests titles based on matches there. #}
-      <li><a id='suggest-title'>{% trans %}Suggest from Last.fm{% endtrans %}</a>
-        <span class="button is-loading is-hidden suggest_loader" style="border:0;background-color:transparent;"></span>
-        <span id="suggest_results"></span>
-      </li>
-    </ul>
+    <div class="field is-grouped is-grouped-multiline">
+      <div class="control">
+        {# MSG: Label on button which auto formats the song's title. #}
+        <a id='remove-karaoke' class="button is-small">{% trans %}Auto-format{% endtrans %}</a>
+      </div>
+      <div class="control">
+        {# MSG: Label on button which swaps the order of the artist and song in the title. #}
+        <a id='swap-order' class="button is-small">{% trans %}Swap artist/song order{% endtrans %}</a>
+      </div>
+      <div class="control">
+        {# MSG: Label on button which loads results from the website Last.fm and suggests titles based on matches there. #}
+        <a id='suggest-title' class="button is-small">{% trans %}Suggest from Last.fm{% endtrans %}</a>
+      </div>
+      <div class="control">
+        {# MSG: Label on button which asks the local AI to suggest a clean title. #}
+        <a id='suggest-title-ai' class="button is-small">{% trans %}LLM Suggestion{% endtrans %}</a>
+      </div>
+    </div>
+    <div class="field">
+      <span class="button is-loading is-hidden suggest_loader" style="border:0;background-color:transparent;"></span>
+      <span id="suggest_results"></span>
+    </div>
+
+    <hr>
+
+    {# MSG: Label on the tags section of the song edit page. #}
+    <label class="label">{% trans %}Tags{% endtrans %}</label>
+
+    <div class="tag-input-group" data-field="genre">
+      {# MSG: Label for the genre tags field. #}
+      <label class="label is-small">{% trans %}Genre{% endtrans %}</label>
+      <div class="tag-chips">
+        {% for v in tags.genre %}<span class="tag is-info tag-chip" data-value="{{ v }}">{{ v }} <a class="tag-chip-remove">&times;</a></span>{% endfor %}
+      </div>
+      <input autocomplete="off" class="input tag-chip-input" type="text" list="tag-genre-options"
+        placeholder="{% trans %}Type a genre and press Enter{% endtrans %}">
+      <input type="hidden" name="genre" value="{{ tags.genre|join(',') }}">
+    </div>
+
+    <div class="tag-input-group" data-field="mood">
+      {# MSG: Label for the mood tags field. #}
+      <label class="label is-small">{% trans %}Mood{% endtrans %}</label>
+      <div class="tag-chips">
+        {% for v in tags.mood %}<span class="tag is-info tag-chip" data-value="{{ v }}">{{ v }} <a class="tag-chip-remove">&times;</a></span>{% endfor %}
+      </div>
+      <input autocomplete="off" class="input tag-chip-input" type="text" list="tag-mood-options"
+        placeholder="{% trans %}Type a mood and press Enter{% endtrans %}">
+      <input type="hidden" name="mood" value="{{ tags.mood|join(',') }}">
+    </div>
+
+    <div class="tag-input-group" data-field="language">
+      {# MSG: Label for the language tags field. #}
+      <label class="label is-small">{% trans %}Language{% endtrans %}</label>
+      <div class="tag-chips">
+        {% for v in tags.language %}<span class="tag is-info tag-chip" data-value="{{ v }}">{{ v }} <a class="tag-chip-remove">&times;</a></span>{% endfor %}
+      </div>
+      <input autocomplete="off" class="input tag-chip-input" type="text" list="tag-language-options"
+        placeholder="{% trans %}Type a language and press Enter{% endtrans %}">
+      <input type="hidden" name="language" value="{{ tags.language|join(',') }}">
+    </div>
+
+    <div class="field">
+      <label class="checkbox">
+        <input type="checkbox" id="tag-duet" name="duet" value="true" {% if tags.duet %}checked{% endif %}>
+        {# MSG: Label for the duet checkbox on the song edit page. #}
+        {% trans %}Duet{% endtrans %}
+      </label>
+    </div>
+
+    <div class="field">
+      <a id="suggest-tags-ai" class="button is-small">{% trans %}LLM Suggestion{% endtrans %}</a>
+    </div>
+
+    <datalist id="tag-genre-options">
+      {% for v in tag_vocab.genre %}<option value="{{ v }}">{% endfor %}
+    </datalist>
+    <datalist id="tag-mood-options">
+      {% for v in tag_vocab.mood %}<option value="{{ v }}">{% endfor %}
+    </datalist>
+    <datalist id="tag-language-options">
+      {% for v in tag_vocab.language %}<option value="{{ v }}">{% endfor %}
+    </datalist>
+
+    <hr>
+
     <div class="field">
       <button class="button is-primary" id="search-button" type="submit">
         {# MSG: Label on button which saves the changes. #}

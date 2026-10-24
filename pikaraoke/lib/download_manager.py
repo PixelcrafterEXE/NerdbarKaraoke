@@ -11,6 +11,7 @@ from queue import Queue
 from threading import Thread
 from typing import TYPE_CHECKING
 
+from pikaraoke.lib import llm_renamer, tag_manager, tag_suggester
 from pikaraoke.lib.youtube_dl import (
     _DNS_RETRY_COUNT,
     _DNS_RETRY_DELAY,
@@ -404,6 +405,12 @@ class DownloadManager:
                         f"Could not find downloaded song in {k.download_path} matching ID: {video_id}"
                     )
 
+                if song_is_valid and getattr(k, "llm_auto_rename_enabled", True):
+                    song_path = self._maybe_auto_rename_song(song_path)
+
+                if song_is_valid and getattr(k, "llm_auto_tag_enabled", True):
+                    self._maybe_auto_tag_song(song_path)
+
                 if enqueue:
                     if song_is_valid:
                         bypass = False
@@ -424,6 +431,88 @@ class DownloadManager:
                 break
 
         return rc
+
+    def _maybe_auto_rename_song(self, song_path: str) -> str:
+        """Auto-rename a freshly downloaded song via the local LLM, if possible.
+
+        Best-effort: on any failure (LLM unreachable, timeout, no confident
+        suggestion, naming collision) the original song_path is kept unchanged.
+
+        Args:
+            song_path: Full path to the just-downloaded, validated song file.
+
+        Returns:
+            The new song path if renamed, otherwise the original song_path.
+        """
+        k = self.karaoke
+        raw_name = k.filename_from_path(song_path)
+
+        try:
+            suggestion = llm_renamer.suggest_title(
+                raw_name, model=getattr(k, "llm_rename_model", None)
+            )
+        except Exception as e:
+            logging.warning(f"Auto-rename LLM lookup failed for '{raw_name}': {e}")
+            return song_path
+
+        if not suggestion or suggestion.lower() == raw_name.lower():
+            return song_path
+
+        ext = os.path.splitext(song_path)[1]
+        if os.path.isfile(os.path.join(k.download_path, suggestion + ext)):
+            logging.info(f"Auto-rename skipped, filename already exists: {suggestion}")
+            return song_path
+
+        try:
+            k.rename(song_path, suggestion)
+        except OSError as e:
+            logging.warning(f"Auto-rename failed to rename '{song_path}' to '{suggestion}': {e}")
+            return song_path
+
+        new_path = os.path.join(k.download_path, suggestion + ext)
+        logging.info(f"Auto-renamed downloaded song: '{raw_name}' -> '{suggestion}'")
+        return new_path
+
+    def _maybe_auto_tag_song(self, song_path: str) -> None:
+        """Auto-tag a freshly downloaded song (genre/mood/language/duet) via the LLM.
+
+        Best-effort: on any failure the song is simply left untagged — an admin
+        can fill tags in manually or retry from that song's edit screen.
+
+        Note: unlike the edit-page save flow, this does NOT trigger the
+        library-wide backfill scan for brand-new tags — see the comment below.
+
+        Args:
+            song_path: Full path to the just-downloaded, validated (and possibly
+                already auto-renamed) song file.
+        """
+        k = self.karaoke
+        clean_title = k.filename_from_path(song_path)
+
+        try:
+            before_vocab = tag_manager.scan_library_vocab(iter(k.available_songs))
+            suggestion = tag_suggester.suggest_tags(
+                clean_title, before_vocab, model=getattr(k, "llm_rename_model", None)
+            )
+        except Exception as e:
+            logging.warning(f"Auto-tag LLM lookup failed for '{clean_title}': {e}")
+            return
+
+        if not suggestion:
+            return
+
+        if tag_manager.write_tags(song_path, suggestion):
+            logging.info(f"Auto-tagged downloaded song '{clean_title}': {suggestion}")
+
+        # Deliberately not running the library-wide backfill scan here: this
+        # runs on the persistent download-worker thread (a real OS thread),
+        # not a gevent greenlet, and that LLM scan can take minutes. Mixing a
+        # long blocking `requests` call on a native thread with this
+        # gevent-monkeypatched app risks contending with gevent's patched
+        # locks and hanging indefinitely with no way to time it out safely.
+        # Backfill still runs from the admin-triggered paths (song edit save,
+        # the tag manager's rescan button), which execute on gevent's normal
+        # request-handling greenlets where it's safe.
 
     def queue_transcode_file(
         self,

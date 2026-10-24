@@ -107,6 +107,10 @@ def info():
         mixer_port=k.mixer_port,
         effects_enabled=k.effects_enabled,
         liked_song_weight=getattr(k, "liked_song_weight", 0),
+        llm_auto_rename_enabled=getattr(k, "llm_auto_rename_enabled", True),
+        llm_rename_model=getattr(k, "llm_rename_model", "qwen:14b"),
+        llm_auto_tag_enabled=getattr(k, "llm_auto_tag_enabled", True),
+        tag_min_count=getattr(k, "tag_min_count", 1),
     )
 
 

@@ -415,6 +415,44 @@
 							value="{{ liked_song_weight }}" style="width: 6em;">
 					</div>
 
+					<div class="user-preference-container mt-4">
+						<input id="pref-llm-auto-rename" type="checkbox" class="user-preference-checkbox checkbox" data-pref="llm_auto_rename_enabled" {% if llm_auto_rename_enabled == True %}checked{% endif %}>
+						<label class="label" for="pref-llm-auto-rename">
+							{# MSG: Label for toggling automatic LLM-based renaming of newly downloaded songs #}
+							{% trans %}Auto-rename newly downloaded songs using the local LLM{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<input id="pref-llm-auto-tag" type="checkbox" class="user-preference-checkbox checkbox" data-pref="llm_auto_tag_enabled" {% if llm_auto_tag_enabled == True %}checked{% endif %}>
+						<label class="label" for="pref-llm-auto-tag">
+							{# MSG: Label for toggling automatic LLM-based tagging (genre/mood/language/duet) of newly downloaded songs #}
+							{% trans %}Auto-tag newly downloaded songs (genre/mood/language/duet) using the local LLM{% endtrans %}
+						</label>
+					</div>
+
+					<div class="user-preference-container">
+						<label class="label" for="pref-llm-rename-model">
+							{# MSG: Label for the Ollama model used for auto-rename/tag suggestions #}
+							{% trans %}LLM model for auto-rename & tagging (Ollama){% endtrans %}
+						</label>
+						<input id="pref-llm-rename-model" type="text"
+							class="input user-preference-input" data-pref="llm_rename_model"
+							data-start-value="{{ llm_rename_model }}"
+							value="{{ llm_rename_model }}" style="width: 12em;">
+					</div>
+
+					<div class="user-preference-container">
+						<label class="label" for="pref-tag-min-count">
+							{# MSG: Label for the minimum song count a tag needs to appear in filters/autocomplete #}
+							{% trans %}Hide genre/mood/language tags used by fewer than this many songs{% endtrans %}
+						</label>
+						<input id="pref-tag-min-count" type="number" min="1" max="99"
+							class="input user-preference-input" data-pref="tag_min_count"
+							data-start-value="{{ tag_min_count }}"
+							value="{{ tag_min_count }}" style="width: 6em;">
+					</div>
+
 				</div>
 			</div>
 

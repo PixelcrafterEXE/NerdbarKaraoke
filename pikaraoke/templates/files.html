@@ -106,6 +106,110 @@
 			window.location.href = "{{ url_for('files.browse') }}?match_users=" + encodeURIComponent(selected.join(","));
 		});
 
+		// --- Tag Filter (genre / mood / language / duet) ---
+		$("#tag-filter-toggle").on("click", function(e) {
+			e.preventDefault();
+			$("#tag-filter-panel").toggle();
+		});
+		$("#tag-filter-duet-list").on("change", ".tag-filter-duet-option", function() {
+			if ($(this).is(":checked")) {
+				$(".tag-filter-duet-option").not(this).prop("checked", false);
+			}
+		});
+		$("#tag-filter-btn").on("click", function() {
+			var genres = [];
+			$("#tag-filter-genre-list input[type=checkbox]:checked").each(function() {
+				genres.push($(this).val());
+			});
+			var moods = [];
+			$("#tag-filter-mood-list input[type=checkbox]:checked").each(function() {
+				moods.push($(this).val());
+			});
+			var languages = [];
+			$("#tag-filter-language-list input[type=checkbox]:checked").each(function() {
+				languages.push($(this).val());
+			});
+			var duetValue = $(".tag-filter-duet-option:checked").val() || "";
+
+			var params = new URLSearchParams();
+			if (genres.length) params.set("genre", genres.join(","));
+			if (moods.length) params.set("mood", moods.join(","));
+			if (languages.length) params.set("language", languages.join(","));
+			if (duetValue) params.set("duet", duetValue);
+			window.location.href = "{{ url_for('files.browse') }}?" + params.toString();
+		});
+
+		// --- Manage Tags (admin: rescan / rename-merge / remove a tag across the library) ---
+		// These icons live inside the same <label> as the filter checkbox, so stop the
+		// click from also toggling that checkbox.
+		$("#tag-filter-panel").on("click", ".manage-tag-rescan", function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			var $tag = $(this).closest(".manage-tag");
+			var category = $tag.data("category");
+			var value = $tag.data("value");
+			var $btn = $(this);
+			$btn.addClass("is-loading-text");
+			$.post("{{ url_for('files.rescan_tag_route') }}", {category: category, value: value})
+			.done(function(response) {
+				if (response.success) {
+					showNotification("{{ _('Added to') }} " + response.updated + " {{ _('more song(s)') }}", "is-success");
+					if (response.updated > 0) window.location.reload();
+				} else {
+					showNotification(response.message, "is-danger");
+				}
+			})
+			.fail(function() {
+				showNotification("{{ _('Failed to rescan tag') }}", "is-danger");
+			})
+			.always(function() {
+				$btn.removeClass("is-loading-text");
+			});
+		});
+		$("#tag-filter-panel").on("click", ".manage-tag-remove", function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			var $tag = $(this).closest(".manage-tag");
+			var category = $tag.data("category");
+			var value = $tag.data("value");
+			if (!confirm("{{ _('Remove this tag from every song that has it?') }}\n\n" + value)) return;
+			$.post("{{ url_for('files.remove_tag_route') }}", {category: category, value: value})
+			.done(function(response) {
+				if (response.success) {
+					showNotification("{{ _('Removed from') }} " + response.updated + " {{ _('song(s)') }}", "is-success");
+					$tag.remove();
+				} else {
+					showNotification(response.message, "is-danger");
+				}
+			})
+			.fail(function() {
+				showNotification("{{ _('Failed to remove tag') }}", "is-danger");
+			});
+		});
+		$("#tag-filter-panel").on("click", ".manage-tag-rename", function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			var $tag = $(this).closest(".manage-tag");
+			var category = $tag.data("category");
+			var oldValue = $tag.data("value");
+			var newValue = prompt("{{ _('Rename/merge this tag to:') }}", oldValue);
+			if (newValue === null) return;
+			newValue = newValue.trim();
+			if (!newValue || newValue === oldValue) return;
+			$.post("{{ url_for('files.rename_tag_route') }}", {category: category, old_value: oldValue, new_value: newValue})
+			.done(function(response) {
+				if (response.success) {
+					showNotification("{{ _('Updated') }} " + response.updated + " {{ _('song(s)') }}", "is-success");
+					window.location.reload();
+				} else {
+					showNotification(response.message, "is-danger");
+				}
+			})
+			.fail(function() {
+				showNotification("{{ _('Failed to rename tag') }}", "is-danger");
+			});
+		});
+
 		// Drag and drop support for video files (admin only)
 		{% if admin %}
 		const dropZone = document.body;
@@ -214,6 +318,43 @@
 	.break-word {
 		word-break: break-all; /* Ensures long words break to fit within the cell */
 	}
+	.song-row {
+		display: flex;
+		align-items: center;
+		flex-wrap: nowrap;
+		gap: 0.4em;
+		min-width: 0;
+		overflow: hidden; /* the row never grows the (now fixed-width) column */
+	}
+	.song-title-text {
+		flex: 1 1 auto;
+		min-width: 0; /* allow shrinking all the way down so it cuts off, not the tags */
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		cursor: default;
+	}
+	.song-tags {
+		display: flex;
+		flex-wrap: nowrap;
+		flex: 0 0 auto; /* tags keep their full size and get priority over the title */
+		max-width: 60%;
+		margin-left: auto; /* pin the tags (and the like button after them) to the right */
+		gap: 0.25em;
+		overflow-x: auto; /* only kicks in if the tags themselves exceed max-width */
+		scrollbar-width: thin;
+		padding-bottom: 2px; /* room for the scrollbar so it doesn't clip the tags */
+	}
+	.song-tags .tag {
+		flex-shrink: 0;
+		white-space: nowrap;
+		font-size: 0.7rem;
+		height: auto;
+		padding: 0.15em 0.5em;
+	}
+	.song-row .like-btn {
+		flex-shrink: 0;
+	}
 
 	#drop-overlay {
 		display: none;
@@ -276,13 +417,13 @@
 	<span class="is-flex-grow-1">
 		{% if sort_order == "Alphabetical" %} {# MSG: Label which displays that the songs are currently sorted by
 		alphabetical order. #} {% trans %}Sorted Alphabetically{% endtrans %} |
-		<a href="{{ url_for('files.browse') }}?sort=date">
+		<a href="{{ sort_date_url }}">
 			{# MSG: Button which changes how the songs are sorted so they become sorted by date. #} {% trans %}Sort by
 			Date{% endtrans %}
 		</a>
 		{% endif %} {% if sort_order == "Date" %} {# MSG: Label which displays that the songs are currently sorted by
 		date. #} {% trans %}Sorted by date{% endtrans %} |
-		<a href="{{ url_for('files.browse') }}">
+		<a href="{{ sort_alpha_url }}">
 			{# MSG: Button which changes how the songs are sorted so they become sorted by name. #} {% trans %}Sort by
 			Alphabetical{% endtrans %}
 		</a>
@@ -295,6 +436,14 @@
 		<a href="#" id="match-filter-toggle">
 			{% trans %}Match{% endtrans %}{% if match_users %} ({{ match_users | join(", ") }}){% endif %}
 		</a>{% if match_users %} | <a href="{{ url_for('files.browse') }}">{% trans %}Clear{% endtrans %}</a>{% endif %}
+		|
+		<a href="#" id="tag-filter-toggle">
+			{% trans %}Tags{% endtrans %}{% if genre_filter or mood_filter or language_filter or duet_filter %} ({{ (genre_filter + mood_filter + language_filter + ([(_('Duet') if duet_filter == '1' else _('No Duet'))] if duet_filter else [])) | join(", ") }}){% endif %}
+		</a>{% if genre_filter or mood_filter or language_filter or duet_filter %} | <a href="{{ url_for('files.browse') }}">{% trans %}Clear{% endtrans %}</a>{% endif %}
+		{% if artist_filter %}
+		|
+		{% trans %}Artist{% endtrans %}: {{ artist_filter }} | <a href="{{ url_for('files.browse') }}">{% trans %}Clear{% endtrans %}</a>
+		{% endif %}
 	</span>
 	{% if admin %}
 	<a class="batch-edit-btn" href="{{ url_for('batch_song_renamer.browse')}}" title="Edit all songs"
@@ -326,11 +475,62 @@
 	{% endif %}
 </div>
 
+{% macro tag_chip_list(category, items, selected) %}
+<div id="tag-filter-{{ category }}-list" class="mb-3" style="display:flex; flex-wrap:wrap; gap:0.4em;">
+	{% for tag, count in items %}
+	<label class="tag manage-tag" data-category="{{ category }}" data-value="{{ tag }}" style="cursor:pointer; user-select:none;">
+		<input type="checkbox" value="{{ tag }}" style="margin-right:4px;" {% if tag in selected %}checked{% endif %}>
+		{{ tag }} ({{ count }})
+		{% if admin %}
+		<a class="manage-tag-rescan" title="{% trans %}Rescan library for more matches{% endtrans %}" style="margin-left:5px; cursor:pointer;">&#8635;</a>
+		<a class="manage-tag-rename" title="{% trans %}Rename/merge{% endtrans %}" style="margin-left:3px; cursor:pointer;">&#9998;</a>
+		<a class="manage-tag-remove has-text-danger" title="{% trans %}Remove{% endtrans %}" style="margin-left:3px; cursor:pointer;">&times;</a>
+		{% endif %}
+	</label>
+	{% endfor %}
+</div>
+{% endmacro %}
+
+<div id="tag-filter-panel" class="box" style="{% if not (genre_filter or mood_filter or language_filter or duet_filter) %}display:none; {% endif %}margin-bottom:1em;">
+	<p class="mb-2"><strong>{% trans %}Tags{% endtrans %}</strong></p>
+	{% if admin %}
+	<p class="is-size-7 mb-3" style="color:#aaa;">
+		{% trans %}Click a tag to filter by it. Numbers show how many songs use it; use the icons to rescan the library for more matches, rename/merge, or remove a tag everywhere.{% endtrans %}
+	</p>
+	{% endif %}
+	{% if tag_display.genre %}
+	<p class="is-size-7 mb-1" style="color:#aaa;">{% trans %}Genre{% endtrans %}</p>
+	{{ tag_chip_list('genre', tag_display.genre, genre_filter) }}
+	{% endif %}
+	{% if tag_display.mood %}
+	<p class="is-size-7 mb-1" style="color:#aaa;">{% trans %}Mood{% endtrans %}</p>
+	{{ tag_chip_list('mood', tag_display.mood, mood_filter) }}
+	{% endif %}
+	{% if tag_display.language %}
+	<p class="is-size-7 mb-1" style="color:#aaa;">{% trans %}Language{% endtrans %}</p>
+	{{ tag_chip_list('language', tag_display.language, language_filter) }}
+	{% endif %}
+	<p class="is-size-7 mb-1" style="color:#aaa;">{% trans %}Duet{% endtrans %}</p>
+	<div id="tag-filter-duet-list" class="mb-3" style="display:flex; flex-wrap:wrap; gap:0.4em;">
+		<label class="tag" style="cursor:pointer; user-select:none;">
+			<input type="checkbox" class="tag-filter-duet-option" value="1" style="margin-right:4px;"
+				{% if duet_filter == '1' %}checked{% endif %}>
+			{% trans %}Duet{% endtrans %}
+		</label>
+		<label class="tag" style="cursor:pointer; user-select:none;">
+			<input type="checkbox" class="tag-filter-duet-option" value="0" style="margin-right:4px;"
+				{% if duet_filter == '0' %}checked{% endif %}>
+			{% trans %}No Duet{% endtrans %}
+		</label>
+	</div>
+	<button id="tag-filter-btn" class="button is-small is-info">{% trans %}Apply Filter{% endtrans %}</button>
+</div>
+
 <div id="alpha-bar" class="column is-full has-background-dark mobile-hide">
-	<a href="{{ url_for('files.browse') }}?letter=numeric">#</a>
+	<a href="{{ url_for('files.browse') }}?{{ letter_base_qs }}{% if letter_base_qs %}&{% endif %}letter=numeric">#</a>
 	{% for letter in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
 	'u', 'v', 'w', 'x', 'y', 'z'] %}
-	<a href="{{ url_for('files.browse') }}?letter={{letter}}">{{letter.upper()}}</a>
+	<a href="{{ url_for('files.browse') }}?{{ letter_base_qs }}{% if letter_base_qs %}&{% endif %}letter={{letter}}">{{letter.upper()}}</a>
 	{% endfor %}
 </div>
 
@@ -341,8 +541,15 @@
 	{% trans %}Adding a song will queue it for all of them as co-singers.{% endtrans %}
 </div>
 {% endif %}
-<table>
+<table style="table-layout: fixed; width: 100%;">
+	<colgroup>
+		<col style="width: 2.4rem;">
+		<col style="width: 2.4rem;">
+		<col>
+		{% if admin %}<col style="width: 2.4rem;">{% endif %}
+	</colgroup>
 	{% for song in songs %}
+	{% set t = song_tags.get(song) %}
 	<tr value="{{ song }}">
 		<td style="padding: 5px 0px">{{loop.index + pagination.skip}}</td>
 		<td id="{{filename_from_path(song)[0].lower()}}" style="padding-right: 0">
@@ -353,7 +560,23 @@
 				><i class="icon icon-list-add"></i>
 			</a>
 		</td>
-		<td class="break-word" style="padding-right: 0">{{filename_from_path(song)}} <a class="like-btn" data-file="{{song}}" title="Like" style="cursor:pointer; font-size:1.1em; opacity:0.5; margin-left:4px;">&#9829;</a></td>
+		<td class="break-word" style="padding-right: 0">
+			{% set full_title = filename_from_path(song) %}
+			{% set title_parts = full_title.split(' - ', 1) %}
+			<div class="song-row">
+				<span class="song-title-text" title="{{ full_title }}">
+					{{ title_parts[0] }}{% if title_parts|length > 1 %} - <a class="song-artist-link" href="{{ url_for('files.browse') }}?artist={{ title_parts[1] | urlencode }}" title="{% trans %}Filter by this artist{% endtrans %}">{{ title_parts[1] }}</a>{% endif %}
+				</span>
+				{% if t and (t.genre or t.mood or t.duet) %}
+				<div class="song-tags">
+					{% for g in t.genre %}<a class="tag is-small is-info" href="{{ url_for('files.browse') }}?genre={{ g | urlencode }}">{{ g }}</a>{% endfor %}
+					{% for m in t.mood %}<a class="tag is-small is-warning" href="{{ url_for('files.browse') }}?mood={{ m | urlencode }}">{{ m }}</a>{% endfor %}
+					{% if t.duet %}<a class="tag is-small is-primary" href="{{ url_for('files.browse') }}?duet=1">{% trans %}Duet{% endtrans %}</a>{% endif %}
+				</div>
+				{% endif %}
+				<a class="like-btn" data-file="{{song}}" title="Like" style="cursor:pointer; font-size:1.1em; opacity:0.5;">&#9829;</a>
+			</div>
+		</td>
 		{% if admin %}
 		<td style="padding-right: 0">
 			<a
@@ -363,8 +586,9 @@
 				><i class="icon icon-edit-1"></i>
 			</a>
 		</td>
-		{% endif %} {% endfor %}
+		{% endif %}
 	</tr>
+	{% endfor %}
 </table>
 
 {{ pagination.links }}

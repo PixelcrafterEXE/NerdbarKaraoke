@@ -516,6 +516,7 @@ class Karaoke:
             os.remove(cdg_file)
 
         self.available_songs.remove(song_path)
+        self.likes_manager.remove_song(song_path)
 
     def rename(self, song_path: str, new_name: str) -> None:
         """Rename a song file and its associated CDG file if present.
@@ -545,6 +546,7 @@ class Karaoke:
         if os.path.exists(cdg_file):
             os.rename(cdg_file, self.download_path + new_name + ".cdg")
         self.available_songs.rename(song_path, new_path)
+        self.likes_manager.rename_song(song_path, new_path)
 
     def filename_from_path(self, file_path: str, remove_youtube_id: bool = True) -> str:
         """Extract a clean display name from a file path.

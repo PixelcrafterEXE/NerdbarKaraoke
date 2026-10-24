@@ -66,6 +66,10 @@ class PreferenceManager:
         "effects_enabled": True,
         "pin_mode": "keep_position",  # "keep_position" or "pin_to_previous"
         "liked_song_weight": 0,  # 0-100: % extra weight for liked songs in randomizer
+        "llm_auto_rename_enabled": True,  # auto-rename newly downloaded songs via local LLM
+        "llm_rename_model": "qwen:14b",  # Ollama model used for auto-rename/tagging suggestions
+        "llm_auto_tag_enabled": True,  # auto-tag (genre/mood/language/duet) newly downloaded songs
+        "tag_min_count": 1,  # hide genre/mood/language tags used by fewer than this many songs
     }
 
     def __init__(self, config_file_path: str = "config.ini", target: object | None = None) -> None:

@@ -26,6 +26,7 @@ dependencies = [
   "gevent>=24.11.1",
   "flasgger>=0.9.7.1",
   "python-osc==1.10.2",
+  "mutagen>=1.47.0",
 ]
 
 [project.optional-dependencies]

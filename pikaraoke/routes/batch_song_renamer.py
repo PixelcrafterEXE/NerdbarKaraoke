@@ -1,3 +1,4 @@
+import logging
 import os
 
 import flask_babel
@@ -13,6 +14,7 @@ from flask import (
 )
 from flask_paginate import Pagination, get_page_parameter
 
+from pikaraoke.lib import llm_renamer
 from pikaraoke.lib.current_app import get_karaoke_instance, get_site_name, is_admin
 
 _ = flask_babel.gettext
@@ -355,7 +357,27 @@ def get_best_result(results, original_query):
     return f"{best['name']} - {best['artist']}"
 
 
-def get_song_correct_name(song):
+def get_song_correct_name(song, k=None):
+    # Safety gate: if nothing in the name matches our known karaoke/video noise
+    # markers, it's already in good shape — don't risk the LLM "fixing" (and
+    # potentially mangling, e.g. swapping title/artist) something that isn't
+    # broken. This also skips a slow round-trip for the majority of already-clean
+    # library entries.
+    if clean_search_query(song).strip().lower() == song.strip().lower():
+        return song
+
+    # Primary: ask the local Ollama LLM for a clean "Title - Artist" suggestion.
+    model = getattr(k, "llm_rename_model", None) if k is not None else None
+    llm_suggestion = llm_renamer.suggest_title(song, model=model)
+    if llm_suggestion:
+        return llm_suggestion
+
+    # Fallback: Last.fm track-search heuristic (used if the LLM is unreachable or
+    # couldn't confidently name the song).
+    return get_song_correct_name_lastfm(song)
+
+
+def get_song_correct_name_lastfm(song):
     cleaned_query = clean_search_query(song)
 
     params = {
@@ -366,7 +388,11 @@ def get_song_correct_name(song):
         #  'limit': 10
     }
 
-    response = requests.get(url, params=params)
+    try:
+        response = requests.get(url, params=params, timeout=8)
+    except requests.RequestException as e:
+        logging.warning(f"Last.fm lookup failed for '{song}': {e}")
+        return None
 
     if response.status_code != 200:
         return None
@@ -430,7 +456,7 @@ def get_all_songs():
 
     for song in available_songs[start_index : start_index + results_per_page]:
         song_name = k.filename_from_path(song)
-        correct_name = get_song_correct_name(song_name)
+        correct_name = get_song_correct_name(song_name, k)
         songs.append({"file": song, "correct_name": correct_name})
 
     table_lines_html = render_template_string(table_lines_template, songs=songs, skip=skip)
@@ -467,7 +493,7 @@ def get_songs_to_rename():
             break
         song = available_songs[song_index]
         song_name = k.filename_from_path(song)
-        correct_name = get_song_correct_name(song_name)
+        correct_name = get_song_correct_name(song_name, k)
         if song_name == correct_name:
             song_index += 1
             continue

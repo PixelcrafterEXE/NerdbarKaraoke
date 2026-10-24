@@ -53,6 +53,33 @@ class LikesManager:
                 del self.likes[user]
             self._save()
 
+    def remove_song(self, song_path: str) -> None:
+        """Purge a song from every user's liked list (e.g. after the file is deleted)."""
+        changed = False
+        for user_likes in self.likes.values():
+            if song_path in user_likes:
+                user_likes.discard(song_path)
+                changed = True
+        if changed:
+            self._save()
+
+    def rename_song(self, old_path: str, new_path: str) -> None:
+        """Move all likes of a song from its old path to its new path.
+
+        Called whenever a song file is renamed, so liked-song lists keep pointing
+        at a valid, current song rather than silently losing the like.
+        """
+        if old_path == new_path:
+            return
+        changed = False
+        for user_likes in self.likes.values():
+            if old_path in user_likes:
+                user_likes.discard(old_path)
+                user_likes.add(new_path)
+                changed = True
+        if changed:
+            self._save()
+
     def is_liked(self, user: str, song_path: str) -> bool:
         """Check whether a user has liked a given song."""
         return song_path in self.likes.get(user.strip(), set())
