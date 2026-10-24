@@ -249,13 +249,15 @@
         }
 
         html += '<td style="padding: 8px 10px; vertical-align: middle;">';
-        html += '<div class="is-flex is-flex-wrap-wrap is-align-items-baseline">';
-        html += '<span class="has-text-success">' + np.now_playing_user + '</span>';
-        html += '<span class="is-hidden-mobile has-text-grey mx-2">&bull;</span>';
-        html += '<span class="has-text-weight-bold has-text-success is-hidden-mobile">' + np.now_playing + '</span>';
-        html += '<span class="is-size-7 has-text-weight-bold has-text-success is-hidden-tablet" style="width: 100%;">' + np.now_playing + '</span>';
+        html += '<div class="is-flex is-align-items-baseline" style="flex-wrap: nowrap; min-width: 0;">';
+        html += '<div class="is-flex is-align-items-baseline" style="flex: 1 1 auto; min-width: 0; overflow: hidden;">';
+        html += '<span class="has-text-success" style="flex-shrink: 0;">' + np.now_playing_user + '</span>';
+        html += '<span class="is-hidden-mobile has-text-grey mx-2" style="flex-shrink: 0;">&bull;</span>';
+        html += '<span class="has-text-weight-bold has-text-success is-hidden-mobile" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;">' + np.now_playing + '</span>';
+        html += '<span class="is-size-7 has-text-weight-bold has-text-success is-hidden-tablet" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;">' + np.now_playing + '</span>';
+        html += '</div>';
         if (np.now_playing_file) {
-            html += ' <a class="like-btn" data-file="' + escape(np.now_playing_file) + '" title="{{ _("Like this song") }}" style="cursor:pointer; font-size:1.1em; opacity:0.5; margin-left:6px;">&#9829;</a>';
+            html += ' <a class="like-btn" data-file="' + escape(np.now_playing_file) + '" title="{{ _("Like this song") }}" style="cursor:pointer; font-size:1.1em; opacity:0.5; margin-left:6px; flex-shrink: 0;">&#9829;</a>';
         }
         html += '</div></td>';
 
@@ -430,16 +432,18 @@
     }
 
     html += '<td style="padding: 8px 10px; vertical-align: middle;">';
-    html += '<div class="is-flex is-flex-wrap-wrap is-align-items-baseline">';
-    html += '<span class="has-text-success">' + displayUser + '</span>';
+    html += '<div class="is-flex is-align-items-baseline" style="flex-wrap: nowrap; min-width: 0;">';
+    html += '<div class="is-flex is-align-items-baseline" style="flex: 1 1 auto; min-width: 0; overflow: hidden;">';
+    html += '<span class="has-text-success" style="flex-shrink: 0;">' + displayUser + '</span>';
     if (isAdmin && e.pinned) {
-      html += '<span class="has-text-warning ml-1" title="{{ _("Pinned by admin") }}">&#128204;</span>';
+      html += '<span class="has-text-warning ml-1" title="{{ _("Pinned by admin") }}" style="flex-shrink: 0;">&#128204;</span>';
     }
-    html += '<span class="is-hidden-mobile has-text-grey mx-2">&bull;</span>';
+    html += '<span class="is-hidden-mobile has-text-grey mx-2" style="flex-shrink: 0;">&bull;</span>';
     var shadowbanTitleClass = (isAdmin && e.shadowbanned) ? ' has-text-danger' : '';
-    html += '<span class="has-text-weight-bold is-hidden-mobile' + shadowbanTitleClass + '">' + e.title + '</span>';
-    html += '<span class="is-size-7 has-text-weight-bold is-hidden-tablet' + shadowbanTitleClass + '" style="width: 100%;">' + e.title + '</span>';
-    html += ' <a class="like-btn" data-file="' + escape(e.file) + '" title="{{ _("Like this song") }}" style="cursor:pointer; font-size:1.1em; opacity:0.5; margin-left:6px;">&#9829;</a>';
+    html += '<span class="has-text-weight-bold is-hidden-mobile' + shadowbanTitleClass + '" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;">' + e.title + '</span>';
+    html += '<span class="is-size-7 has-text-weight-bold is-hidden-tablet' + shadowbanTitleClass + '" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;">' + e.title + '</span>';
+    html += '</div>';
+    html += ' <a class="like-btn" data-file="' + escape(e.file) + '" title="{{ _("Like this song") }}" style="cursor:pointer; font-size:1.1em; opacity:0.5; margin-left:6px; flex-shrink: 0;">&#9829;</a>';
     html += '</div></td>';
 
         html += '<td style="width: ' + COL_WIDTH.duration + '; padding: 8px 6px; text-align: center; vertical-align: middle;">';
